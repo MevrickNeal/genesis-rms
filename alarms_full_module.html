@@ -1,0 +1,107 @@
+<!-- ===================================================================== -->
+<!-- SCADA ALARMS & TRIPPING TRIAGE CONSOLE MODULE                         -->
+<!-- ===================================================================== -->
+<div id="screen-alarms" class="flex flex-col gap-6">
+
+  <!-- Header Bar -->
+  <div class="bg-white/80 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <h2 class="text-xl font-black text-slate-900">SCADA Alarms & Tripping Triage Console</h2>
+        <span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px] font-bold border border-rose-200 animate-pulse">20 ACTIVE CONDITIONS</span>
+      </div>
+      <p class="text-xs text-slate-600 mt-1 font-medium">Real-time fault acquisition, register threshold deviations, operator acknowledgment, and acoustic siren silencing</p>
+    </div>
+
+    <!-- Quick Alarm Action Buttons -->
+    <div class="flex items-center gap-2.5 flex-wrap">
+      <button onclick="silenceAllAlarms()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs">
+        <svg class="w-4 h-4 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        <span>Silence Sirens</span>
+      </button>
+      <button onclick="ackAllFilteredAlarms()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
+        <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Acknowledge All</span>
+      </button>
+      <button onclick="exportAlarmsCsv()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Export Log</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Triage Metrics Row -->
+  <div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5 text-xs">
+    <div class="p-4 rounded-2xl bg-white/90 backdrop-blur-md border border-white/90 shadow-2xs">
+      <span class="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">Total Active</span>
+      <span class="text-2xl font-black text-slate-900 mt-1 block font-mono" id="kpi-alarm-total">20</span>
+      <span class="text-[10px] text-slate-600 font-medium">Across 492 BTS towers</span>
+    </div>
+
+    <div class="p-4 rounded-2xl bg-rose-50/70 border border-rose-200/80 shadow-2xs">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-bold text-rose-700 uppercase tracking-wider block">Critical Faults</span>
+        <span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
+      </div>
+      <span class="text-2xl font-black text-rose-800 mt-1 block font-mono" id="kpi-alarm-critical">6</span>
+      <span class="text-[10px] text-rose-600 font-medium">Automatic trip initiated</span>
+    </div>
+
+    <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 shadow-2xs">
+      <span class="text-[10px] font-bold text-amber-800 uppercase tracking-wider block">Major Warnings</span>
+      <span class="text-2xl font-black text-amber-900 mt-1 block font-mono" id="kpi-alarm-major">8</span>
+      <span class="text-[10px] text-amber-700 font-medium">High Temp / Low Oil Warning</span>
+    </div>
+
+    <div class="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-200/80 shadow-2xs">
+      <span class="text-[10px] font-bold text-indigo-800 uppercase tracking-wider block">Minor Alerts</span>
+      <span class="text-2xl font-black text-indigo-900 mt-1 block font-mono" id="kpi-alarm-minor">6</span>
+      <span class="text-[10px] text-indigo-700 font-medium">Battery Float / Filter Delta-P</span>
+    </div>
+
+    <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 shadow-2xs col-span-2 sm:col-span-1">
+      <span class="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">Acknowledged</span>
+      <span class="text-2xl font-black text-emerald-900 mt-1 block font-mono" id="kpi-alarm-acked">4</span>
+      <span class="text-[10px] text-emerald-700 font-medium">By Operator #AR-9402</span>
+    </div>
+  </div>
+
+  <!-- Search & Filter Controls -->
+  <div class="bg-white/80 backdrop-blur-xl rounded-2xl p-3 border border-white/90 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
+    <!-- Filter Pills -->
+    <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0" id="alarm-filter-pills">
+      <button onclick="filterAlarmSeverity('ALL')" id="af-all" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs bg-slate-900 text-white">All (20)</button>
+      <button onclick="filterAlarmSeverity('CRITICAL')" id="af-critical" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">Critical (6)</button>
+      <button onclick="filterAlarmSeverity('MAJOR')" id="af-major" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">Major (8)</button>
+      <button onclick="filterAlarmSeverity('MINOR')" id="af-minor" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">Minor (6)</button>
+      <button onclick="filterAlarmSeverity('ACKNOWLEDGED')" id="af-acked" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition text-slate-600 hover:text-slate-900 hover:bg-slate-100">Acknowledged</button>
+    </div>
+
+    <!-- Search Input -->
+    <div class="w-full sm:w-72 relative">
+      <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="alarm-search-input" onkeyup="searchAlarmsTable()" placeholder="Search Station, Code, Error..." class="w-full pl-9 pr-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none focus:border-slate-900 focus:bg-white transition" />
+    </div>
+  </div>
+
+  <!-- Full Interactive Alarms Stream Table -->
+  <div class="bg-white/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md overflow-x-auto">
+    <table class="w-full text-left border-collapse text-xs">
+      <thead>
+        <tr class="border-b border-slate-200 text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">
+          <th class="pb-3 pl-2">Severity</th>
+          <th class="pb-3">Trigger Time</th>
+          <th class="pb-3">Node / Tower Station</th>
+          <th class="pb-3">Modbus Register & Fault Event</th>
+          <th class="pb-3">Value / Threshold</th>
+          <th class="pb-3">Status</th>
+          <th class="pb-3 pr-2 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="alarms-table-body" class="divide-y divide-slate-100">
+        <!-- Rendered dynamically via JS with all 20 events -->
+      </tbody>
+    </table>
+  </div>
+
+</div>

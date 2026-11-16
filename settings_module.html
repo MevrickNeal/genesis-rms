@@ -1,0 +1,142 @@
+<!-- ===================================================================== -->
+<!-- SCADA SYSTEM SETTINGS & TELEMETRY PREFERENCES MODULE                  -->
+<!-- ===================================================================== -->
+<div id="screen-settings" class="flex flex-col gap-6">
+
+  <!-- Header Bar -->
+  <div class="bg-white/80 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <h2 class="text-xl font-black text-slate-900">System Settings & SCADA Telemetry Preferences</h2>
+        <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-200">CONFIGURATION ENGINE</span>
+      </div>
+      <p class="text-xs text-slate-600 mt-1 font-medium">Configure network telemetry acquisition, Modbus RS-485 timings, acoustic alarm thresholds, and local display parameters</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center gap-2.5">
+      <button onclick="resetScadaSettings()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+        Reset Defaults
+      </button>
+      <button onclick="saveScadaSettings()" class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Save Configuration</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Settings Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+    
+    <!-- Left Column: Acquisition & Communication Timers -->
+    <div class="bg-white/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md flex flex-col gap-4">
+      <h3 class="text-sm font-black text-slate-900 border-b border-slate-100 pb-2">Acquisition & Modbus Parameters</h3>
+      
+      <!-- Polling Frequency -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 block">Telemetry Sweep Frequency</label>
+          <span class="text-[11px] text-slate-600">Continuous Modbus RS-485 polling cycle</span>
+        </div>
+        <select id="cfg-poll-freq" class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 font-bold text-slate-800 text-xs outline-none focus:border-slate-900">
+          <option value="1000">1,000 ms (Fast Polling)</option>
+          <option value="3000" selected>3,000 ms (Standard)</option>
+          <option value="5000">5,000 ms (Eco Network)</option>
+        </select>
+      </div>
+
+      <!-- Modbus Baud Rate -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 block">Default Modbus Baud Rate</label>
+          <span class="text-[11px] text-slate-600">Serial communication baud on RS-485 bus</span>
+        </div>
+        <select id="cfg-baud-rate" class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 font-bold text-slate-800 text-xs outline-none focus:border-slate-900">
+          <option value="9600" selected>9600 bps (DSE Default)</option>
+          <option value="19200">19200 bps (High Speed)</option>
+          <option value="38400">38400 bps (Fiber RTU)</option>
+        </select>
+      </div>
+
+      <!-- Concentrator IP -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 block">Primary IP Gateway Concentrator</label>
+          <span class="text-[11px] text-slate-600">Modbus TCP/IP to RS-485 bridge</span>
+        </div>
+        <input type="text" id="cfg-ip-gateway" value="192.168.10.1:502" class="w-40 px-3 py-1.5 rounded-xl bg-white border border-slate-200 font-mono font-bold text-slate-800 text-xs outline-none focus:border-slate-900" />
+      </div>
+
+      <!-- Smooth UI Animations Toggle -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 block">Smooth Gauge Animations</label>
+          <span class="text-[11px] text-slate-600">Hardware-accelerated CSS needle sweeps</span>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" id="cfg-anim-toggle" checked class="sr-only peer" />
+          <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Right Column: Safety & Acoustic Thresholds -->
+    <div class="bg-white/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md flex flex-col gap-4">
+      <h3 class="text-sm font-black text-slate-900 border-b border-slate-100 pb-2">Safety Limits & Acoustic Siren</h3>
+
+      <!-- Acoustic Siren Toggle -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 block">Acoustic Audio Alarm</label>
+          <span class="text-[11px] text-slate-600">Play acoustic warning signal upon Critical Outage trigger</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="playTestSiren()" class="px-2.5 py-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-[10px] font-bold transition">Test Beep</button>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="cfg-audio-alarm" checked class="sr-only peer" />
+            <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+          </label>
+        </div>
+      </div>
+
+      <!-- High Coolant Temp Threshold -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <label class="font-bold text-slate-900 block">High Coolant Temperature Trip</label>
+            <span class="text-[11px] text-slate-600">Engine thermal overload shutdown limit</span>
+          </div>
+          <span class="font-mono font-bold text-xs text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200" id="cfg-temp-disp">98 °C</span>
+        </div>
+        <input type="range" id="cfg-temp-slider" min="85" max="110" value="98" oninput="document.getElementById('cfg-temp-disp').textContent = this.value + ' °C'" class="w-full accent-rose-600 cursor-pointer" />
+      </div>
+
+      <!-- Low Oil Pressure Threshold -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <label class="font-bold text-slate-900 block">Low Lube Oil Pressure Trip</label>
+            <span class="text-[11px] text-slate-600">Engine hydro-dynamic protection threshold</span>
+          </div>
+          <span class="font-mono font-bold text-xs text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200" id="cfg-oil-disp">1.20 bar</span>
+        </div>
+        <input type="range" id="cfg-oil-slider" min="0.8" max="2.0" step="0.05" value="1.20" oninput="document.getElementById('cfg-oil-disp').textContent = parseFloat(this.value).toFixed(2) + ' bar'" class="w-full accent-amber-600 cursor-pointer" />
+      </div>
+
+      <!-- Low Fuel Warning Threshold -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <label class="font-bold text-slate-900 block">Low Fuel Reserve Alarm</label>
+            <span class="text-[11px] text-slate-600">Refueling dispatch notification trigger</span>
+          </div>
+          <span class="font-mono font-bold text-xs text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200" id="cfg-fuel-disp">25 %</span>
+        </div>
+        <input type="range" id="cfg-fuel-slider" min="10" max="50" value="25" oninput="document.getElementById('cfg-fuel-disp').textContent = this.value + ' %'" class="w-full accent-indigo-600 cursor-pointer" />
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

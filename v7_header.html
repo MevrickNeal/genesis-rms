@@ -1,0 +1,114 @@
+  <!-- ===================================================================== -->
+  <!-- TOP STICKY HEADER (Glassmorphic, Hierarchy Breadcrumb, UID, CMS Toggle) -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-50 w-full bg-white/75 backdrop-blur-xl border-b border-white/80 px-3 sm:px-6 h-16 flex items-center justify-between gap-3 shadow-2xs">
+    
+    <!-- LEFT: Brand & Parent Brand Identity -->
+    <div class="flex items-center gap-3 shrink-0">
+      <a href="index.html" class="flex items-center gap-2" title="Genesis Remote Monitoring System">
+        <img src="Arena IoT Connected Logo.png"  alt="Arena IoT" class="h-8 md:h-9 w-auto object-contain shrink-0" />
+      </a>
+      <div class="h-6 w-px bg-slate-200 shrink-0 hidden sm:block"></div>
+      <div class="hidden sm:block">
+        <div class="flex items-center gap-1.5">
+          <span class="text-sm font-extrabold tracking-tight text-slate-900" id="cms-brand-name">GENESIS</span>
+          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-900 text-[#9ede4c]">RMS</span>
+        </div>
+        <div class="text-[9px] text-slate-400 font-medium tracking-tight whitespace-nowrap" id="cms-brand-tagline">Remote Monitoring System</div>
+      </div>
+    </div>
+
+    <!-- CENTER: PURE GLASSMORPHIC BREADCRUMB CAPSULE (Area < Cluster < Power Station < Generator ID) -->
+    <div class="header-breadcrumb hidden lg:flex glass-pill rounded-full px-4 py-1.5 items-center gap-3 text-xs select-none shrink-0 shadow-2xs">
+      
+      <!-- Area & Cluster -->
+      <div class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition" onclick="openHierarchyModal('area')">
+        <div class="w-6 h-6 rounded-full bg-emerald-100/80 flex items-center justify-center text-emerald-600 shrink-0">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div class="leading-tight">
+          <div class="font-bold text-slate-900 text-xs flex items-center gap-1">
+            <span class="text-[9px] text-slate-400 font-semibold uppercase">Area:</span>
+            <span id="top-area-text">Dhaka North</span>
+            <span class="text-[9px] text-slate-400">▾</span>
+          </div>
+          <div class="text-[9px] text-slate-600 font-medium">
+            <span class="text-[8px] text-slate-400 uppercase font-semibold">Cluster:</span>
+            <span id="top-cluster-text" class="font-semibold text-slate-700">Mirpur Node</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow Divider -->
+      <div class="text-slate-300">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+
+      <!-- Communication Tower Power Station & Generator ID -->
+      <div class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition" onclick="openHierarchyModal('station')">
+        <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-emerald-600 shrink-0">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+        <div class="leading-tight">
+          <div class="font-bold text-slate-900 text-xs flex items-center gap-1 font-mono">
+            <span class="text-[9px] text-slate-400 font-semibold uppercase font-sans">Tower:</span>
+            <span id="top-station-text">BTS-GP-0492</span>
+            <span class="text-[9px] text-slate-400 font-sans">▾</span>
+          </div>
+          <div class="text-[9px] text-slate-600 font-medium">
+            <span class="text-[8px] text-slate-400 uppercase font-semibold">Gen ID:</span>
+            <span id="top-genid-text" class="font-mono text-emerald-700 font-bold">GEN-PK-0104</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow Divider -->
+      <div class="text-slate-300">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+
+      <!-- Live Online Status Indicator with Pulse Wave -->
+      <div class="flex items-center gap-2 pl-0.5">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 shrink-0 animate-pulse"></span>
+        <div class="leading-tight">
+          <span class="font-bold text-slate-900 text-xs block">Online</span>
+          <span class="text-[9px] text-slate-400 block">Last Sync: 2m ago</span>
+        </div>
+        <svg class="w-4 h-4 text-emerald-600 ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Action Controls + CMS Studio Switcher + Profile with UID -->
+    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+      
+      <!-- Export Report (Frosted Pill) -->
+      <button onclick="exportCurrentReport()" class="hidden md:flex glass-pill hover:bg-white text-slate-800 text-xs font-bold px-3.5 py-2 rounded-full transition items-center gap-1.5 shadow-2xs">
+        <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Export Report</span>
+      </button>
+
+      <!-- Notification Bell -->
+      <button onclick="showScreen('alarms')" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full glass-pill hover:bg-white flex items-center justify-center relative shrink-0 transition" title="6 Active System Alarms">
+        <svg class="w-4 h-4 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="w-2.5 h-2.5 rounded-full bg-rose-600 absolute top-2 right-2 ring-2 ring-white"></span>
+      </button>
+
+      <!-- Operator Profile Pill with Integrated UID & Click-to-Edit Permissions -->
+      <button onclick="openProfileModal()" class="glass-pill hover:bg-white px-2.5 sm:px-3 py-1.5 rounded-full flex items-center gap-2.5 transition shadow-2xs group cursor-pointer" title="Manage Profile & SCADA Permissions">
+        <!-- Profile Avatar (Supports 300x300 Uploaded Photo or Initials) -->
+        <div id="header-avatar-box" class="w-8 h-8 rounded-full bg-slate-900 text-white font-extrabold text-xs flex items-center justify-center shadow-xs ring-2 ring-white overflow-hidden shrink-0">
+          <span id="header-avatar-initials">LN</span>
+          <img id="header-avatar-img" class="w-full h-full object-cover hidden" alt="Lian Ahmed" />
+        </div>
+        <div class="hidden sm:block text-left leading-tight">
+          <div class="text-xs font-black text-slate-900 flex items-center gap-1.5">
+            <span id="header-op-name">Lian Ahmed</span>
+            <span id="header-op-uid" class="text-[9px] font-mono font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/60">#AR-9402</span>
+          </div>
+          <div class="text-[10px] text-slate-600 font-semibold" id="header-op-role">Lead SCADA Engineer</div>
+        </div>
+      </button>
+
+    </div>
+  </header>

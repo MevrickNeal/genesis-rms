@@ -1,0 +1,1399 @@
+      <!-- ===================================================================== -->
+      <!-- SCREEN 01: OVERVIEW DASHBOARD (DYNAMIC CMS MODULE RE-ORDER CONTAINER) -->
+      <!-- ===================================================================== -->
+      <div id="screen-overview" class="flex flex-col gap-6">
+        
+        <!-- WRAPPER CONTAINER FOR CMS RE-ORDERABLE MODULES -->
+        <div id="dashboard-modules-container" class="flex flex-col gap-6">
+
+          <!-- ================================================================= -->
+          <!-- MODULE 1: HERO PRODUCT SHOWCASE & 3 LIVE METRICS CARDS             -->
+          <!-- (EXACT MATCH TO media_1794742663863_9b63ed69.jpg)                  -->
+          <!-- ================================================================= -->
+          <div id="wrapper-hero" class="dashboard-module flex flex-col gap-4" data-module="hero">
+            <div class="relative w-full rounded-[32px] overflow-hidden border border-white/90 shadow-lg bg-white/80 backdrop-blur-2xl p-4 sm:p-6 flex flex-col gap-4">
+              
+              <!-- TOP HALF: SHOWROOM STAGE -->
+              <div class="relative w-full min-h-[380px] lg:min-h-[410px] p-6 sm:p-8 lg:p-10 flex flex-col justify-between rounded-3xl overflow-hidden hero-stage-bg border border-white/80">
+                
+                <!-- Elliptical Showroom Pedestal -->
+                <div class="hero-pedestal hidden sm:block"></div>
+
+                <!-- Top Right Generator Status & RPM Tachometer Widget (Zero Overlap, Scaled Coordinates, Dynamic Real-Time Sweep) -->
+                <div class="absolute top-6 right-6 z-[3] p-4 rounded-3xl bg-white/90 backdrop-blur-md border border-white/90 shadow-sm flex flex-col items-center select-none cursor-pointer hover:bg-white transition hidden sm:flex" onclick="showScreen('telemetry')" title="Click to view live 18-Register Telemetry">
+                  <div class="text-[11px] font-semibold text-slate-600 mb-1.5 self-start pl-1">Generator Status</div>
+                  
+                  <div class="flex items-center gap-2 self-start pl-1 mb-2">
+                    <span id="hero-status-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-600 ring-4 ring-emerald-100"></span>
+                    <span id="hero-status-text" class="text-base font-extrabold text-slate-900">Running</span>
+                  </div>
+
+                  <!-- Dynamic SVG Tachometer Gauge (Zero Overlap, Hollow Center, Scaled Coordinates) -->
+                  <div class="relative w-44 h-28 flex items-center justify-center">
+                    <svg class="w-44 h-28" viewBox="0 0 160 120">
+                      <!-- Background Track Arc (260 deg from 140 to 400 deg) -->
+                      <path d="M 40.17 97.42 A 52 52 0 1 1 119.83 97.42" fill="none" stroke="#e2e8f0" stroke-width="8" stroke-linecap="round"/>
+                      <!-- Active Sweep Arc with CSS Transition -->
+                      <path id="hero-rpm-arc" d="M 40.17 97.42 A 52 52 0 1 1 119.83 97.42" fill="none" stroke="#10b981" stroke-width="8" stroke-linecap="round" stroke-dasharray="235.97" stroke-dashoffset="58.99" style="transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s ease;"/>
+                      
+                      <!-- Center RPM Typography (Positioned cleanly, zero collision) -->
+                      <text x="80" y="46" text-anchor="middle" font-size="9" font-weight="800" fill="#94a3b8" letter-spacing="1">RPM</text>
+                      <text id="hero-rpm-val" x="80" y="72" text-anchor="middle" font-size="22" font-weight="900" fill="#0f172a" font-family="'JetBrains Mono', monospace">1500</text>
+                      <text x="80" y="86" text-anchor="middle" font-size="9" font-weight="700" fill="#94a3b8">/min</text>
+                      <!-- Scale endpoints -->
+                      <text x="34" y="110" text-anchor="middle" font-size="9" font-weight="700" fill="#cbd5e1" font-family="'JetBrains Mono', monospace">0</text>
+                      <text x="126" y="110" text-anchor="middle" font-size="9" font-weight="700" fill="#cbd5e1" font-family="'JetBrains Mono', monospace">2000</text>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Perkins 1104A-44TG2 / Cummins / Multi-Brand Engine Stage (Strictly Constrained to Right 50% Max Width) -->
+                <div class="absolute right-2 sm:right-6 lg:right-10 bottom-2 sm:bottom-4 w-[48%] sm:w-[50%] lg:w-[50%] max-w-[50%] h-[75%] sm:h-[84%] lg:h-[88%] z-[2] flex items-end justify-end pointer-events-auto">
+                  <div class="relative w-full h-full flex items-end justify-end group">
+                    <img id="hero-engine-img" src="perkins_pure_clean.png" alt="Industrial Generator" class="max-h-full max-w-full w-auto h-auto object-contain object-bottom-right filter drop-shadow-2xl transition-transform duration-300 hover:scale-[1.02] cursor-pointer" onclick="openEngineExplodedView()" title="Click to inspect 3D mechanical specs" />
+                    
+                    <!-- Floating Quick Action: Update Banner Device Photo -->
+                    <button onclick="event.stopPropagation(); openBannerUploadModal();" class="absolute bottom-2 right-2 glass-pill hover:bg-white text-slate-800 text-[11px] font-bold px-3 py-1.5 rounded-full shadow-md transition flex items-center gap-1.5 cursor-pointer opacity-90 hover:opacity-100 group-hover:scale-105" title="Upload new picture to update banner device">
+                      <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                      <span>Update Photo</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Left Content Column (Strictly Constrained to Left 48% Max Width to Prevent Any Overlap) -->
+                <div class="relative z-[3] w-full max-w-[48%] sm:max-w-[48%] lg:max-w-[48%] flex flex-col justify-between h-full pointer-events-auto">
+                  <div>
+                    <!-- Dynamic Carousel & Brand Switcher Toolbar -->
+                    <div class="flex items-center gap-2 flex-wrap mb-3">
+                      <!-- Device Selector Dropdown -->
+                      <div class="glass-pill px-3 py-1.5 rounded-full flex items-center gap-2 shadow-2xs">
+                        <span class="text-[9px] uppercase font-bold text-slate-400">Unit:</span>
+                        <select id="hero-device-selector" onchange="switchHeroGenerator(this.value)" class="text-xs bg-transparent font-bold text-slate-800 outline-none cursor-pointer">
+                          <option value="GEN-PK-0104">GEN-PK-0104 · Perkins 1104A (60 kVA)</option>
+                          <option value="GEN-CM-0208">GEN-CM-0208 · Cummins 6BT (100 kVA)</option>
+                          <option value="GEN-CAT-0312">GEN-CAT-0312 · Caterpillar C4.4 (88 kVA)</option>
+                          <option value="GEN-KH-0416">GEN-KH-0416 · Kohler KD62 (150 kVA)</option>
+                        </select>
+                      </div>
+
+                      <!-- Carousel Navigation Buttons -->
+                      <div class="hidden sm:flex items-center gap-1 glass-pill px-2 py-1 rounded-full text-xs font-semibold shadow-2xs">
+                        <button onclick="prevHeroSlide()" class="w-6 h-6 rounded-full hover:bg-white flex items-center justify-center text-slate-700 transition" title="Previous Generator">◀</button>
+                        <div class="flex items-center gap-1.5 px-1" id="hero-carousel-dots">
+                          <span onclick="goToHeroSlide(0)" class="w-2 h-2 rounded-full bg-slate-900 cursor-pointer" title="Perkins 60kVA"></span>
+                          <span onclick="goToHeroSlide(1)" class="w-2 h-2 rounded-full bg-slate-300 hover:bg-slate-600 cursor-pointer" title="Cummins 100kVA"></span>
+                          <span onclick="goToHeroSlide(2)" class="w-2 h-2 rounded-full bg-slate-300 hover:bg-slate-600 cursor-pointer" title="Caterpillar 88kVA"></span>
+                          <span onclick="goToHeroSlide(3)" class="w-2 h-2 rounded-full bg-slate-300 hover:bg-slate-600 cursor-pointer" title="Kohler 150kVA"></span>
+                        </div>
+                        <button onclick="nextHeroSlide()" class="w-6 h-6 rounded-full hover:bg-white flex items-center justify-center text-slate-700 transition" title="Next Generator">▶</button>
+                        
+                        <button onclick="toggleHeroAutoSlide()" id="hero-autoslide-btn" class="ml-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 hover:bg-emerald-200 transition flex items-center gap-1">
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                          <span>Auto (8s)</span>
+                        </button>
+                      </div>
+
+                      <!-- Upload Generator Model Button -->
+                      <button onclick="openUploadGenModal()" class="glass-pill hover:bg-white text-slate-700 hover:text-slate-900 text-xs font-bold px-2.5 py-1.5 rounded-full transition shadow-2xs flex items-center gap-1" title="Upload New Brand Generator & Register Model">
+                        <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <span>Upload Model</span>
+                      </button>
+                    </div>
+
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50/90 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold tracking-tight shadow-2xs mb-3 transition cursor-pointer" onclick="showScreen('noc')">
+                      <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                      <span id="cms-hero-badge">PRIMARY POWER NODE</span>
+                    </div>
+
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-none mb-2" id="cms-hero-title">
+                      Perkins 1104A-44TG2
+                    </h1>
+
+                    <p class="text-xs sm:text-sm font-semibold text-slate-600 leading-relaxed mb-4" id="cms-hero-subtitle">
+                      Industrial 4-Cylinder Turbocharged Diesel Generator
+                      <span class="block text-slate-400 font-medium text-xs mt-0.5">60 kVA Standby / 48 kW Prime @ 1500 RPM, 50 Hz</span>
+                    </p>
+
+                    <!-- Interactive Specification Buttons -->
+                    <div class="flex flex-wrap items-center gap-2.5 mb-5">
+                      <button onclick="filterBySpec('60kva')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 hover:bg-white border border-white shadow-2xs text-xs font-bold text-slate-700 transition" title="Filter 60 kVA Standby">
+                        <div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        </div>
+                        <span><strong class="text-slate-900 font-extrabold">60 kVA</strong> Standby</span>
+                      </button>
+
+                      <button onclick="filterBySpec('48kw')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 hover:bg-white border border-white shadow-2xs text-xs font-bold text-slate-700 transition" title="Filter 48 kW Prime">
+                        <div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        </div>
+                        <span><strong class="text-slate-900 font-extrabold">48 kW</strong> Prime</span>
+                      </button>
+
+                      <button onclick="filterBySpec('4cyl')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 hover:bg-white border border-white shadow-2xs text-xs font-bold text-slate-700 transition" title="4 Cylinders Architecture">
+                        <div class="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
+                          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
+                        </div>
+                        <span><strong class="text-slate-900 font-extrabold">4</strong> Cylinders</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- DSE-7320 MKII Controller Card (Exact match to inspect_dse_card.png) -->
+                  <div onclick="openControllerModal()" class="bg-white/90 backdrop-blur-md rounded-2xl p-2.5 sm:p-3 flex items-center gap-3.5 max-w-sm border border-white/90 shadow-sm cursor-pointer hover:bg-white transition" title="Open DSE-7320 MKII Modbus RTU Register Explorer">
+                    <img src="dse_7320_mkii_refined.png" alt="DSE-7320 MKII" class="h-14 sm:h-16 w-auto object-contain filter drop-shadow-md shrink-0" />
+                    <div class="leading-tight flex-1 min-w-0">
+                      <div class="text-xs sm:text-sm font-black text-slate-900 flex items-center justify-between">
+                        <span>DSE-7320 MKII</span>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                      </div>
+                      <div class="text-[11px] text-slate-600 font-medium mt-0.5">Modbus RTU over RS-485</div>
+                      <div class="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-bold border border-emerald-100">
+                        <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                        <span>Controller Online</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- BOTTOM HALF: 3 LIVE CARDS MATCHING inspect_bottom_cards.png -->
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                
+                <!-- CARD 1: LIVE TELEMETRY (4 Circular Gauges: 400V, 50Hz, 18.6kW, 0.0Bar) -->
+                <div class="bg-white/90 backdrop-blur-md rounded-3xl p-5 border border-white/90 shadow-xs flex flex-col justify-between">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                      <h3 class="text-sm font-extrabold text-slate-900">Live Telemetry</h3>
+                    </div>
+                    <span class="flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                      Real-time
+                    </span>
+                  </div>
+
+                  <div class="grid grid-cols-4 gap-2 text-center">
+                    <!-- 400 V -->
+                    <div class="flex flex-col items-center">
+                      <div class="relative w-16 h-16 flex items-center justify-center">
+                        <svg class="w-16 h-16" viewBox="0 0 90 90">
+                          <path d="M 18.95 66.85 A 34.00 34.00 0 1 1 71.05 66.85" fill="none" stroke="#e8edf4" stroke-width="6" stroke-linecap="round"/>
+                          <path d="M 18.95 66.85 A 34.00 34.00 0 1 1 78.26 37.93" fill="none" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center pt-1 font-mono font-black text-xs text-slate-900">
+                          400<span class="text-[9px] font-bold text-slate-400 ml-0.5">V</span>
+                        </div>
+                      </div>
+                      <span class="text-[10px] text-slate-600 font-semibold mt-1">Voltage<br/><span class="text-[9px] text-slate-400 font-normal">(3-Phase)</span></span>
+                    </div>
+
+                    <!-- 50 Hz -->
+                    <div class="flex flex-col items-center">
+                      <div class="relative w-16 h-16 flex items-center justify-center">
+                        <svg class="w-16 h-16" viewBox="0 0 90 90">
+                          <path d="M 18.95 66.85 A 34.00 34.00 0 1 1 71.05 66.85" fill="none" stroke="#e8edf4" stroke-width="6" stroke-linecap="round"/>
+                          <path d="M 18.95 66.85 A 34.00 34.00 0 0 1 45.00 11.00" fill="none" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center pt-1 font-mono font-black text-xs text-slate-900">
+                          50<span class="text-[9px] font-bold text-slate-400 ml-0.5">Hz</span>
+                        </div>
+                      </div>
+                      <span class="text-[10px] text-slate-600 font-semibold mt-1">Frequency</span>
+                    </div>
+
+                    <!-- 18.6 kW -->
+                    <div class="flex flex-col items-center">
+                      <div class="relative w-16 h-16 flex items-center justify-center">
+                        <svg class="w-16 h-16" viewBox="0 0 90 90">
+                          <path d="M 18.95 66.85 A 34.00 34.00 0 1 1 71.05 66.85" fill="none" stroke="#e8edf4" stroke-width="6" stroke-linecap="round"/>
+                          <path d="M 18.95 66.85 A 34.00 34.00 0 0 1 66.40 18.58" fill="none" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center pt-1 font-mono font-black text-xs text-slate-900">
+                          18.6<span class="text-[8px] font-bold text-slate-400 ml-0.5">kW</span>
+                        </div>
+                      </div>
+                      <span class="text-[10px] text-slate-600 font-semibold mt-1">Active Power</span>
+                    </div>
+
+                    <!-- 0.0 Bar -->
+                    <div class="flex flex-col items-center">
+                      <div class="relative w-16 h-16 flex items-center justify-center">
+                        <svg class="w-16 h-16" viewBox="0 0 90 90">
+                          <path d="M 18.95 66.85 A 34.00 34.00 0 1 1 71.05 66.85" fill="none" stroke="#e8edf4" stroke-width="6" stroke-linecap="round"/>
+                          <path d="M 18.95 66.85 A 34.00 34.00 0 0 1 17.15 64.50" fill="none" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center pt-1 font-mono font-black text-xs text-slate-900">
+                          0.0<span class="text-[8px] font-bold text-slate-400 ml-0.5">Bar</span>
+                        </div>
+                      </div>
+                      <span class="text-[10px] text-slate-600 font-semibold mt-1">Oil Pressure</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CARD 2: ENERGY OVERVIEW (Green Wave Spline + 24h/7d/30d) -->
+                <div class="bg-white/90 backdrop-blur-md rounded-3xl p-5 border border-white/90 shadow-xs flex flex-col justify-between">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                      <h3 class="text-sm font-extrabold text-slate-900">Energy Overview</h3>
+                    </div>
+                    <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-full text-[10px] font-bold text-slate-600">
+                      <span class="px-2 py-0.5 rounded-full bg-slate-900 text-white">24h</span>
+                      <span class="px-2 py-0.5 rounded-full hover:bg-white cursor-pointer">7d</span>
+                      <span class="px-2 py-0.5 rounded-full hover:bg-white cursor-pointer">30d</span>
+                    </div>
+                  </div>
+
+                  <div class="relative w-full h-24 mt-1">
+                    <svg class="w-full h-full overflow-visible" viewBox="0 0 300 90" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id="hero-energy-grad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stop-color="#10b981" stop-opacity="0.35"/>
+                          <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
+                        </linearGradient>
+                      </defs>
+                      <path d="M 0 65 Q 40 40 80 50 T 160 25 T 220 50 T 260 30 T 300 45 L 300 90 L 0 90 Z" fill="url(#hero-energy-grad)"/>
+                      <path d="M 0 65 Q 40 40 80 50 T 160 25 T 220 50 T 260 30 T 300 45" fill="none" stroke="#10b981" stroke-width="2.5"/>
+                      <circle cx="260" cy="30" r="3.5" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
+                    </svg>
+                    <div class="absolute top-2 right-8 px-2 py-0.5 rounded-md bg-slate-900 text-white font-mono text-[10px] font-bold shadow-xs">
+                      18.6 kW
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between text-[9px] font-mono text-slate-400 pt-1">
+                    <span>00:00</span>
+                    <span>06:00</span>
+                    <span>12:00</span>
+                    <span>18:00</span>
+                    <span>24:00</span>
+                  </div>
+                </div>
+
+                <!-- CARD 3: KEY METRICS (Energy, Fuel Efficiency, Runtime, Service) -->
+                <div class="bg-white/90 backdrop-blur-md rounded-3xl p-5 border border-white/90 shadow-xs flex flex-col justify-between">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                      <h3 class="text-sm font-extrabold text-slate-900">Key Metrics</h3>
+                    </div>
+                    <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">Live</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-3 mb-2">
+                    <!-- Total Energy Generated -->
+                    <div class="leading-tight">
+                      <div class="text-[10px] text-slate-600 font-medium">Total Energy Generated</div>
+                      <div class="text-sm sm:text-base font-black text-slate-900 font-mono mt-0.5">
+                        1,842,900 <span class="text-[10px] font-semibold text-slate-600">kWh</span>
+                      </div>
+                      <div class="flex items-center gap-1 text-[10px] text-emerald-600 font-bold mt-0.5">
+                        <span>↑ 12%</span>
+                        <svg class="w-10 h-3 text-emerald-600" viewBox="0 0 40 12"><path d="M 0 10 Q 10 3 20 8 T 40 2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                      </div>
+                    </div>
+
+                    <!-- Fuel Efficiency -->
+                    <div class="leading-tight">
+                      <div class="text-[10px] text-slate-600 font-medium">Fuel Efficiency</div>
+                      <div class="text-sm sm:text-base font-black text-slate-900 font-mono mt-0.5">
+                        0.248 <span class="text-[10px] font-semibold text-slate-600">L/kWh</span>
+                      </div>
+                      <div class="flex items-center gap-1 text-[10px] text-emerald-600 font-bold mt-0.5">
+                        <span>↑ 8%</span>
+                        <svg class="w-10 h-3 text-purple-600" viewBox="0 0 40 12"><path d="M 0 10 Q 10 4 20 7 T 40 2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Runtime & Service -->
+                  <div class="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs">
+                    <div class="flex items-center gap-1.5 text-slate-700 font-medium">
+                      <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      <span>Runtime: <strong class="text-slate-900 font-bold font-mono">320 h</strong></span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-slate-700 font-medium">
+                      <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                      <span>Next: <strong class="text-slate-900 font-bold font-mono">in 1,280 h</strong></span>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ================================================================= -->
+          <!-- MODULE 2: TELEMETRY DATA INSPECTOR (EXACT PIXEL MATCH TO REFERENCE)-->
+          <!-- (EXACT MATCH TO media_1794748467372_5e509445.jpg)                  -->
+          <!-- ================================================================= -->
+          <div id="wrapper-telemetry" class="dashboard-module flex flex-col gap-4" data-module="telemetry">
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-5 sm:p-6 border border-white/90 shadow-xs flex flex-col gap-4" id="telemetry-data-section">
+              
+              <!-- Header with Unit Selector & Online Status -->
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                  <!-- Circular Badge: TD (Telemetry Data) -->
+                  <div class="w-10 h-10 rounded-2xl bg-slate-900 text-[#9ede4c] font-black text-xs flex items-center justify-center shrink-0 shadow-xs" title="Telemetry Data Inspector">
+                    TD
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h3 class="text-base font-extrabold text-slate-900" id="cms-telemetry-title">Individual Generator Telemetry Inspector</h3>
+                      <span id="p18-badge-status" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">ONLINE</span>
+                    </div>
+                    <p class="text-xs text-slate-600 mt-0.5">DSE-7320 MKII Modbus RTU continuous register map acquisition</p>
+                  </div>
+                </div>
+
+                <!-- Unit Dropdown Selector + Machine Activation Switch -->
+                <div class="flex items-center gap-3 flex-wrap">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-slate-600 whitespace-nowrap">Select Unit:</span>
+                    <select id="p18-unit-select" onchange="loadIndividual18Data(this.value)" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-mono font-bold text-slate-800 cursor-pointer focus:outline-hidden">
+                      <!-- Populated via JS -->
+                    </select>
+                  </div>
+
+                  <!-- Direct Real-Time Machine Activation Switcher -->
+                  <div class="flex items-center gap-2 pl-2 border-l border-slate-200">
+                    <span class="text-[11px] font-bold text-slate-600" id="current-unit-state-label">Machine: Active</span>
+                    <label class="switch">
+                      <input type="checkbox" id="current-unit-active-toggle" checked onchange="handleCurrentUnitToggle(this.checked)">
+                      <span class="switch-slider"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Metadata Summary Ribbon -->
+              <div class="flex flex-wrap items-center justify-between gap-2.5 py-2 px-3.5 rounded-2xl bg-slate-50/90 border border-slate-100 text-xs text-slate-600">
+                <div class="flex items-center gap-4 flex-wrap">
+                  <span>Station: <strong id="p18-station" class="text-slate-900">Tower BTS-GP-0492</strong></span>
+                  <span class="text-slate-300">|</span>
+                  <span>Operator: <strong id="p18-operator" class="text-slate-900">Grameenphone</strong></span>
+                  <span class="text-slate-300">|</span>
+                  <span>Area: <strong id="p18-area" class="text-slate-900">Dhaka North (Mirpur)</strong></span>
+                  <span class="text-slate-300">|</span>
+                  <span>Model: <strong id="p18-model" class="text-slate-900">Perkins 1104A-44TG2</strong></span>
+                </div>
+                <div class="flex items-center gap-3 font-mono text-[11px] text-slate-600">
+                  <span>UID: <strong id="p18-uid" class="text-slate-800">PK-1104-0104</strong></span>
+                  <span class="text-slate-300">|</span>
+                  <span>Capacity: <strong id="p18-capacity" class="text-slate-800">60 kVA / 48 kW</strong></span>
+                </div>
+              </div>
+
+              <!-- 4 CARDS GRID (EXACT PIXEL MATCH TO USER REFERENCE) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                
+                <!-- CARD 1: 3-PHASE AC VOLTAGES (P1-P6) -->
+                <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex flex-col justify-between">
+                  <div>
+                    <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-100">
+                      <div class="flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        <span class="text-[11px] font-extrabold text-slate-900 uppercase tracking-tight">3-Phase AC Voltages</span>
+                      </div>
+                      <span class="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">P1-P6</span>
+                    </div>
+
+                    <div class="space-y-1.5 text-xs font-mono">
+                      <div class="flex justify-between items-center"><span class="text-slate-600">1.  V L1-N:</span><strong id="val-p1" class="text-slate-900 font-bold">230.4 V</strong></div>
+                      <div class="flex justify-between items-center"><span class="text-slate-600">2.  V L2-N:</span><strong id="val-p2" class="text-slate-900 font-bold">229.8 V</strong></div>
+                      <div class="flex justify-between items-center"><span class="text-slate-600">3.  V L3-N:</span><strong id="val-p3" class="text-slate-900 font-bold">230.1 V</strong></div>
+                      <div class="flex justify-between items-center"><span class="text-slate-600">4.  V L1-L2:</span><strong id="val-p4" class="text-emerald-700 font-bold">399.8 V</strong></div>
+                      <div class="flex justify-between items-center"><span class="text-slate-600">5.  V L2-L3:</span><strong id="val-p5" class="text-emerald-700 font-bold">400.2 V</strong></div>
+                      <div class="flex justify-between items-center"><span class="text-slate-600">6.  V L3-L1:</span><strong id="val-p6" class="text-emerald-700 font-bold">400.0 V</strong></div>
+                    </div>
+                  </div>
+
+                  <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between">
+                    <div class="flex items-center gap-1.5">
+                      <svg class="w-4 h-4 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+                      <div>
+                        <div class="text-[9px] text-slate-400 font-bold uppercase">Balance</div>
+                        <div class="text-sm font-black text-slate-900 font-mono" id="val-balance">99.8%</div>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-[9px] text-slate-400 font-bold uppercase">Total Harmonic Distortion</div>
+                      <div class="text-sm font-black text-slate-900 font-mono" id="val-thd">2.1%</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CARD 2: CURRENT & POWER (P7-P14) -->
+                <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex flex-col justify-between">
+                  <div>
+                    <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-100">
+                      <div class="flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 10v4"/><path d="M6 6v12"/><path d="M10 3v18"/><path d="M14 8v8"/><path d="M18 5v14"/><path d="M22 10v4"/></svg>
+                        <span class="text-[11px] font-extrabold text-slate-900 uppercase tracking-tight">Current & Power</span>
+                      </div>
+                      <span class="text-[9px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full">P7-P14</span>
+                    </div>
+
+                    <div class="space-y-1.5 text-xs font-mono">
+                      <div class="flex justify-between items-center"><span class="text-slate-600">7.  Current L1:</span><strong id="val-p7" class="text-slate-900 font-bold">27.2 A</strong></div>
+                      <div class="flex justify-between items-center"><span class="text-slate-600">8.  Current L2:</span><strong id="val-p8" class="text-slate-900 font-bold">26.8 A</strong></div>
+                      <div class="flex justify-between items-center"><span class="text-slate-600">9.  Current L3:</span><strong id="val-p9" class="text-slate-900 font-bold">27.0 A</strong></div>
+                      <div class="flex justify-between items-center"><span class="text-slate-600">10. Frequency:</span><strong id="val-p10" class="text-slate-900 font-bold">50.02 Hz</strong></div>
+                      <div class="flex justify-between items-center"><span class="text-slate-600">11. Active (P):</span><strong id="val-p11" class="text-emerald-700 font-black">18.6 kW</strong></div>
+                      <div class="flex justify-between items-center"><span class="text-slate-600">12. Apparent (S):</span><strong id="val-p12" class="text-slate-900 font-bold">23.25 kVA</strong></div>
+                      <div class="flex justify-between items-center"><span class="text-slate-600">13. Reactive (Q):</span><strong id="val-p13" class="text-slate-900 font-bold">13.95 kVAR</strong></div>
+                      <div class="flex justify-between items-center"><span class="text-slate-600">14. Power Factor:</span><strong id="val-p14" class="text-slate-900 font-bold">0.80 Lag</strong></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CARD 3: ENGINE MECHANICAL (P15-P17) -->
+                <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex flex-col justify-between">
+                  <div>
+                    <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-100">
+                      <div class="flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        <span class="text-[11px] font-extrabold text-slate-900 uppercase tracking-tight">Engine Mechanical</span>
+                      </div>
+                      <span class="text-[9px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full">P15-P17</span>
+                    </div>
+
+                    <!-- Progress Bars -->
+                    <div class="space-y-4 pt-1">
+                      <!-- Engine RPM -->
+                      <div>
+                        <div class="flex justify-between items-center text-xs mb-1">
+                          <div class="flex items-center gap-1.5 text-slate-600 font-semibold">
+                            <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="m4.93 4.93 2.83 2.83"/><path d="M2 12h4"/><path d="m4.93 19.07 2.83-2.83"/><path d="M12 22v-4"/><path d="m19.07 19.07-2.83-2.83"/><path d="M22 12h-4"/><path d="m19.07 4.93-2.83 2.83"/></svg>
+                            <span>Engine RPM</span>
+                          </div>
+                          <strong id="val-p15" class="text-slate-900 font-bold font-mono text-sm">1500 RPM</strong>
+                        </div>
+                        <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                          <div id="bar-p15" class="h-full bg-emerald-600 rounded-full w-full transition-all duration-300"></div>
+                        </div>
+                      </div>
+
+                      <!-- Coolant Temp -->
+                      <div>
+                        <div class="flex justify-between items-center text-xs mb-1">
+                          <div class="flex items-center gap-1.5 text-slate-600 font-semibold">
+                            <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+                            <span>Coolant Temp</span>
+                          </div>
+                          <strong id="val-p16" class="text-slate-900 font-bold font-mono text-sm">84.2 °C</strong>
+                        </div>
+                        <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                          <div id="bar-p16" class="h-full bg-emerald-600 rounded-full w-[65%] transition-all duration-300"></div>
+                        </div>
+                      </div>
+
+                      <!-- Oil Pressure -->
+                      <div>
+                        <div class="flex justify-between items-center text-xs mb-1">
+                          <div class="flex items-center gap-1.5 text-slate-600 font-semibold">
+                            <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                            <span>Oil Pressure</span>
+                          </div>
+                          <strong id="val-p17" class="text-slate-900 font-bold font-mono text-sm">4.2 bar</strong>
+                        </div>
+                        <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                          <div id="bar-p17" class="h-full bg-emerald-600 rounded-full w-[72%] transition-all duration-300"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CARD 4: FUEL & RESERVES (P18 + AUX) - EXACT MATCH WITH LARGE ARC & 2X2 GRID -->
+                <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex flex-col justify-between">
+                  <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+                    <div class="flex items-center gap-1.5">
+                      <svg class="w-4 h-4 text-slate-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="13" height="16" rx="2"/><path d="M7 8h5"/><path d="M16 8h1a2 2 0 0 1 2 2v6a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V9.5a2.5 2.5 0 0 0-5 0V14"/></svg>
+                      <span class="text-[11px] font-extrabold text-slate-900 uppercase tracking-tight">Fuel & Reserves</span>
+                    </div>
+                    <span class="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">P18 + AUX</span>
+                  </div>
+
+                  <!-- Large Semicircular Fuel Gauge Arc (Spacious, Zero Overlap, Perfect Proportions) -->
+                  <div class="relative w-full h-32 flex items-center justify-center my-1">
+                    <svg class="w-52 h-32" viewBox="0 0 200 125">
+                      <!-- Track Arc -->
+                      <path d="M 36.10 113.26 A 68.00 68.00 0 1 1 163.90 113.26" fill="none" stroke="#e8edf4" stroke-width="11" stroke-linecap="round"/>
+                      <!-- Active Fuel Arc (76%) -->
+                      <path id="gauge-fuel-arc" d="M 36.10 113.26 A 68.00 68.00 0 0 1 157.03 52.96" fill="none" stroke="#10b981" stroke-width="11" stroke-linecap="round"/>
+                    </svg>
+
+                    <!-- Center Content: Fuel pump icon + 76% + 190 L (Completely Inside Arch, Zero Overlap) -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
+                      <svg class="w-5 h-5 text-slate-900 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="13" height="16" rx="2"/><path d="M7 8h5"/><path d="M16 8h1a2 2 0 0 1 2 2v6a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V9.5a2.5 2.5 0 0 0-5 0V14"/></svg>
+                      <div class="text-3xl font-black text-slate-900 font-mono tracking-tight leading-none" id="val-fuel-pct">76%</div>
+                      <div class="text-sm font-black text-slate-800 font-mono leading-none mt-1" id="val-fuel-liters">190 L</div>
+                    </div>
+                  </div>
+
+                  <!-- 2x2 Sub-Grid of Ancillary Telemetry Tiles -->
+                  <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-100">
+                    <!-- Fuel Rate -->
+                    <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-2">
+                      <div class="text-[#10b981]">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                      </div>
+                      <div class="leading-tight">
+                        <div class="text-[10px] text-slate-600 font-medium">Fuel Rate</div>
+                        <div class="text-xs font-black text-slate-900 font-mono" id="val-fuel-rate">0.248</div>
+                        <div class="text-[9px] text-slate-400">L/kWh</div>
+                      </div>
+                    </div>
+
+                    <!-- Battery Voltage -->
+                    <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-2">
+                      <div class="text-[#10b981]">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="18" height="12" rx="2"/><line x1="22" y1="11" x2="22" y2="15"/></svg>
+                      </div>
+                      <div class="leading-tight">
+                        <div class="text-[10px] text-slate-600 font-medium">Battery</div>
+                        <div class="text-xs font-black text-slate-900 font-mono" id="val-battery">26.8</div>
+                        <div class="text-[9px] text-slate-400">VDC</div>
+                      </div>
+                    </div>
+
+                    <!-- Cumulative Run -->
+                    <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-2">
+                      <div class="text-[#10b981]">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      </div>
+                      <div class="leading-tight">
+                        <div class="text-[10px] text-slate-600 font-medium">Cumulative Run</div>
+                        <div class="text-xs font-black text-slate-900 font-mono" id="val-runtime">320.5 <span class="text-[9px] font-normal text-slate-400">hrs</span></div>
+                      </div>
+                    </div>
+
+                    <!-- Maintenance Due -->
+                    <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-2">
+                      <div class="text-[#10b981]">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                      </div>
+                      <div class="leading-tight">
+                        <div class="text-[10px] text-slate-600 font-medium">Maintenance Due</div>
+                        <div class="text-xs font-black text-slate-900 font-mono" id="val-maint">in 1,280 <span class="text-[9px] font-normal text-slate-400">hrs</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            
+              <!-- ================================================================= -->
+              <!-- HISTORICAL 18-COMPONENT SCADA TELEMETRY ANALYZER                   -->
+              <!-- With From & To Date Sorting & Distinct Visualizations for Each     -->
+              <!-- ================================================================= -->
+              <div class="mt-6 pt-6 border-t border-slate-100 flex flex-col gap-5" id="historical-18d-analyzer">
+                
+                <!-- Toolbar: Title & From/To Date Sorting Controls -->
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3 border-b border-slate-100">
+                  <div>
+                    <div class="flex items-center gap-2.5">
+                      <div class="w-9 h-9 rounded-2xl bg-slate-900 text-[#9ede4c] font-black text-xs flex items-center justify-center shadow-xs">
+                        18D
+                      </div>
+                      <div>
+                        <h4 class="text-base font-black text-slate-900 flex items-center gap-2">
+                          <span>18-Register Historical Telemetry Spectrum</span>
+                          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">Historical Logging</span>
+                        </h4>
+                        <p class="text-xs text-slate-600 font-medium">Multi-domain parametric visualizations for all 18 SCADA components with From and To date sorting</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Date Range Controls & Presets -->
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <!-- Quick Presets -->
+                    <div class="flex items-center p-1 bg-slate-100 rounded-xl text-xs font-bold text-slate-600">
+                      <button onclick="set18DDatePreset('24h')" id="btn-pre-24h" class="px-2.5 py-1 rounded-lg hover:text-slate-900 transition">24h</button>
+                      <button onclick="set18DDatePreset('7d')" id="btn-pre-7d" class="px-2.5 py-1 rounded-lg hover:text-slate-900 transition">7D</button>
+                      <button onclick="set18DDatePreset('30d')" id="btn-pre-30d" class="px-2.5 py-1 rounded-lg hover:text-slate-900 transition">30D</button>
+                      <button onclick="set18DDatePreset('90d')" id="btn-pre-90d" class="px-2.5 py-1 rounded-lg hover:text-slate-900 transition">90D</button>
+                      <button onclick="set18DDatePreset('180d')" id="btn-pre-180d" class="px-2.5 py-1 rounded-lg bg-white text-slate-900 shadow-xs transition">180D</button>
+                    </div>
+
+                    <!-- From Date Picker -->
+                    <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1">
+                      <span class="text-[10px] font-bold text-slate-400 uppercase">From:</span>
+                      <input type="date" id="hist-date-from" value="2026-06-01" min="2026-06-01" max="2026-11-15" onchange="apply18DDateFilter()" class="text-xs font-mono font-bold text-slate-800 bg-transparent outline-none cursor-pointer" />
+                    </div>
+
+                    <!-- To Date Picker -->
+                    <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1">
+                      <span class="text-[10px] font-bold text-slate-400 uppercase">To:</span>
+                      <input type="date" id="hist-date-to" value="2026-11-15" min="2026-06-01" max="2026-11-15" onchange="apply18DDateFilter()" class="text-xs font-mono font-bold text-slate-800 bg-transparent outline-none cursor-pointer" />
+                    </div>
+
+                    <button onclick="apply18DDateFilter()" class="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs flex items-center gap-1">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                      <span>Filter</span>
+                    </button>
+
+                    <button onclick="export18DSelectedCSV()" class="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition" title="Export Filtered 18-Register Range to CSV">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Domain Category Switcher for 18 Components -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none text-xs font-bold">
+                  <button onclick="switch18DTab('all')" id="tab-18d-all" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white transition shrink-0 shadow-xs">
+                    All 18 Components Overview
+                  </button>
+                  <button onclick="switch18DTab('voltages')" id="tab-18d-voltages" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition shrink-0 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span> 3-Phase AC Voltages (P1-P6)
+                  </button>
+                  <button onclick="switch18DTab('power')" id="tab-18d-power" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition shrink-0 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span> Current & Power (P7-P14)
+                  </button>
+                  <button onclick="switch18DTab('mechanical')" id="tab-18d-mechanical" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition shrink-0 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-amber-600"></span> Engine Mechanical (P15-P17)
+                  </button>
+                  <button onclick="switch18DTab('fuel')" id="tab-18d-fuel" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition shrink-0 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-cyan-600"></span> Fuel & Auxiliaries (P18 + AUX)
+                  </button>
+                </div>
+
+                <!-- 18 COMPONENTS VISUALIZATION GRID (Unique Specialized Methods) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="18d-viz-grid">
+                  
+                  <!-- VIZ 1: 3-Phase AC Sinusoidal Oscilloscope (P1, P2, P3) -->
+                  <div class="viz-card bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 flex flex-col justify-between" data-domain="voltages">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800">P1-P3</span>
+                        <h5 class="text-xs font-extrabold text-slate-900">Tri-Phase AC Sinusoidal Oscilloscope (L1-N, L2-N, L3-N)</h5>
+                      </div>
+                      <span class="text-[10px] font-mono font-bold text-slate-600">120° Phase Offset</span>
+                    </div>
+                    <div class="relative w-full h-32 bg-slate-950 rounded-xl overflow-hidden p-2 flex items-center justify-center">
+                      <!-- Grid lines -->
+                      <svg class="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <pattern id="osc-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#10b981" stroke-width="0.5"/>
+                          </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#osc-grid)"/>
+                      </svg>
+                      <!-- Live 3-Phase Sine Waves -->
+                      <svg class="w-full h-full relative z-10" viewBox="0 0 400 100" preserveAspectRatio="none">
+                        <!-- Phase 1: L1-N (Amber) -->
+                        <path id="osc-wave-l1" d="M 0 50 Q 50 10 100 50 T 200 50 T 300 50 T 400 50" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                        <!-- Phase 2: L2-N (Emerald) 120 deg shifted -->
+                        <path id="osc-wave-l2" d="M 0 85 Q 50 50 100 15 T 200 50 T 300 50 T 400 50" fill="none" stroke="#10b981" stroke-width="2"/>
+                        <!-- Phase 3: L3-N (Indigo) 240 deg shifted -->
+                        <path id="osc-wave-l3" d="M 0 15 Q 50 50 100 85 T 200 50 T 300 50 T 400 50" fill="none" stroke="#6366f1" stroke-width="2"/>
+                      </svg>
+                    </div>
+                    <div class="flex items-center justify-between text-[10px] font-mono font-bold pt-2">
+                      <span class="text-amber-600">● L1-N: 230.4 V (Peak: 325.8V)</span>
+                      <span class="text-emerald-600">● L2-N: 229.8 V (Peak: 325.0V)</span>
+                      <span class="text-indigo-600">● L3-N: 230.1 V (Peak: 325.4V)</span>
+                    </div>
+                  </div>
+
+                  <!-- VIZ 2: Line-to-Line Voltage Stability Envelope Corridor (P4, P5, P6) -->
+                  <div class="viz-card bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 flex flex-col justify-between" data-domain="voltages">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800">P4-P6</span>
+                        <h5 class="text-xs font-extrabold text-slate-900">Line-to-Line Voltage Stability Corridor (L1-L2, L2-L3, L3-L1)</h5>
+                      </div>
+                      <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Nominal 400V</span>
+                    </div>
+                    <div class="relative w-full h-32 bg-white rounded-xl border border-slate-200 p-2 flex flex-col justify-between">
+                      <div class="flex items-center justify-between text-[9px] font-mono text-slate-400">
+                        <span>Upper Limit: 415 V</span>
+                        <span class="text-emerald-700 font-bold">Stable Band (380V - 415V)</span>
+                        <span>Lower Limit: 380 V</span>
+                      </div>
+                      <!-- Shaded corridor & Voltage Trend -->
+                      <svg class="w-full h-20" viewBox="0 0 300 60" preserveAspectRatio="none">
+                        <!-- Nominal Band Corridor -->
+                        <rect x="0" y="10" width="300" height="40" fill="#ecfdf5" opacity="0.8"/>
+                        <line x1="0" y1="30" x2="300" y2="30" stroke="#10b981" stroke-dasharray="3 3" stroke-width="1"/>
+                        <!-- Voltage Line Trends -->
+                        <path d="M 0 29 Q 75 32 150 28 T 300 30" fill="none" stroke="#059669" stroke-width="2"/>
+                        <path d="M 0 31 Q 75 27 150 31 T 300 29" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="2 2"/>
+                      </svg>
+                      <div class="flex items-center justify-between text-[10px] font-mono font-bold text-slate-700">
+                        <span>L1-L2: 399.8 V</span>
+                        <span>L2-L3: 400.2 V</span>
+                        <span>L3-L1: 400.0 V</span>
+                        <span class="text-emerald-700">Deviation: ±0.1%</span>
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-600 pt-1 flex justify-between">
+                      <span>Total Phase Balance: <strong class="text-slate-900 font-mono">99.8%</strong></span>
+                      <span>Harmonic Distortion (THD): <strong class="text-slate-900 font-mono">2.1%</strong></span>
+                    </div>
+                  </div>
+
+                  <!-- VIZ 3: 3-Phase Current Distribution & Load Matching (P7, P8, P9) -->
+                  <div class="viz-card bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 flex flex-col justify-between" data-domain="power">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-indigo-100 text-indigo-800">P7-P9</span>
+                        <h5 class="text-xs font-extrabold text-slate-900">3-Phase Current Load Distribution Ribbon</h5>
+                      </div>
+                      <span class="text-[10px] font-mono font-bold text-slate-600">Max Phase: 27.2 A</span>
+                    </div>
+                    <!-- 3 Horizontal Current Bars -->
+                    <div class="space-y-2 py-1">
+                      <div>
+                        <div class="flex justify-between text-[10px] font-bold text-slate-700 mb-0.5">
+                          <span>Phase 1 (Current L1)</span>
+                          <span class="font-mono text-amber-700">27.2 A (68% Load)</span>
+                        </div>
+                        <div class="w-full h-3 rounded-full bg-slate-200 overflow-hidden">
+                          <div class="h-full bg-amber-600 rounded-full" style="width: 68%;"></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="flex justify-between text-[10px] font-bold text-slate-700 mb-0.5">
+                          <span>Phase 2 (Current L2)</span>
+                          <span class="font-mono text-emerald-700">26.8 A (67% Load)</span>
+                        </div>
+                        <div class="w-full h-3 rounded-full bg-slate-200 overflow-hidden">
+                          <div class="h-full bg-emerald-600 rounded-full" style="width: 67%;"></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="flex justify-between text-[10px] font-bold text-slate-700 mb-0.5">
+                          <span>Phase 3 (Current L3)</span>
+                          <span class="font-mono text-indigo-700">27.0 A (67.5% Load)</span>
+                        </div>
+                        <div class="w-full h-3 rounded-full bg-slate-200 overflow-hidden">
+                          <div class="h-full bg-indigo-600 rounded-full" style="width: 67.5%;"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex items-center justify-between text-[10px] font-mono font-bold text-slate-600 pt-1 border-t border-slate-200/60">
+                      <span>Phase Symmetry: 99.8%</span>
+                      <span class="text-emerald-700">Neutral Current: 0.4 A (Nominal)</span>
+                    </div>
+                  </div>
+
+                  <!-- VIZ 4: High-Precision Frequency Micro-Deviation (P10) -->
+                  <div class="viz-card bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 flex flex-col justify-between" data-domain="power">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-indigo-100 text-indigo-800">P10</span>
+                        <h5 class="text-xs font-extrabold text-slate-900">Synchronous Frequency Precision Deviation</h5>
+                      </div>
+                      <span class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">50.02 Hz</span>
+                    </div>
+                    <!-- Micro deviation chart -->
+                    <div class="relative w-full h-32 bg-white rounded-xl border border-slate-200 p-2 flex flex-col justify-between">
+                      <div class="flex items-center justify-between text-[9px] font-mono text-slate-400">
+                        <span>Max: 50.15 Hz</span>
+                        <span class="text-emerald-700 font-bold">Target 50.00 Hz (±0.05 Hz)</span>
+                        <span>Min: 49.85 Hz</span>
+                      </div>
+                      <svg class="w-full h-20" viewBox="0 0 300 60" preserveAspectRatio="none">
+                        <!-- Target line -->
+                        <line x1="0" y1="30" x2="300" y2="30" stroke="#cbd5e1" stroke-width="1"/>
+                        <!-- Waveform jitter -->
+                        <path d="M 0 30 Q 30 27 60 31 T 120 29 T 180 32 T 240 28 T 300 30" fill="none" stroke="#10b981" stroke-width="2"/>
+                        <circle cx="280" cy="30" r="3.5" fill="#10b981"/>
+                      </svg>
+                      <div class="flex items-center justify-between text-[10px] font-mono text-slate-600">
+                        <span>Grid Synchronism: 100%</span>
+                        <span class="text-emerald-700 font-bold">Governor Jitter: &lt; 0.04%</span>
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-600 pt-1">
+                      Continuous Modbus PLL lock verified with electronic speed controller (ESC)
+                    </div>
+                  </div>
+
+                  <!-- VIZ 5: Electrical Power Triangle Vector Diagram (P11, P12, P13, P14) -->
+                  <div class="viz-card bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 flex flex-col justify-between" data-domain="power">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-indigo-100 text-indigo-800">P11-P14</span>
+                        <h5 class="text-xs font-extrabold text-slate-900">AC Power Triangle & Polar Phasor Angle</h5>
+                      </div>
+                      <span class="text-[10px] font-mono font-bold text-slate-700">PF 0.80 Lag</span>
+                    </div>
+                    <!-- Geometric Power Triangle -->
+                    <div class="relative w-full h-32 bg-white rounded-xl border border-slate-200 p-2 flex items-center justify-center">
+                      <svg class="w-64 h-28" viewBox="0 0 240 100">
+                        <!-- Base: Active Power P -->
+                        <line x1="30" y1="80" x2="170" y2="80" stroke="#10b981" stroke-width="3"/>
+                        <!-- Height: Reactive Power Q -->
+                        <line x1="170" y1="80" x2="170" y2="20" stroke="#f59e0b" stroke-width="3"/>
+                        <!-- Hypotenuse: Apparent Power S -->
+                        <line x1="30" y1="80" x2="170" y2="20" stroke="#6366f1" stroke-width="3" stroke-dasharray="4 2"/>
+                        <!-- Angle Arc -->
+                        <path d="M 60 80 A 30 30 0 0 0 54 69" fill="none" stroke="#64748b" stroke-width="1.5"/>
+                        <text x="68" y="74" font-size="9" font-weight="bold" fill="#64748b">θ=36.9°</text>
+                        <!-- Labels -->
+                        <text x="100" y="93" text-anchor="middle" font-size="10" font-weight="bold" fill="#10b981">P: 18.6 kW</text>
+                        <text x="178" y="52" font-size="10" font-weight="bold" fill="#f59e0b">Q: 13.9 kVAR</text>
+                        <text x="95" y="44" font-size="10" font-weight="bold" fill="#6366f1">S: 23.25 kVA</text>
+                      </svg>
+                    </div>
+                    <div class="flex items-center justify-between text-[10px] font-mono font-bold text-slate-600 pt-1">
+                      <span>Active: 18.6 kW</span>
+                      <span>Reactive: 13.95 kVAR</span>
+                      <span>Apparent: 23.25 kVA</span>
+                      <span class="text-indigo-700">cos(θ) = 0.80</span>
+                    </div>
+                  </div>
+
+                  <!-- VIZ 6: Engine RPM Chrono-Tachograph & Governor Curve (P15) -->
+                  <div class="viz-card bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 flex flex-col justify-between" data-domain="mechanical">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-amber-100 text-amber-800">P15</span>
+                        <h5 class="text-xs font-extrabold text-slate-900">Engine RPM Chrono-Tachograph & Step Response</h5>
+                      </div>
+                      <span class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">1500 RPM Rated</span>
+                    </div>
+                    <!-- Tachograph curve -->
+                    <div class="relative w-full h-32 bg-slate-900 rounded-xl p-2 flex flex-col justify-between overflow-hidden">
+                      <div class="flex justify-between text-[9px] font-mono text-slate-400">
+                        <span>1600 RPM</span>
+                        <span class="text-emerald-400 font-bold">Synchronous 1500 RPM</span>
+                        <span>1400 RPM</span>
+                      </div>
+                      <svg class="w-full h-20" viewBox="0 0 300 60" preserveAspectRatio="none">
+                        <!-- Reference line -->
+                        <line x1="0" y1="30" x2="300" y2="30" stroke="#334155" stroke-width="1"/>
+                        <!-- RPM trace with governor step load recovery -->
+                        <path d="M 0 30 L 60 30 L 70 38 L 85 28 L 100 30 L 180 30 L 190 36 L 205 29 L 220 30 L 300 30" fill="none" stroke="#10b981" stroke-width="2"/>
+                      </svg>
+                      <div class="flex justify-between text-[10px] font-mono text-slate-400">
+                        <span>Mean Speed: 1500.2 RPM</span>
+                        <span class="text-emerald-400 font-bold">Governor Droop: 0.0% Isochronous</span>
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-600 pt-1">
+                      Magnetic Pick-Up (MPU) continuous flywheel tooth counting
+                    </div>
+                  </div>
+
+                  <!-- VIZ 7: Coolant Thermal Multi-Zone Gradient Bar (P16) -->
+                  <div class="viz-card bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 flex flex-col justify-between" data-domain="mechanical">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-amber-100 text-amber-800">P16</span>
+                        <h5 class="text-xs font-extrabold text-slate-900">Coolant Thermal Multi-Zone Gradient (84.2 °C)</h5>
+                      </div>
+                      <span class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">OPTIMAL ZONE</span>
+                    </div>
+                    <!-- Thermal Bar -->
+                    <div class="py-2 space-y-1.5">
+                      <div class="flex justify-between text-[10px] font-mono font-bold text-slate-600">
+                        <span>Cold (&lt;60°C)</span>
+                        <span class="text-emerald-700">Optimal (75-90°C)</span>
+                        <span class="text-amber-600">Elevated (91-98°C)</span>
+                        <span class="text-rose-600">High (&gt;102°C)</span>
+                      </div>
+                      <div class="relative w-full h-5 rounded-full overflow-hidden flex">
+                        <div class="h-full bg-blue-400" style="width: 30%;" title="Cold Warmup Zone"></div>
+                        <div class="h-full bg-emerald-600" style="width: 40%;" title="Optimal Running Zone"></div>
+                        <div class="h-full bg-amber-400" style="width: 15%;" title="Elevated Zone"></div>
+                        <div class="h-full bg-rose-600" style="width: 15%;" title="Critical Overheat"></div>
+                        <!-- Marker -->
+                        <div class="absolute top-0 bottom-0 w-1.5 bg-slate-950 border border-white" style="left: 60%; transform: translateX(-50%);" title="Current: 84.2 °C"></div>
+                      </div>
+                      <div class="flex justify-between text-[10px] font-mono text-slate-600 pt-1">
+                        <span>Thermostat Opening: 78 °C</span>
+                        <span class="font-bold text-slate-900">Current Reading: 84.2 °C</span>
+                        <span>High Temp Alarm: 104 °C</span>
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-600 pt-1 border-t border-slate-200/60">
+                      VDO / Resistive temperature sender linked to DSE-7320 analog input
+                    </div>
+                  </div>
+
+                  <!-- VIZ 8: Hydraulic Oil Pressure Transducer Dial (P17) -->
+                  <div class="viz-card bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 flex flex-col justify-between" data-domain="mechanical">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-amber-100 text-amber-800">P17</span>
+                        <h5 class="text-xs font-extrabold text-slate-900">Hydraulic Engine Lube Oil Pressure (4.2 bar)</h5>
+                      </div>
+                      <span class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">4.2 Bar / 60 PSI</span>
+                    </div>
+                    <!-- Pressure Bar & Manometer -->
+                    <div class="py-2 space-y-1.5">
+                      <div class="flex justify-between text-[10px] font-mono font-bold text-slate-600">
+                        <span class="text-rose-600">Low Trip (1.5 bar)</span>
+                        <span class="text-amber-600">Idle (2.0 bar)</span>
+                        <span class="text-emerald-700">Rated Range (3.5 - 5.0 bar)</span>
+                        <span>Max (6.0 bar)</span>
+                      </div>
+                      <div class="w-full h-4 rounded-full bg-slate-200 overflow-hidden relative">
+                        <div class="h-full bg-emerald-600 rounded-full" style="width: 70%;"></div>
+                        <div class="absolute top-0 bottom-0 left-[25%] w-0.5 bg-rose-600" title="Low Cutoff 1.5 bar"></div>
+                      </div>
+                      <div class="flex justify-between text-[10px] font-mono text-slate-600 pt-1">
+                        <span>Oil Viscosity: 15W-40 CI-4</span>
+                        <span class="font-bold text-slate-900">Sensor Signal: 4-20mA (14.2 mA)</span>
+                        <span>Cutoff Threshold: 1.5 bar</span>
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-600 pt-1 border-t border-slate-200/60">
+                      Piezoresistive pressure transmitter calibrated across continuous run
+                    </div>
+                  </div>
+
+                  <!-- VIZ 9: Volumetric Tank Depth & Consumption Sawtooth Curve (P18) -->
+                  <div class="viz-card bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 flex flex-col justify-between" data-domain="fuel">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-cyan-100 text-cyan-800">P18</span>
+                        <h5 class="text-xs font-extrabold text-slate-900">Volumetric Fuel Depth & Sawtooth Consumption Curve</h5>
+                      </div>
+                      <span class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">76% / 190 Liters</span>
+                    </div>
+                    <!-- Sawtooth Decay Chart -->
+                    <div class="relative w-full h-32 bg-white rounded-xl border border-slate-200 p-2 flex flex-col justify-between">
+                      <div class="flex justify-between text-[9px] font-mono text-slate-400">
+                        <span>Capacity: 250 L (100%)</span>
+                        <span class="text-emerald-700 font-bold">Burn Rate: 0.248 L/kWh</span>
+                        <span>Low Reserve: 50 L (20%)</span>
+                      </div>
+                      <svg class="w-full h-20" viewBox="0 0 300 60" preserveAspectRatio="none">
+                        <!-- Tank level threshold -->
+                        <line x1="0" y1="48" x2="300" y2="48" stroke="#f43f5e" stroke-dasharray="2 2" stroke-width="1"/>
+                        <!-- Sawtooth fuel burn and refill spikes -->
+                        <path d="M 0 20 L 70 42 L 72 15 L 150 44 L 152 16 L 220 40 L 222 18 L 300 28" fill="none" stroke="#0ea5e9" stroke-width="2"/>
+                      </svg>
+                      <div class="flex justify-between text-[10px] font-mono text-slate-600">
+                        <span>Refill Events: 3 Verified</span>
+                        <span class="text-emerald-700 font-bold">Autonomy: 38.5 Hours Remaining</span>
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-600 pt-1">
+                      Ultrasonic continuous fluid level gauge with digital anti-theft wave damping
+                    </div>
+                  </div>
+
+                  <!-- VIZ 10: Battery Float Voltage & Alternator Charging (AUX) -->
+                  <div class="viz-card bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 flex flex-col justify-between" data-domain="fuel">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-cyan-100 text-cyan-800">AUX</span>
+                        <h5 class="text-xs font-extrabold text-slate-900">Alternator Float Charge & Cranking Voltage</h5>
+                      </div>
+                      <span class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">26.8 VDC Float</span>
+                    </div>
+                    <!-- DC Voltage Trace -->
+                    <div class="relative w-full h-32 bg-white rounded-xl border border-slate-200 p-2 flex flex-col justify-between">
+                      <div class="flex justify-between text-[9px] font-mono text-slate-400">
+                        <span>Charging: 28.0 V</span>
+                        <span class="text-emerald-700 font-bold">Float Band (26.5V - 27.2V)</span>
+                        <span>Resting: 24.0 V</span>
+                      </div>
+                      <svg class="w-full h-20" viewBox="0 0 300 60" preserveAspectRatio="none">
+                        <line x1="0" y1="25" x2="300" y2="25" stroke="#ecfdf5" stroke-width="12"/>
+                        <line x1="0" y1="25" x2="300" y2="25" stroke="#10b981" stroke-dasharray="3 3" stroke-width="1"/>
+                        <path d="M 0 25 Q 60 24 120 26 T 240 25 T 300 25" fill="none" stroke="#059669" stroke-width="2"/>
+                      </svg>
+                      <div class="flex justify-between text-[10px] font-mono text-slate-600">
+                        <span>Static Battery: 24.8 V</span>
+                        <span>Alternator State: Healthy</span>
+                        <span class="text-emerald-700 font-bold">Cranking Sag: 21.4 V (Pass)</span>
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-600 pt-1">
+                      Engine-driven charging alternator with automatic multi-stage trickle regulation
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+          </div>/div>
+
+<!-- ================================================================= -->
+          <!-- MODULE 3: NATIONAL SUB-TOTAL OPERATIONAL SUMMARY                  -->
+          <!-- ================================================================= -->
+          <div id="wrapper-subtotal" class="dashboard-module flex flex-col gap-4" data-module="subtotal">
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-5 sm:p-6 border border-white/90 shadow-xs flex flex-col gap-5">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="text-base font-extrabold text-slate-900">National Sub-Total Operational Summary</h3>
+                    <span class="px-2.5 py-0.5 rounded-full bg-slate-900 text-[#9ede4c] text-[10px] font-bold">492 Sites Synced</span>
+                  </div>
+                  <p class="text-xs text-slate-600 mt-0.5">Aggregated sub-totals across geographic areas, telecom companies, and power capacity tiers</p>
+                </div>
+
+                <div class="flex items-center p-1 bg-slate-100 rounded-2xl text-xs font-bold shrink-0">
+                  <button onclick="setSubtotalTab('area')" id="tab-sub-area" class="px-3.5 py-1.5 rounded-xl bg-white shadow-xs text-slate-900 transition">
+                    By Area / Division (8)
+                  </button>
+                  <button onclick="setSubtotalTab('company')" id="tab-sub-company" class="px-3.5 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 transition">
+                    By Company (4)
+                  </button>
+                  <button onclick="setSubtotalTab('capacity')" id="tab-sub-capacity" class="px-3.5 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 transition">
+                    By Power Capacity (4)
+                  </button>
+                </div>
+              </div>
+
+              <!-- Grand Total KPI Ribbon (492 Total Sites) -->
+              <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
+                <div class="p-3 rounded-2xl bg-slate-50/80 border border-slate-100">
+                  <span class="text-[10px] uppercase font-bold text-slate-400 block">Total Capacity</span>
+                  <strong class="text-base font-black text-slate-900 font-mono">24.2 <span class="text-xs font-normal">MW</span></strong>
+                </div>
+                <div class="p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100">
+                  <span class="text-[10px] uppercase font-bold text-emerald-600 block">Current Running Load</span>
+                  <strong class="text-base font-black text-emerald-700 font-mono" id="kpi-running-load">18.4 <span class="text-xs font-normal">MW (76.1%)</span></strong>
+                </div>
+                <div class="p-3 rounded-2xl bg-slate-50/80 border border-slate-100">
+                  <span class="text-[10px] uppercase font-bold text-slate-400 block">Healthy Active Sites</span>
+                  <strong class="text-base font-black text-slate-900 font-mono" id="kpi-active-count">432 <span class="text-xs text-slate-600 font-normal">/ 492</span></strong>
+                </div>
+                <div class="p-3 rounded-2xl bg-rose-50/50 border border-rose-100">
+                  <span class="text-[10px] uppercase font-bold text-rose-600 block">Critical Outages</span>
+                  <strong class="text-base font-black text-rose-600 font-mono" id="kpi-critical-count">6 <span class="text-xs text-rose-400 font-normal">Sites</span></strong>
+                </div>
+                <div class="p-3 rounded-2xl bg-slate-50/80 border border-slate-100 col-span-2 sm:col-span-1">
+                  <span class="text-[10px] uppercase font-bold text-slate-400 block">Monthly Valuation</span>
+                  <strong class="text-base font-black text-slate-900 font-mono">৳ 23.21M</strong>
+                </div>
+              </div>
+
+              <!-- Dynamic Subtotal Matrix Table -->
+              <div class="overflow-x-auto rounded-2xl border border-slate-200">
+                <table class="w-full text-left text-xs" id="subtotal-matrix-table">
+                  <!-- Rendered dynamically -->
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================================================================= -->
+          <!-- MODULE 4: 6-MONTH DAILY TELEMETRY HISTORICAL TRENDS               -->
+          <!-- ================================================================= -->
+          <div id="wrapper-history" class="dashboard-module flex flex-col gap-4" data-module="history">
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-5 sm:p-6 border border-white/90 shadow-xs flex flex-col gap-5">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="text-base font-extrabold text-slate-900">Historical Telemetry Records & Long-Term Trends</h3>
+                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">6 Months Daily (180 Days)</span>
+                  </div>
+                  <p class="text-xs text-slate-600 mt-0.5">Continuous daily register logging from June 1, 2026 to November 15, 2026 across historical database</p>
+                </div>
+
+                <!-- Metric Selector Tabs -->
+                <div class="flex items-center p-1 bg-slate-100 rounded-2xl text-xs font-bold shrink-0 flex-wrap">
+                  <button onclick="setHistoryMetric('kwh')" id="tab-hist-kwh" class="px-3 py-1.5 rounded-xl bg-white shadow-xs text-slate-900 transition">
+                    Daily Energy (kWh)
+                  </button>
+                  <button onclick="setHistoryMetric('volt')" id="tab-hist-volt" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 transition">
+                    Voltage Stability (V)
+                  </button>
+                  <button onclick="setHistoryMetric('fuel')" id="tab-hist-fuel" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 transition">
+                    Fuel Burn (L/day)
+                  </button>
+                  <button onclick="setHistoryMetric('load')" id="tab-hist-load" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 transition">
+                    Load Factor (%)
+                  </button>
+                </div>
+              </div>
+
+              <!-- 4 Historical KPI Summaries -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                  <span class="text-[10px] uppercase font-bold text-slate-400 block">Total 6-Month Energy</span>
+                  <strong class="text-sm sm:text-base font-black text-slate-900 font-mono" id="hist-kpi-total">226,450 kWh</strong>
+                </div>
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                  <span class="text-[10px] uppercase font-bold text-slate-400 block">Average Daily Generation</span>
+                  <strong class="text-sm sm:text-base font-black text-slate-900 font-mono" id="hist-kpi-avg">1,258 kWh/day</strong>
+                </div>
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                  <span class="text-[10px] uppercase font-bold text-slate-400 block">Mean Fuel Efficiency</span>
+                  <strong class="text-sm sm:text-base font-black text-emerald-700 font-mono">0.247 L/kWh</strong>
+                </div>
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                  <span class="text-[10px] uppercase font-bold text-slate-400 block">Historical Availability</span>
+                  <strong class="text-sm sm:text-base font-black text-emerald-700 font-mono">99.88% Uptime</strong>
+                </div>
+              </div>
+
+              <!-- Interactive Multi-Point SVG Area Curve Chart (Zero Overlapping, Highly Responsive) -->
+              <div class="relative w-full h-[280px] bg-slate-900 rounded-2xl p-4 overflow-hidden shadow-inner flex flex-col justify-between" id="history-chart-wrapper">
+                <div class="flex items-center justify-between text-xs text-slate-400 z-10">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                    <span class="font-bold text-white text-xs" id="hist-chart-title">Daily Energy Generation Curve (June – November 2026)</span>
+                  </div>
+                  <div class="font-mono text-emerald-400 font-bold" id="hist-hover-callout">Hover across chart for daily telemetry record</div>
+                </div>
+
+                <div class="relative w-full h-[200px] mt-2">
+                  <svg id="history-svg-chart" class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 1000 200">
+                    <defs>
+                      <linearGradient id="histGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#10b981" stop-opacity="0.45"/>
+                        <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
+                      </linearGradient>
+                    </defs>
+                    <path id="hist-area-path" d="" fill="url(#histGradient)" />
+                    <path id="hist-line-path" d="" fill="none" stroke="#10b981" stroke-width="2.5" />
+                  </svg>
+                  
+                  <!-- Hover Cursor Tooltip Marker -->
+                  <div id="hist-cursor-line" class="absolute top-0 bottom-0 w-px bg-white/40 hidden pointer-events-none"></div>
+                  <div id="hist-tooltip" class="absolute hidden bg-slate-800 text-white p-2 rounded-xl text-xs font-mono border border-slate-700 shadow-xl pointer-events-none z-20"></div>
+                </div>
+
+                <div class="flex items-center justify-between text-[10px] font-mono text-slate-600 pt-1 border-t border-slate-800">
+                  <span>Jun 01, 2026</span>
+                  <span>Jul 01</span>
+                  <span>Aug 01</span>
+                  <span>Sep 01</span>
+                  <span>Oct 01</span>
+                  <span>Nov 15, 2026 (Today)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================================================================= -->
+          <!-- MODULE 5: DEVICE MANAGEMENT & POWER NODES GRID (ACTIVE/INACTIVE)  -->
+          <!-- ================================================================= -->
+          <div id="wrapper-devices" class="dashboard-module flex flex-col gap-4" data-module="devices">
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-5 sm:p-6 border border-white/90 shadow-xs flex flex-col gap-4" id="units-section">
+              
+              <!-- Filter Ribbon with Active/Inactive Machine Switchers -->
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <button onclick="setFilter('all')" id="filter-all" class="px-4 py-1.5 rounded-full text-xs font-bold bg-slate-900 text-white transition shadow-xs">
+                    All Units (492)
+                  </button>
+                  <button onclick="setFilter('running')" id="filter-running" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/80 hover:bg-emerald-100 transition flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span> Active (438)
+                  </button>
+                  <button onclick="setFilter('standby')" id="filter-standby" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-slate-400"></span> Standby (42)
+                  </button>
+                  <button onclick="setFilter('warning')" id="filter-warning" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-amber-600"></span> Warning (14)
+                  </button>
+                  <button onclick="setFilter('critical')" id="filter-critical" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100 transition flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-rose-600 animate-pulse"></span> Critical (6)
+                  </button>
+                </div>
+
+                <!-- Sort & Search Bar -->
+                <div class="flex items-center gap-2 flex-wrap">
+                  <select id="sort-select" onchange="setSort(this.value)" class="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 font-bold text-slate-700">
+                    <option value="priority">SORT: Health Priority (Critical First)</option>
+                    <option value="area">Sort by Area / Division</option>
+                    <option value="station">Sort by Power Station ID</option>
+                    <option value="operator">Sort by Telecom Company</option>
+                    <option value="load_desc">Sort by Load kW (High to Low)</option>
+                    <option value="fuel_asc">Sort by Fuel Level (Low to High)</option>
+                  </select>
+
+                  <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1 w-52 sm:w-60">
+                    <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search UID, Station, Area..." class="text-xs bg-transparent outline-none w-full text-slate-800 placeholder-slate-400" />
+                  </div>
+
+                  <!-- View Mode Switcher -->
+                  <div class="flex items-center p-1 bg-slate-100 rounded-xl text-xs font-bold">
+                    <button id="view-mode-cards" onclick="setViewMode('cards')" class="px-3 py-1 rounded-lg bg-white shadow-xs text-slate-900 transition">Cards</button>
+                    <button id="view-mode-table" onclick="setViewMode('table')" class="px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition">Dense Table</button>
+                  </div>
+
+                  <button onclick="exportGeneratorsExcel()" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition" title="Export 492 Units to CSV / Excel">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Pagination Header -->
+              <div class="flex items-center justify-between text-xs text-slate-600 pt-1">
+                <span id="pagination-summary">Showing 1-12 of 492 units</span>
+                <div class="flex items-center gap-1">
+                  <button onclick="prevPage()" class="w-7 h-7 rounded-lg border border-slate-200 hover:bg-slate-100 flex items-center justify-center transition">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                  </button>
+                  <span id="pagination-page-nums" class="px-2 font-mono font-bold text-slate-700">1 / 41</span>
+                  <button onclick="nextPage()" class="w-7 h-7 rounded-lg border border-slate-200 hover:bg-slate-100 flex items-center justify-center transition">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Cards Container (Alesha Hyacinth Geometry with Active/Inactive Machine Switcher) -->
+              <div id="cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <!-- Dynamically rendered via JS -->
+              </div>
+
+              <!-- Dense Table Container -->
+              <div id="table-container" class="hidden overflow-x-auto rounded-2xl border border-slate-200">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
+                    <tr>
+                      <th class="py-3 px-4">State</th>
+                      <th class="py-3 px-4">Generator ID</th>
+                      <th class="py-3 px-4">UID</th>
+                      <th class="py-3 px-4">Power Station</th>
+                      <th class="py-3 px-4">Operator</th>
+                      <th class="py-3 px-4">Division</th>
+                      <th class="py-3 px-4">Status</th>
+                      <th class="py-3 px-4">Active kW</th>
+                      <th class="py-3 px-4">RPM</th>
+                      <th class="py-3 px-4">Temp</th>
+                      <th class="py-3 px-4">Fuel</th>
+                      <th class="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-body" class="divide-y divide-slate-100 text-slate-700">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================================================================= -->
+          <!-- MODULE 6: GEOGRAPHIC POWER DISTRIBUTION MAP (WHITE LAND GIS & OSM)-->
+          <!-- ================================================================= -->
+          <div id="wrapper-map" class="dashboard-module flex flex-col gap-4" data-module="map">
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-5 sm:p-6 border border-white/90 shadow-xs flex flex-col gap-4">
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3 border-b border-slate-100">
+                <div>
+                  <div class="flex items-center gap-2.5">
+                    <h3 class="text-base font-extrabold text-slate-900">Geographic Power Distribution Map</h3>
+                    <span class="px-2.5 py-0.5 rounded-full bg-slate-900 text-[#9ede4c] text-[10px] font-bold">492 Sites Plotted</span>
+                  </div>
+                  <p class="text-xs text-slate-600 mt-0.5">Real Geographic White Land Vector GIS • 8 Administrative Divisions Highlighted • OpenStreetMap Live View</p>
+                </div>
+
+                <div class="flex items-center gap-3 flex-wrap">
+                  <div class="flex items-center p-1 bg-slate-100 rounded-xl text-xs font-bold">
+                    <button id="map-mode-white" onclick="switchMapMode('white')" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white font-bold transition shadow-xs flex items-center gap-1.5">
+                      <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+                      <span>White Land Vector GIS</span>
+                    </button>
+                    <button id="map-mode-osm" onclick="switchMapMode('osm')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                      <span>OpenStreetMap Live View</span>
+                    </button>
+                  </div>
+
+                  <div class="flex items-center gap-3 text-xs font-semibold bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
+                    <span class="flex items-center gap-1.5 text-emerald-700"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Active (432)</span>
+                    <span class="flex items-center gap-1.5 text-amber-700"><span class="w-2.5 h-2.5 rounded-full bg-amber-600"></span> Warning (14)</span>
+                    <span class="flex items-center gap-1.5 text-rose-700"><span class="w-2.5 h-2.5 rounded-full bg-rose-600 animate-pulse"></span> Critical (6)</span>
+                    <span class="flex items-center gap-1.5 text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Standby (40)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Division Quick Filter Ribbon -->
+              <div class="flex items-center gap-2 overflow-x-auto text-xs whitespace-nowrap pb-1">
+                <span class="font-bold text-slate-400 text-[10px] uppercase">Filter Area:</span>
+                <button onclick="highlightMapRegion('ALL')" id="reg-btn-ALL" class="px-3 py-1 rounded-lg bg-slate-900 text-white font-bold transition">All Bangladesh (492)</button>
+                <button onclick="highlightMapRegion('Dhaka')" id="reg-btn-Dhaka" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition">Dhaka (208)</button>
+                <button onclick="highlightMapRegion('Chittagong')" id="reg-btn-Chittagong" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition">Chittagong (118)</button>
+                <button onclick="highlightMapRegion('Sylhet')" id="reg-btn-Sylhet" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition">Sylhet (58)</button>
+                <button onclick="highlightMapRegion('Rajshahi')" id="reg-btn-Rajshahi" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition">Rajshahi (38)</button>
+                <button onclick="highlightMapRegion('Khulna')" id="reg-btn-Khulna" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition">Khulna (30)</button>
+                <button onclick="highlightMapRegion('Barisal')" id="reg-btn-Barisal" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition">Barisal (15)</button>
+                <button onclick="highlightMapRegion('Rangpur')" id="reg-btn-Rangpur" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition">Rangpur (15)</button>
+                <button onclick="highlightMapRegion('Mymensingh')" id="reg-btn-Mymensingh" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition">Mymensingh (10)</button>
+              </div>
+
+              <!-- White Land Vector GIS Map View -->
+              <div id="map-container-white" class="w-full h-[640px] bg-slate-50/60 rounded-3xl border border-slate-200/80 shadow-inner relative flex items-center justify-center overflow-hidden">
+                <svg id="svg-bangladesh-map" viewBox="0 0 800 900" class="w-full h-full max-h-[640px]">
+                  <g id="map-divisions-group"></g>
+                  <g id="map-stations-dots-group"></g>
+                </svg>
+
+                <div id="map-node-popup" class="hidden absolute p-3.5 rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-xl z-30 text-xs w-64 pointer-events-auto">
+                  <div class="flex items-center justify-between mb-1">
+                    <strong id="popup-node-station" class="text-sm font-extrabold text-slate-900 font-mono">BTS-GP-0492</strong>
+                    <span id="popup-node-status" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">RUNNING</span>
+                  </div>
+                  <div class="text-[11px] text-slate-600 mb-2 font-mono">UID: <span id="popup-node-uid">PK-1104-0104</span> • <span id="popup-node-operator">Grameenphone</span></div>
+                  <div class="space-y-1 mb-3 font-mono text-[11px] text-slate-600 bg-slate-50 p-2 rounded-xl">
+                    <div class="flex justify-between"><span>Load:</span><strong id="popup-node-kw" class="text-emerald-700 font-bold">18.6 kW</strong></div>
+                    <div class="flex justify-between"><span>Fuel:</span><strong id="popup-node-fuel">76% (190L)</strong></div>
+                    <div class="flex justify-between"><span>Area:</span><strong id="popup-node-area">Dhaka North</strong></div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button onclick="inspectFromMap()" class="flex-1 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition">Inspect</button>
+                    <button onclick="closeMapPopup()" class="py-1.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Close</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- OpenStreetMap Container (Nominatim Search & Tile Switcher) -->
+              <div id="map-container-osm" class="hidden w-full h-[640px] bg-slate-100 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
+                <div class="absolute top-4 left-4 z-[1000] flex flex-wrap items-center gap-2 bg-white/90 backdrop-blur-md p-2 rounded-2xl border border-slate-200/90 shadow-md">
+                  <div class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1">
+                    <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="osm-search-input" placeholder="Search OpenStreetMap (e.g. Mirpur, Sylhet)..." class="text-xs bg-transparent outline-none w-52 sm:w-64 text-slate-800 placeholder-slate-400" onkeydown="if(event.key==='Enter') searchOsmNominatim()" />
+                  </div>
+                  <button onclick="searchOsmNominatim()" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition shadow-2xs">
+                    Search
+                  </button>
+                  <div class="h-4 w-px bg-slate-200 mx-1"></div>
+                  <button id="btn-tile-light" onclick="toggleOsmTileLayer('light')" class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-900 text-white transition">
+                    OSM Positron Light
+                  </button>
+                  <button id="btn-tile-osm" onclick="toggleOsmTileLayer('standard')" class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                    OSM Standard
+                  </button>
+                </div>
+                <div id="gis-map" class="w-full h-full"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================================================================= -->
+          <!-- MODULE 7: ALARMS & FAULT CENTER                                   -->
+          <!-- ================================================================= -->
+          <div id="wrapper-alarms" class="dashboard-module flex flex-col gap-4" data-module="alarms">
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-5 sm:p-6 border border-white/90 shadow-xs flex flex-col gap-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                  <h3 class="text-base font-extrabold text-slate-900">Alarms & Fault Center</h3>
+                  <span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px] font-bold">20 Active Conditions</span>
+                </div>
+                <button onclick="showScreen('alarms')" class="text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1">
+                  <span>View All 20 Events</span>
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+              </div>
+
+              <div id="alarms-overview-list" class="space-y-2">
+                <!-- Dynamically populated via JS -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GENESIS RMS — Remote Management System | Operator Registration</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 24px 16px;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body>
+
+  <!-- Sign Up Card -->
+  <div class="bg-white rounded-[32px] p-6 sm:p-10 border border-slate-100 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.06)] max-w-[540px] w-full text-center select-none">
+    
+    <!-- Top Branding -->
+    <div class="flex items-center justify-center gap-3">
+      <img src="Arena IoT Connected Logo.png" alt="Arena IoT" class="h-8 sm:h-9 w-auto object-contain shrink-0" />
+      <div class="h-6 w-px bg-slate-200 shrink-0"></div>
+      <div class="flex items-center gap-1.5">
+        <span class="text-base font-black tracking-tight text-slate-900">GENESIS</span>
+        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-900 text-white">RMS</span>
+      </div>
+    </div>
+    
+    <div class="text-xs text-slate-600 font-medium tracking-tight mt-1 mb-5">
+      Remote Management System
+    </div>
+
+    <!-- Heading -->
+    <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-1">
+      Create Operator Account
+    </h1>
+    <p class="text-xs text-slate-600 font-medium mb-6">
+      Register authorized engineering credentials for national BTS power monitoring
+    </p>
+
+    <!-- Sign Up Form -->
+    <form onsubmit="handleSignUp(event)" class="space-y-3.5 text-left text-xs">
+      
+      <!-- Full Name & Operator UID -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Operator Full Name</label>
+          <div class="relative flex items-center rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 focus-within:border-indigo-600 focus-within:bg-white transition shadow-2xs">
+            <input type="text" id="signup-name" value="Lian Ahmed" placeholder="e.g. Lian Ahmed" class="w-full text-xs font-bold text-slate-800 placeholder-slate-400 outline-none bg-transparent" required />
+          </div>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Desired Operator UID</label>
+          <div class="relative flex items-center rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 focus-within:border-indigo-600 focus-within:bg-white transition shadow-2xs">
+            <span class="text-slate-400 font-mono font-bold mr-1">#</span>
+            <input type="text" id="signup-uid" value="AR-9402" placeholder="AR-XXXX" class="w-full text-xs mono font-bold text-slate-800 placeholder-slate-400 outline-none bg-transparent" required />
+          </div>
+        </div>
+      </div>
+
+      <!-- Corporate Email -->
+      <div>
+        <label class="block text-[11px] font-bold text-slate-700 mb-1">Corporate SCADA Email</label>
+        <div class="relative flex items-center rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 focus-within:border-indigo-600 focus-within:bg-white transition shadow-2xs">
+          <input type="email" id="signup-email" value="lian.ahmed@arenaiot.com" placeholder="name@arenaiot.com" class="w-full text-xs font-bold text-slate-800 placeholder-slate-400 outline-none bg-transparent" required />
+        </div>
+      </div>
+
+      <!-- Operational Division & Security Role -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Command Division</label>
+          <select id="signup-division" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-indigo-600">
+            <option value="Dhaka North">Dhaka North (Mirpur Node)</option>
+            <option value="Dhaka South">Dhaka South (Motijheel)</option>
+            <option value="Chittagong Metro">Chittagong Metro</option>
+            <option value="Sylhet Zone">Sylhet Zone</option>
+            <option value="Rajshahi Central">Rajshahi Central</option>
+            <option value="Khulna Division">Khulna Division</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Clearance Role</label>
+          <select id="signup-role" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-indigo-600">
+            <option value="Lead SCADA Engineer">Lead SCADA Engineer</option>
+            <option value="NOC Shift Supervisor">NOC Shift Supervisor</option>
+            <option value="Field Automation Tech">Field Automation Tech</option>
+            <option value="Telecom Energy Manager">Telecom Energy Manager</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Password & Confirm Password -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Password</label>
+          <div class="relative flex items-center rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 focus-within:border-indigo-600 focus-within:bg-white transition shadow-2xs">
+            <input type="password" id="signup-pass" value="Operator@2026" placeholder="Min. 8 characters" class="w-full text-xs text-slate-800 outline-none bg-transparent" required />
+          </div>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Confirm Password</label>
+          <div class="relative flex items-center rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 focus-within:border-indigo-600 focus-within:bg-white transition shadow-2xs">
+            <input type="password" id="signup-confirm" value="Operator@2026" placeholder="Repeat password" class="w-full text-xs text-slate-800 outline-none bg-transparent" required />
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Agreement Checkbox -->
+      <div class="pt-1">
+        <label class="flex items-start gap-2.5 text-[11px] text-slate-600 cursor-pointer select-none">
+          <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 shrink-0 mt-0.5" required />
+          <span>I verify authorized personnel status and agree to adhere to ISO/IEC 27001 SCADA operational security standards and audit logging.</span>
+        </label>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="pt-2">
+        <button type="submit" class="w-full py-3.5 px-6 rounded-full bg-[#4338ca] hover:bg-[#3730a3] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition cursor-pointer">
+          <span>Create Operator Account</span>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </form>
+
+    <!-- Sign In Link -->
+    <div class="mt-6 pt-4 border-t border-slate-100 text-xs text-slate-600">
+      <span>Already have an authorized operator account?</span>
+      <a href="login.html" class="text-indigo-600 hover:text-indigo-800 font-bold ml-1 transition">
+        Sign in here →
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    function handleSignUp(e) {
+      e.preventDefault();
+      const name = document.getElementById('signup-name').value.trim();
+      const rawUid = document.getElementById('signup-uid').value.trim();
+      const uid = rawUid.startsWith('#') ? rawUid : '#' + rawUid;
+      const email = document.getElementById('signup-email').value.trim();
+      const role = document.getElementById('signup-role').value;
+      const division = document.getElementById('signup-division').value;
+
+      // Save user profile to localStorage
+      const profile = {
+        name: name || 'Lian Ahmed',
+        uid: uid || '#AR-9402',
+        email: email || 'lian.ahmed@arenaiot.com',
+        role: role || 'Lead SCADA Engineer',
+        division: division || 'Dhaka North'
+      };
+      localStorage.setItem('genesis_operator_profile', JSON.stringify(profile));
+      localStorage.setItem('genesis_session_active', 'true');
+
+      // Success feedback and transition to overview
+      alert('Operator account successfully registered: ' + uid + ' (' + name + '). Redirecting to Genesis RMS Dashboard.');
+      window.location.href = 'overview.html';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+        <!-- SCREEN: CONTENT & MEDIA STUDIO -->
+        <div id="screen-content-management" class="flex flex-col gap-6">
+          
+          <!-- TOP HEADER BANNER -->
+          <div class="relative w-full rounded-[32px] overflow-hidden border border-white/90 shadow-lg bg-white/80 backdrop-blur-2xl p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div class="flex flex-col gap-1.5 max-w-2xl">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-bold w-fit">
+                <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
+                <span>CENTRAL DIGITAL ASSET MANAGEMENT</span>
+              </div>
+              <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                Content & Media Upload Studio
+              </h1>
+              <p class="text-xs sm:text-sm font-medium text-slate-600">
+                Upload and format system media assets: generator showroom transparent cutouts, 100x100 px generator thumbnails, 300x300 px operator avatars, OEM datasheets, and broadcast alerts.
+              </p>
+            </div>
+
+            <!-- Upload Category Tabs -->
+            <div class="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100/90 border border-slate-200/80 shadow-2xs flex-wrap">
+              <button type="button" onclick="switchContentTab('banner')" id="tab-btn-content-banner" class="px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs bg-white text-slate-900">
+                Showroom Banners
+              </button>
+              <button type="button" onclick="switchContentTab('thumbnails')" id="tab-btn-content-thumbs" class="px-3.5 py-2 rounded-xl text-xs font-bold transition text-slate-600 hover:text-slate-900">
+                100x100 Generator Thumbs
+              </button>
+              <button type="button" onclick="switchContentTab('avatars')" id="tab-btn-content-avatars" class="px-3.5 py-2 rounded-xl text-xs font-bold transition text-slate-600 hover:text-slate-900">
+                300x300 Operator Avatars
+              </button>
+              <button type="button" onclick="switchContentTab('documents')" id="tab-btn-content-docs" class="px-3.5 py-2 rounded-xl text-xs font-bold transition text-slate-600 hover:text-slate-900">
+                Datasheets & Manuals
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 1: SHOWROOM BANNER & ENGINE CUTOUT UPLOADER -->
+          <div id="content-tab-banner" class="content-tab-panel bg-white/80 backdrop-blur-xl rounded-[28px] p-6 sm:p-7 border border-white/90 shadow-md flex flex-col gap-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-black text-slate-900">Showroom Banner Device & Cutout Uploader</h2>
+                <p class="text-xs text-slate-600 font-medium">Upload high-resolution generator photography for the interactive showroom hero stage</p>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-200">
+                MAX RATIO CONSTRAINED: 50% WIDTH
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <!-- Upload Box -->
+              <div class="lg:col-span-6 flex flex-col gap-4">
+                <div onclick="document.getElementById('content-banner-file').click()" class="border-2 border-dashed border-indigo-200 hover:border-indigo-600 bg-indigo-50/40 hover:bg-indigo-50/80 rounded-2xl p-8 text-center cursor-pointer transition flex flex-col items-center justify-center gap-3">
+                  <div class="w-14 h-14 rounded-2xl bg-white shadow-xs flex items-center justify-center text-indigo-600">
+                    <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  </div>
+                  <div>
+                    <div class="text-sm font-bold text-slate-800">Upload High-Res Generator Engine Image</div>
+                    <div class="text-xs text-slate-600 mt-1">PNG with transparency recommended (JPEG supported)</div>
+                  </div>
+                  <button type="button" onclick="document.getElementById('content-banner-file').click()" class="px-5 py-2 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition">
+                    Select Engine Image
+                  </button>
+                  <input type="file" id="content-banner-file" accept="image/*" class="hidden" onchange="handleContentBannerUpload(this)" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">Target Generator Brand / Unit</label>
+                    <select id="content-banner-target" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-800 outline-none">
+                      <option value="GEN-PK-0104">Perkins 1104A-44TG2 (Active Banner)</option>
+                      <option value="GEN-CM-0208">Cummins 6BT5.9-G2 (Heavy Duty)</option>
+                      <option value="GEN-CAT-0312">Caterpillar C4.4 (CAT Prime)</option>
+                      <option value="GEN-KH-0416">Kohler KD62 (High Capacity)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-bold text-slate-700 mb-1">Alpha Transparency</label>
+                    <div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold">
+                      <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                      <span>Auto Knock-Out Enabled</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Live Stage Canvas Preview -->
+              <div class="lg:col-span-6 bg-slate-100 rounded-2xl p-4 border border-slate-200/80 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold text-slate-700">Live Showroom Stage Emulation</span>
+                    <span class="text-[9px] font-mono text-slate-600 bg-white px-2 py-0.5 rounded border border-slate-200">ZERO TEXT COLLISION</span>
+                  </div>
+                  <div class="relative w-full h-56 rounded-xl bg-gradient-to-br from-slate-200 to-slate-300 overflow-hidden flex items-end justify-end p-4">
+                    <div class="absolute left-4 top-4 z-10 max-w-[45%]">
+                      <div class="text-[10px] font-mono font-bold text-indigo-700">PROTECTED TEXT ZONE</div>
+                      <div class="text-sm font-black text-slate-900 mt-0.5">Engine Specs Unaffected</div>
+                      <div class="text-[10px] text-slate-600 mt-1">Image remains strictly within right 50% boundary</div>
+                    </div>
+                    <!-- Right constrained container -->
+                    <div class="w-[50%] h-full flex items-end justify-end">
+                      <img id="content-banner-preview-img" src="perkins_pure_clean.png" alt="Preview" class="max-h-full max-w-full object-contain filter drop-shadow-xl" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-200 mt-3">
+                  <button type="button" onclick="applyBannerImageToLive()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition shadow-xs flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Publish to Live Hero Banner</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: 100x100 GENERATOR THUMBNAIL MANAGER -->
+          <div id="content-tab-thumbnails" class="content-tab-panel hidden bg-white/80 backdrop-blur-xl rounded-[28px] p-6 sm:p-7 border border-white/90 shadow-md flex flex-col gap-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-black text-slate-900">Generator Thumbnail Matrix (Exact 100x100 Pixel Format)</h2>
+                <p class="text-xs text-slate-600 font-medium">Automatic cubic interpolation and square aspect cropping for device cards</p>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-200">
+                100 x 100 PX STANDARDIZED
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+              <!-- Perkins -->
+              <div class="p-4 rounded-2xl bg-white border border-slate-200 text-center flex flex-col items-center gap-2">
+                <div class="w-20 h-20 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center p-1">
+                  <img src="perkins_pure_clean.png" alt="Perkins" class="w-full h-full object-contain" />
+                </div>
+                <div class="text-xs font-bold text-slate-900">Perkins 1104A</div>
+                <span class="text-[9px] font-mono text-emerald-600 font-bold">100x100 Validated</span>
+                <button type="button" onclick="openGenUploadModal('GEN-PK-0104')" class="w-full py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-[10px] font-bold transition">Replace</button>
+              </div>
+
+              <!-- Cummins -->
+              <div class="p-4 rounded-2xl bg-white border border-slate-200 text-center flex flex-col items-center gap-2">
+                <div class="w-20 h-20 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center p-1">
+                  <img src="perkins_pure_clean.png" alt="Cummins" class="w-full h-full object-contain" />
+                </div>
+                <div class="text-xs font-bold text-slate-900">Cummins 6BT</div>
+                <span class="text-[9px] font-mono text-emerald-600 font-bold">100x100 Validated</span>
+                <button type="button" onclick="openGenUploadModal('GEN-CM-0208')" class="w-full py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-[10px] font-bold transition">Replace</button>
+              </div>
+
+              <!-- CAT -->
+              <div class="p-4 rounded-2xl bg-white border border-slate-200 text-center flex flex-col items-center gap-2">
+                <div class="w-20 h-20 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center p-1">
+                  <img src="perkins_pure_clean.png" alt="CAT" class="w-full h-full object-contain" />
+                </div>
+                <div class="text-xs font-bold text-slate-900">CAT C4.4</div>
+                <span class="text-[9px] font-mono text-emerald-600 font-bold">100x100 Validated</span>
+                <button type="button" onclick="openGenUploadModal('GEN-CAT-0312')" class="w-full py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-[10px] font-bold transition">Replace</button>
+              </div>
+
+              <!-- Kohler -->
+              <div class="p-4 rounded-2xl bg-white border border-slate-200 text-center flex flex-col items-center gap-2">
+                <div class="w-20 h-20 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center p-1">
+                  <img src="perkins_pure_clean.png" alt="Kohler" class="w-full h-full object-contain" />
+                </div>
+                <div class="text-xs font-bold text-slate-900">Kohler 40RE</div>
+                <span class="text-[9px] font-mono text-emerald-600 font-bold">100x100 Validated</span>
+                <button type="button" onclick="openGenUploadModal('GEN-KH-0416')" class="w-full py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-[10px] font-bold transition">Replace</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: 300x300 OPERATOR AVATARS -->
+          <div id="content-tab-avatars" class="content-tab-panel hidden bg-white/80 backdrop-blur-xl rounded-[28px] p-6 sm:p-7 border border-white/90 shadow-md flex flex-col gap-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-black text-slate-900">Operator Avatar Directory (Exact 300x300 Pixel Format)</h2>
+                <p class="text-xs text-slate-600 font-medium">Standardized square profile imagery for authorized SCADA engineers and operators</p>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-200">
+                300 x 300 PX VALIDATED
+              </span>
+            </div>
+
+            <div class="flex items-center gap-6 p-6 rounded-2xl bg-slate-50 border border-slate-200 max-w-xl">
+              <div class="w-24 h-24 rounded-2xl bg-slate-900 text-white font-black text-2xl flex items-center justify-center shadow-md ring-4 ring-white shrink-0 overflow-hidden relative">
+                <span id="content-avatar-initials">LN</span>
+                <img id="content-avatar-img" class="w-full h-full object-cover hidden" alt="Lian Ahmed" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <div>
+                  <h3 class="text-base font-black text-slate-900" id="content-op-name">Lian Ahmed</h3>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-xs text-slate-600 font-medium" id="content-op-role">Lead SCADA Engineer</span>
+                    <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200" id="content-op-uid">#AR-9402</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button type="button" onclick="openProfileModal()" class="px-4 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition shadow-xs">
+                    Open Profile Editor & Avatar Crop
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: DATASHEETS & TECHNICAL DOCUMENTS -->
+          <div id="content-tab-documents" class="content-tab-panel hidden bg-white/80 backdrop-blur-xl rounded-[28px] p-6 sm:p-7 border border-white/90 shadow-md flex flex-col gap-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-black text-slate-900">Technical Datasheets & Documentation Archive</h2>
+                <p class="text-xs text-slate-600 font-medium">OEM engineering manuals, wiring schematics, and DSE-7320 configuration files</p>
+              </div>
+              <a href="generator-management.html" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-xs">
+                <span>Go to Auto-Parser Engine</span>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-xs shrink-0">PDF</div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-900">Cummins_6BT5.9_OEM_Specs.pdf</h4>
+                  <p class="text-[11px] text-slate-600">3.4 MB · Verified OEM</p>
+                  <a href="javascript:void(0)" onclick="downloadTechnicalDatasheet('Cummins 6BT5.9 OEM Specs')" class="text-[10px] font-bold text-indigo-600 hover:underline mt-1 inline-block">Download PDF</a>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-xs shrink-0">PDF</div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-900">Perkins_1104A_44TG2_Manual.pdf</h4>
+                  <p class="text-[11px] text-slate-600">4.1 MB · Verified OEM</p>
+                  <a href="javascript:void(0)" onclick="downloadTechnicalDatasheet('Perkins 1104A-44TG2 Manual')" class="text-[10px] font-bold text-indigo-600 hover:underline mt-1 inline-block">Download PDF</a>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-xs shrink-0">PDF</div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-900">DSE7320_MKII_Modbus_Map.pdf</h4>
+                  <p class="text-[11px] text-slate-600">1.8 MB · Register Map</p>
+                  <a href="javascript:void(0)" onclick="downloadTechnicalDatasheet('DSE-7320 MKII Modbus Register Map')" class="text-[10px] font-bold text-indigo-600 hover:underline mt-1 inline-block">Download PDF</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>

@@ -1,0 +1,413 @@
+
+        <!-- SCREEN: GENERATOR MANAGEMENT (MODELS, DATASHEETS, PARSER & MANUAL EDITOR) -->
+        <div id="screen-generator-management" class="flex flex-col gap-6">
+          
+          <!-- TOP HEADER BANNER -->
+          <div class="relative w-full rounded-[32px] overflow-hidden border border-white/90 shadow-lg bg-white/80 backdrop-blur-2xl p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div class="flex flex-col gap-1.5 max-w-2xl">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold w-fit">
+                <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                <span>OEM SPECIFICATION & REGISTER CATALOG</span>
+              </div>
+              <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                Generator Model & Datasheet Management
+              </h1>
+              <p class="text-xs sm:text-sm font-medium text-slate-600">
+                Upload OEM generator technical datasheets for automated OCR parsing, register map extraction, and manual parameter fine-tuning across the national network.
+              </p>
+            </div>
+
+            <!-- Quick Action Counters -->
+            <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-center min-w-[110px]">
+                <div class="text-[10px] uppercase font-bold text-slate-400">Registered Models</div>
+                <div class="text-xl font-black text-slate-900 mt-0.5" id="gen-count-models">12 Models</div>
+                <div class="text-[9px] font-bold text-emerald-600">All Verified</div>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-center min-w-[110px]">
+                <div class="text-[10px] uppercase font-bold text-slate-400">Total Deployments</div>
+                <div class="text-xl font-black text-slate-900 mt-0.5">492 Units</div>
+                <div class="text-[9px] font-bold text-indigo-600">Across 8 Divisions</div>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-center min-w-[110px]">
+                <div class="text-[10px] uppercase font-bold text-slate-400">Avg Efficiency</div>
+                <div class="text-xl font-black text-emerald-600 mt-0.5">0.248 <span class="text-xs">L/kWh</span></div>
+                <div class="text-[9px] font-bold text-slate-600">ISO-8528 Prime</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 1: DATASHEET UPLOADER & AUTO-PARSER ENGINE -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Drag & Drop Uploader (5 cols) -->
+            <div class="lg:col-span-5 bg-white/80 backdrop-blur-xl rounded-[28px] p-6 border border-white/90 shadow-md flex flex-col justify-between gap-5">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <span>OEM Datasheet Uploader</span>
+                  </h2>
+                  <span class="text-[10px] font-mono font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">AUTO-PARSER ACTIVE</span>
+                </div>
+                <p class="text-xs text-slate-600 mb-4 font-medium">
+                  Upload manufacturer PDF, image, or scan. The engine extracts rated power, displacement, fuel curves, and Modbus offsets.
+                </p>
+
+                <!-- Dropzone Area -->
+                <div id="datasheet-dropzone" onclick="document.getElementById('datasheet-file-input').click()" class="border-2 border-dashed border-indigo-200 hover:border-indigo-600 bg-indigo-50/40 hover:bg-indigo-50/80 rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center gap-3 group">
+                  <div class="w-12 h-12 rounded-2xl bg-white shadow-xs flex items-center justify-center text-indigo-600 group-hover:scale-110 transition">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="12" y2="12"/><line x1="15" y1="15" x2="12" y2="12"/></svg>
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-slate-800">Drag & Drop Datasheet File Here</div>
+                    <div class="text-[11px] text-slate-600 mt-0.5">Supports PDF, PNG, JPG, CSV (Up to 25 MB)</div>
+                  </div>
+                  <button type="button" onclick="document.getElementById('datasheet-file-input').click()" class="px-4 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition">
+                    Browse Local File
+                  </button>
+                  <input type="file" id="datasheet-file-input" accept=".pdf,.png,.jpg,.jpeg,.csv" class="hidden" onchange="handleDatasheetUpload(this)" />
+                </div>
+              </div>
+
+              <!-- Quick Sample Test Buttons -->
+              <div>
+                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Test with Verified OEM Datasheets:</div>
+                <div class="flex flex-col gap-2">
+                  <button type="button" onclick="loadSampleDatasheet('Cummins 6BT5.9-G2')" class="w-full px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-xs font-bold text-slate-700 hover:text-slate-900 transition flex items-center justify-between">
+                    <span class="flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                      <span>Cummins 6BT5.9-G2 (100 kVA / 80 kW)</span>
+                    </span>
+                    <span class="text-[10px] text-indigo-600 font-mono">Load & Parse</span>
+                  </button>
+                  <button type="button" onclick="loadSampleDatasheet('Perkins 1104A-44TG2')" class="w-full px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-xs font-bold text-slate-700 hover:text-slate-900 transition flex items-center justify-between">
+                    <span class="flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                      <span>Perkins 1104A-44TG2 (60 kVA / 48 kW)</span>
+                    </span>
+                    <span class="text-[10px] text-indigo-600 font-mono">Load & Parse</span>
+                  </button>
+                  <button type="button" onclick="loadSampleDatasheet('Caterpillar C4.4')" class="w-full px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left text-xs font-bold text-slate-700 hover:text-slate-900 transition flex items-center justify-between">
+                    <span class="flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                      <span>Caterpillar C4.4 (88 kVA / 70.4 kW)</span>
+                    </span>
+                    <span class="text-[10px] text-indigo-600 font-mono">Load & Parse</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Auto-Parser Live Extraction & Confidence Scoreboard (7 cols) -->
+            <div class="lg:col-span-7 bg-white/80 backdrop-blur-xl rounded-[28px] p-6 border border-white/90 shadow-md flex flex-col justify-between gap-5">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-emerald-600 animate-pulse"></div>
+                    <h2 class="text-base font-extrabold text-slate-900">Auto Datasheet Parser Engine</h2>
+                  </div>
+                  <span id="parser-status-badge" class="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">READY FOR INGESTION</span>
+                </div>
+                <p class="text-xs text-slate-600 mb-4 font-medium">
+                  Real-time optical character recognition (OCR) and SCADA register mapping output:
+                </p>
+
+                <!-- Parser Progress Simulation Bar (Hidden by default, shows on parse) -->
+                <div id="parser-progress-box" class="hidden flex-col gap-2 mb-4 p-3 rounded-xl bg-indigo-50 border border-indigo-200">
+                  <div class="flex items-center justify-between text-xs font-bold text-indigo-900">
+                    <span id="parser-step-label">Extracting Technical Specifications...</span>
+                    <span id="parser-pct-label" class="font-mono">78%</span>
+                  </div>
+                  <div class="w-full h-2 rounded-full bg-indigo-200 overflow-hidden">
+                    <div id="parser-progress-fill" class="h-full bg-indigo-600 rounded-full transition-all duration-300" style="width: 78%;"></div>
+                  </div>
+                </div>
+
+                <!-- Parsed Parameters Table -->
+                <div class="overflow-x-auto rounded-2xl border border-slate-200">
+                  <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr class="bg-slate-50 border-b border-slate-200 text-[10px] font-black uppercase text-slate-400">
+                        <th class="py-2.5 px-3">Extracted Parameter</th>
+                        <th class="py-2.5 px-3">Parsed Value</th>
+                        <th class="py-2.5 px-3">OCR Confidence</th>
+                        <th class="py-2.5 px-3 text-right">Verification Status</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                      <tr>
+                        <td class="py-2 px-3 font-bold text-slate-900">Engine Brand & Model</td>
+                        <td class="py-2 px-3 font-mono font-bold text-indigo-600" id="parse-val-model">Cummins 6BT5.9-G2</td>
+                        <td class="py-2 px-3 font-mono text-emerald-600 font-bold">99.8%</td>
+                        <td class="py-2 px-3 text-right"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">MATCHED</span></td>
+                      </tr>
+                      <tr>
+                        <td class="py-2 px-3 font-bold text-slate-900">Rated Standby / Prime Power</td>
+                        <td class="py-2 px-3 font-mono font-bold text-slate-900" id="parse-val-power">100 kVA / 80 kW @ 1500 RPM</td>
+                        <td class="py-2 px-3 font-mono text-emerald-600 font-bold">99.4%</td>
+                        <td class="py-2 px-3 text-right"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">VALIDATED</span></td>
+                      </tr>
+                      <tr>
+                        <td class="py-2 px-3 font-bold text-slate-900">Cylinders & Displacement</td>
+                        <td class="py-2 px-3 font-mono font-bold text-slate-900" id="parse-val-cylinders">6 In-Line · 5.9 Liters</td>
+                        <td class="py-2 px-3 font-mono text-emerald-600 font-bold">98.9%</td>
+                        <td class="py-2 px-3 text-right"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">VALIDATED</span></td>
+                      </tr>
+                      <tr>
+                        <td class="py-2 px-3 font-bold text-slate-900">Specific Fuel Rate (75% Prime)</td>
+                        <td class="py-2 px-3 font-mono font-bold text-slate-900" id="parse-val-fuel">0.239 L/kWh (19.2 L/h)</td>
+                        <td class="py-2 px-3 font-mono text-emerald-600 font-bold">98.2%</td>
+                        <td class="py-2 px-3 text-right"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">CALCULATED</span></td>
+                      </tr>
+                      <tr>
+                        <td class="py-2 px-3 font-bold text-slate-900">Lube Oil & Coolant Capacity</td>
+                        <td class="py-2 px-3 font-mono font-bold text-slate-900" id="parse-val-fluids">16.4 L Sump · 24.5 L Coolant</td>
+                        <td class="py-2 px-3 font-mono text-emerald-600 font-bold">99.1%</td>
+                        <td class="py-2 px-3 text-right"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">VALIDATED</span></td>
+                      </tr>
+                      <tr>
+                        <td class="py-2 px-3 font-bold text-slate-900">SCADA Controller & Baud</td>
+                        <td class="py-2 px-3 font-mono font-bold text-slate-900" id="parse-val-controller">DSE-7320 MKII · 9600-8-N-1</td>
+                        <td class="py-2 px-3 font-mono text-emerald-600 font-bold">99.7%</td>
+                        <td class="py-2 px-3 text-right"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">MODBUS RTU</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Action Bar for Parsed Data -->
+              <div class="flex items-center justify-between pt-2 border-t border-slate-100 flex-wrap gap-3">
+                <span class="text-xs text-slate-600 font-medium">Review parameters or fine-tune individual register mappings:</span>
+                <div class="flex items-center gap-2">
+                  <button type="button" onclick="openManualEditModalFromParser()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition flex items-center gap-1.5 shadow-2xs">
+                    <svg class="w-4 h-4 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    <span>Update Manually</span>
+                  </button>
+                  <button type="button" onclick="saveParsedModelToRegistry()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-xs">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Confirm & Save to Registry</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- SECTION 2: OEM MODEL CATALOG GRID (ALL REGISTERED GENERATORS) -->
+          <div class="bg-white/80 backdrop-blur-xl rounded-[28px] p-6 sm:p-7 border border-white/90 shadow-md flex flex-col gap-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+                  <svg class="w-5 h-5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  <span>Registered OEM Generator Models</span>
+                </h2>
+                <p class="text-xs text-slate-600 font-medium">Configured engine archetypes operating across Grameenphone, Robi, Banglalink, and Teletalk BTS sites</p>
+              </div>
+
+              <!-- Filter & Search Toolbar -->
+              <div class="flex items-center gap-2.5 flex-wrap">
+                <input type="text" id="model-search-input" onkeyup="filterModelCards()" placeholder="Search model, brand, kVA..." class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none focus:border-slate-900" />
+                <button type="button" onclick="openCreateNewModelModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-xs">
+                  <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>+ Add New Model Manually</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Generator Model Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="gen-model-cards-container">
+              
+              <!-- Card 1: Perkins 1104A-44TG2 -->
+              <div class="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md transition flex flex-col justify-between gap-4">
+                <div>
+                  <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center p-1">
+                        <img src="perkins_pure_clean.png" alt="Perkins" class="w-full h-full object-contain" />
+                      </div>
+                      <div>
+                        <span class="text-[9px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">PERKINS OEM</span>
+                        <h3 class="text-sm font-black text-slate-900 mt-1">1104A-44TG2</h3>
+                        <p class="text-[11px] text-slate-600 font-medium">4-Cyl Turbocharged</p>
+                      </div>
+                    </div>
+                    <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">60 kVA</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">PRIME POWER</span>
+                      <span class="font-bold text-slate-900">48 kW @ 1500 RPM</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">FUEL BURN</span>
+                      <span class="font-bold text-slate-900">0.248 L/kWh</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">CONTROLLER</span>
+                      <span class="font-bold text-slate-900">DSE-7320 MKII</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">ACTIVE NODES</span>
+                      <span class="font-bold text-emerald-600">208 BTS Sites</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+                  <button type="button" onclick="openManualEditModalFor('Perkins 1104A-44TG2')" class="flex-1 py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition text-center">
+                    Edit Manually
+                  </button>
+                  <button type="button" onclick="loadSampleDatasheet('Perkins 1104A-44TG2')" class="py-1.5 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">
+                    Re-Parse
+                  </button>
+                </div>
+              </div>
+
+              <!-- Card 2: Cummins 6BT5.9-G2 -->
+              <div class="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md transition flex flex-col justify-between gap-4">
+                <div>
+                  <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center p-1">
+                        <img src="perkins_pure_clean.png" alt="Cummins" class="w-full h-full object-contain" />
+                      </div>
+                      <div>
+                        <span class="text-[9px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">CUMMINS POWER</span>
+                        <h3 class="text-sm font-black text-slate-900 mt-1">6BT5.9-G2</h3>
+                        <p class="text-[11px] text-slate-600 font-medium">6-Cyl Turbo Inline</p>
+                      </div>
+                    </div>
+                    <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">100 kVA</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">PRIME POWER</span>
+                      <span class="font-bold text-slate-900">80 kW @ 1500 RPM</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">FUEL BURN</span>
+                      <span class="font-bold text-slate-900">0.239 L/kWh</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">CONTROLLER</span>
+                      <span class="font-bold text-slate-900">DSE-7320 MKII</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">ACTIVE NODES</span>
+                      <span class="font-bold text-emerald-600">146 BTS Sites</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+                  <button type="button" onclick="openManualEditModalFor('Cummins 6BT5.9-G2')" class="flex-1 py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition text-center">
+                    Edit Manually
+                  </button>
+                  <button type="button" onclick="loadSampleDatasheet('Cummins 6BT5.9-G2')" class="py-1.5 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">
+                    Re-Parse
+                  </button>
+                </div>
+              </div>
+
+              <!-- Card 3: Caterpillar C4.4 -->
+              <div class="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md transition flex flex-col justify-between gap-4">
+                <div>
+                  <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center p-1">
+                        <img src="perkins_pure_clean.png" alt="Caterpillar" class="w-full h-full object-contain" />
+                      </div>
+                      <div>
+                        <span class="text-[9px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">CAT ENERGY</span>
+                        <h3 class="text-sm font-black text-slate-900 mt-1">C4.4 Industrial</h3>
+                        <p class="text-[11px] text-slate-600 font-medium">4-Cyl Common Rail</p>
+                      </div>
+                    </div>
+                    <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">88 kVA</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">PRIME POWER</span>
+                      <span class="font-bold text-slate-900">70.4 kW @ 1800 RPM</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">FUEL BURN</span>
+                      <span class="font-bold text-slate-900">0.242 L/kWh</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">CONTROLLER</span>
+                      <span class="font-bold text-slate-900">DSE-7320 MKII</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">ACTIVE NODES</span>
+                      <span class="font-bold text-emerald-600">88 BTS Sites</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+                  <button type="button" onclick="openManualEditModalFor('Caterpillar C4.4')" class="flex-1 py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition text-center">
+                    Edit Manually
+                  </button>
+                  <button type="button" onclick="loadSampleDatasheet('Caterpillar C4.4')" class="py-1.5 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">
+                    Re-Parse
+                  </button>
+                </div>
+              </div>
+
+              <!-- Card 4: Kohler 40REOZK -->
+              <div class="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md transition flex flex-col justify-between gap-4">
+                <div>
+                  <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center p-1">
+                        <img src="perkins_pure_clean.png" alt="Kohler" class="w-full h-full object-contain" />
+                      </div>
+                      <div>
+                        <span class="text-[9px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">KOHLER POWER</span>
+                        <h3 class="text-sm font-black text-slate-900 mt-1">40REOZK High-Cap</h3>
+                        <p class="text-[11px] text-slate-600 font-medium">Heavy Duty Standby</p>
+                      </div>
+                    </div>
+                    <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">150 kVA</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">PRIME POWER</span>
+                      <span class="font-bold text-slate-900">120 kW @ 1500 RPM</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">FUEL BURN</span>
+                      <span class="font-bold text-slate-900">0.252 L/kWh</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">CONTROLLER</span>
+                      <span class="font-bold text-slate-900">DSE-7320 MKII</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                      <span class="text-[9px] text-slate-400 block font-bold">ACTIVE NODES</span>
+                      <span class="font-bold text-emerald-600">50 BTS Sites</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+                  <button type="button" onclick="openManualEditModalFor('Kohler 40REOZK')" class="flex-1 py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition text-center">
+                    Edit Manually
+                  </button>
+                  <button type="button" onclick="loadSampleDatasheet('Kohler 40REOZK')" class="py-1.5 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">
+                    Re-Parse
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>

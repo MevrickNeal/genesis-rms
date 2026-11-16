@@ -1,0 +1,2243 @@
+<script>
+  // =========================================================================
+  // GENESIS RMS — MASTER SCRIPT V7 (CMS, TELEMETRY DATA, 6-MONTH HISTORY)
+  // =========================================================================
+
+  const BD_SVG_PATHS = __BD_SVG_PATHS__;
+  const TOTAL_UNITS_COUNT = 492; // Realistic site count near target, strictly zero literal 492!
+  const PAGE_SIZE = 12;
+
+  // 1. GENERATOR network DATA (492 UNITS EXACTLY)
+  const DIVISIONS_DIST = [
+    { name: 'Dhaka', count: 208, center: [23.8103, 90.4125], rLng: [89.8, 90.9], rLat: [23.2, 24.4] },
+    { name: 'Chittagong', count: 118, center: [22.3569, 91.7832], rLng: [91.3, 92.4], rLat: [21.4, 23.2] },
+    { name: 'Sylhet', count: 58, center: [24.8949, 91.8687], rLng: [91.3, 92.5], rLat: [24.1, 25.2] },
+    { name: 'Rajshahi', count: 38, center: [24.3636, 88.6241], rLng: [88.1, 89.4], rLat: [24.0, 25.1] },
+    { name: 'Khulna', count: 30, center: [22.8456, 89.5403], rLng: [89.0, 89.9], rLat: [21.8, 23.4] },
+    { name: 'Barisal', count: 15, center: [22.7010, 90.3535], rLng: [90.0, 90.8], rLat: [21.9, 23.1] },
+    { name: 'Rangpur', count: 15, center: [25.7439, 89.2752], rLng: [88.4, 89.6], rLat: [25.3, 26.3] },
+    { name: 'Mymensingh', count: 10, center: [24.7471, 90.4203], rLng: [89.8, 90.8], rLat: [24.5, 25.2] }
+  ];
+
+  const OPERATORS = ['Grameenphone', 'Robi Axiata', 'Banglalink', 'Teletalk'];
+  const MODELS = ['Perkins 1104A-44TG2', 'Perkins 1104C-44TAG2', 'Perkins 1106A-70TAG2', 'Perkins 1103A-33G'];
+  const CAPACITIES = ['60 kVA / 48 kW Prime', '30 kVA / 24 kW Standby', '100 kVA / 80 kW Prime', '150 kVA / 120 kW Prime'];
+
+  let GENERATORS = [];
+  let unitIndex = 1;
+
+  DIVISIONS_DIST.forEach(div => {
+    for (let i = 0; i < div.count; i++) {
+      const idNum = String(unitIndex).padStart(4, '0');
+      const op = OPERATORS[(unitIndex - 1) % OPERATORS.length];
+      const model = MODELS[(unitIndex - 1) % MODELS.length];
+      const capacity = CAPACITIES[(unitIndex - 1) % CAPACITIES.length];
+
+      // Exact health distribution: 6 Critical, 14 Warning, 40 Standby, 432 Running = 492
+      let status = 'RUNNING';
+      let alertMsg = 'Normal Operation (Optimal Health)';
+      if (unitIndex <= 6) {
+        status = 'CRITICAL';
+        alertMsg = ['Low Oil Pressure (1.1 bar)', 'Coolant Overheating (106 C)', 'Grid Power Outage', 'Low Fuel Reserve (12%)', 'Emergency Stop Active', 'Battery Undervoltage (21.4V)'][unitIndex - 1];
+      } else if (unitIndex <= 20) {
+        status = 'WARNING';
+        alertMsg = ['High Engine Load (94%)', 'Coolant High Warning (96 C)', 'Air Filter Restriction', 'Fuel Tank Low (22%)', 'Minor Phase Imbalance (4.2%)', 'Service Overdue'][unitIndex % 6];
+      } else if (unitIndex <= 60) {
+        status = 'STANDBY';
+        alertMsg = 'Standby (Mains Grid Stable)';
+      }
+
+      const lng = div.rLng[0] + Math.random() * (div.rLng[1] - div.rLng[0]);
+      const lat = div.rLat[0] + Math.random() * (div.rLat[1] - div.rLat[0]);
+
+      let kw = status === 'STANDBY' ? 0 : status === 'CRITICAL' ? Math.round(35 + Math.random() * 15) : Math.round(18 + Math.random() * 28);
+      let load_pct = Math.round((kw / 48) * 100);
+      let rpm = status === 'STANDBY' ? 0 : 1500;
+      let temp = status === 'CRITICAL' ? 104 : status === 'WARNING' ? 96 : Math.round(82 + Math.random() * 5);
+      let fuel = status === 'CRITICAL' ? 14 : Math.round(45 + Math.random() * 45);
+      let oil = status === 'CRITICAL' ? 1.1 : 4.2;
+
+      GENERATORS.push({
+        id: `GEN-PK-${idNum}`,
+        uid: `PK-1104-${idNum}`,
+        station: `Tower BTS-${op.slice(0, 2).toUpperCase()}-${Math.round(1000 + Math.random() * 8999)}`,
+        operator: op,
+        area: `${div.name} Division`,
+        district: div.name,
+        model: model,
+        capacity: capacity,
+        status: status,
+        alert: alertMsg,
+        isActive: status !== 'STANDBY',
+        kw: kw,
+        load_pct: load_pct,
+        rpm: rpm,
+        temp: temp,
+        fuel: fuel,
+        oil: oil,
+        lat: lat,
+        lng: lng,
+        runtime: Math.round(120 + Math.random() * 1800),
+        // 18 SCADA Parameters
+        p1_v1n: (229.5 + Math.random() * 1.5).toFixed(1),
+        p2_v2n: (229.2 + Math.random() * 1.5).toFixed(1),
+        p3_v3n: (229.8 + Math.random() * 1.5).toFixed(1),
+        p4_v12: (399.2 + Math.random() * 1.5).toFixed(1),
+        p5_v23: (400.0 + Math.random() * 1.5).toFixed(1),
+        p6_v31: (399.8 + Math.random() * 1.5).toFixed(1),
+        p7_i1: (26.5 + Math.random() * 1.5).toFixed(1),
+        p8_i2: (26.2 + Math.random() * 1.5).toFixed(1),
+        p9_i3: (26.8 + Math.random() * 1.5).toFixed(1),
+        p10_freq: (50.01 + Math.random() * 0.03).toFixed(2),
+        p11_kw: kw,
+        p12_kva: (kw * 1.25).toFixed(2),
+        p13_kvar: (kw * 0.75).toFixed(2),
+        p14_pf: '0.80',
+        p15_rpm: rpm,
+        p16_temp: temp,
+        p17_oil: oil,
+        p18_fuel_liters: Math.round((fuel / 100) * 250)
+      });
+
+      unitIndex++;
+    }
+  });
+
+  // Ensure first unit matches the user's reference exactly!
+  GENERATORS[0].station = 'Tower BTS-GP-0492';
+  GENERATORS[0].operator = 'Grameenphone';
+  GENERATORS[0].area = 'Dhaka North (Mirpur)';
+  GENERATORS[0].model = 'Perkins 1104A-44TG2';
+  GENERATORS[0].id = 'GEN-PK-0104';
+  GENERATORS[0].uid = 'PK-1104-0104';
+  GENERATORS[0].status = 'RUNNING';
+  GENERATORS[0].kw = 18.6;
+  GENERATORS[0].fuel = 76;
+  GENERATORS[0].p1_v1n = '230.4';
+  GENERATORS[0].p2_v2n = '229.8';
+  GENERATORS[0].p3_v3n = '230.1';
+  GENERATORS[0].p4_v12 = '399.8';
+  GENERATORS[0].p5_v23 = '400.2';
+  GENERATORS[0].p6_v31 = '400.0';
+  GENERATORS[0].p7_i1 = '27.2';
+  GENERATORS[0].p8_i2 = '26.8';
+  GENERATORS[0].p9_i3 = '27.0';
+  GENERATORS[0].p10_freq = '50.02';
+  GENERATORS[0].p11_kw = '18.6';
+  GENERATORS[0].p12_kva = '23.25';
+  GENERATORS[0].p13_kvar = '13.95';
+  GENERATORS[0].p14_pf = '0.80';
+  GENERATORS[0].p15_rpm = 1500;
+  GENERATORS[0].p16_temp = 84.2;
+  GENERATORS[0].p17_oil = 4.2;
+  GENERATORS[0].p18_fuel_liters = 190;
+
+  // 2. 6-MONTH DAILY TELEMETRY HISTORY DATASET (180 DAYS)
+  const HISTORY_180_DAYS = [];
+  const START_DATE = new Date('2026-06-01');
+  for (let d = 0; d < 180; d++) {
+    const curDate = new Date(START_DATE);
+    curDate.setDate(START_DATE.getDate() + d);
+    const dateStr = curDate.toISOString().split('T')[0];
+    
+    // Waveform simulation over 180 days
+    const wave = Math.sin(d / 12) * 180 + Math.cos(d / 28) * 90;
+    const dailyKwh = Math.round(1240 + wave + (Math.random() * 80));
+    const dailyVolt = +(399.4 + Math.sin(d / 8) * 1.5 + (Math.random() * 0.4)).toFixed(1);
+    const dailyFuel = Math.round(dailyKwh * 0.247 + (Math.random() * 10));
+    const dailyLoad = +(74.5 + Math.sin(d / 15) * 6 + (Math.random() * 2)).toFixed(1);
+
+    HISTORY_180_DAYS.push({
+      day: d + 1,
+      date: dateStr,
+      kwh: dailyKwh,
+      volt: dailyVolt,
+      fuel: dailyFuel,
+      load: dailyLoad
+    });
+  }
+
+  // 3. CMS MODULE LAYOUT ARCHITECTURE
+  const DEFAULT_CMS_MODULES = [
+    { id: 'hero', name: 'Product Showcase & Quick Control Bar', desc: 'Perkins generator showroom stage and live tachometer', priority: 1, visible: true },
+    { id: 'telemetry', name: 'Telemetry Data Inspector (4 Domains)', desc: 'Exact SCADA console (Voltages, Current, Mechanical, Fuel)', priority: 2, visible: true },
+    { id: 'subtotal', name: 'National Sub-Total Operational Summary', desc: 'Aggregated metrics across Area, Company, and Capacity', priority: 3, visible: true },
+    { id: 'history', name: '6-Month Daily Telemetry Trends & Records', desc: '180-day long-term multi-metric historical curve', priority: 4, visible: true },
+    { id: 'devices', name: 'Device Management & Power Nodes Grid', desc: 'Alesha Hyacinth cards with Active/Inactive machine switches', priority: 5, visible: true },
+    { id: 'map', name: 'Geographic Power Distribution Map', desc: 'White Land Vector GIS and OpenStreetMap with Nominatim search', priority: 6, visible: true },
+    { id: 'alarms', name: 'Alarms & Event Log Center', desc: 'Active fault notifications and cryptographic priority queue', priority: 7, visible: true }
+  ];
+
+  let cmsModules = JSON.parse(localStorage.getItem('genesis_cms_modules')) || DEFAULT_CMS_MODULES;
+
+  let currentScreen = 'overview';
+  let currentFilter = 'all';
+  let currentSort = 'priority';
+  let searchQuery = '';
+  let currentPage = 1;
+  let viewMode = 'cards';
+  let selectedUnitId = 'GEN-PK-0104';
+  let currentSubtotalTab = 'area';
+  let currentHistMetric = 'kwh';
+  let selectedMapRegion = 'ALL';
+  let mapInstance = null;
+  let osmTileStandard = null;
+  let osmTileLight = null;
+
+  // INITIALIZATION ON DOM READY
+  window.addEventListener('DOMContentLoaded', () => {
+    applyCmsLayout();
+    renderCards();
+    renderTable();
+    initWhiteLandMap();
+    populateAlarms();
+    setupWaveformCanvas();
+    renderSubtotalTable();
+    populateP18Selector();
+    loadIndividual18Data('GEN-PK-0104');
+    renderHistoryChart();
+    renderCmsManager();
+    startTelemetryLiveTicks();
+  });
+
+  // SCREEN NAVIGATION
+  const SCREENS = ['overview', 'live', 'map', 'alarms', 'control', 'comm', 'noc', 'settings', 'cms'];
+
+  function showScreen(screenId) {
+    if (screenId === 'map') {
+      showScreen('overview');
+      const mapBtn = document.getElementById('nav-btn-map');
+      if (mapBtn) {
+        document.querySelectorAll('.rail-btn').forEach(b => b.classList.remove('rail-btn-active'));
+        mapBtn.classList.add('rail-btn-active');
+      }
+      setTimeout(() => {
+        scrollToModule('map');
+        if (mapInstance) mapInstance.invalidateSize();
+      }, 100);
+      return;
+    }
+
+    currentScreen = screenId;
+    SCREENS.forEach(s => {
+      const el = document.getElementById(`screen-${s}`);
+      const btn = document.getElementById(`nav-btn-${s}`);
+      if (el) {
+        if (s === screenId) el.classList.remove('hidden');
+        else el.classList.add('hidden');
+      }
+      if (btn) {
+        if (s === screenId) btn.classList.add('rail-btn-active');
+        else btn.classList.remove('rail-btn-active');
+      }
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function scrollToModule(modId) {
+    const el = document.getElementById(`wrapper-${modId}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // =========================================================================
+  // CMS DRAG & DROP / RE-ORDER ENGINE
+  // =========================================================================
+  function renderCmsManager() {
+    const list = document.getElementById('cms-modules-list');
+    if (!list) return;
+
+    // Sort by priority
+    cmsModules.sort((a, b) => a.priority - b.priority);
+
+    list.innerHTML = cmsModules.map((m, idx) => `
+      <div class="cms-module-item p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3" data-id="${m.id}">
+        <div class="flex items-center gap-3">
+          <div class="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-700 p-1">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-slate-900 text-white font-mono font-bold text-[10px] flex items-center justify-center">#${idx + 1}</span>
+              <strong class="text-xs sm:text-sm font-extrabold text-slate-900">${m.name}</strong>
+            </div>
+            <p class="text-[11px] text-slate-600 mt-0.5">${m.desc}</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+          <!-- Move Up / Down Buttons -->
+          <div class="flex items-center gap-1">
+            <button onclick="moveCmsModule('${m.id}', 'up')" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition font-bold" ${idx === 0 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>▲</button>
+            <button onclick="moveCmsModule('${m.id}', 'down')" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition font-bold" ${idx === cmsModules.length - 1 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>▼</button>
+          </div>
+
+          <!-- Active / Hidden Switch -->
+          <div class="flex items-center gap-2 pl-2 border-l border-slate-200">
+            <span class="text-xs font-semibold ${m.visible ? 'text-emerald-700' : 'text-slate-400'}">${m.visible ? 'Visible' : 'Hidden'}</span>
+            <label class="switch-toggle" title="Toggle section visibility on live dashboard">
+              <input type="checkbox" ${m.visible ? 'checked' : ''} onchange="toggleCmsModuleVisibility('${m.id}', this.checked)">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function moveCmsModule(id, direction) {
+    cmsModules.sort((a, b) => a.priority - b.priority);
+    const idx = cmsModules.findIndex(m => m.id === id);
+    if (idx === -1) return;
+
+    if (direction === 'up' && idx > 0) {
+      const prev = cmsModules[idx - 1];
+      const curP = cmsModules[idx].priority;
+      cmsModules[idx].priority = prev.priority;
+      prev.priority = curP;
+    } else if (direction === 'down' && idx < cmsModules.length - 1) {
+      const next = cmsModules[idx + 1];
+      const curP = cmsModules[idx].priority;
+      cmsModules[idx].priority = next.priority;
+      next.priority = curP;
+    }
+
+    renderCmsManager();
+    applyCmsLayout();
+  }
+
+  function toggleCmsModuleVisibility(id, isVisible) {
+    const mod = cmsModules.find(m => m.id === id);
+    if (mod) {
+      mod.visible = isVisible;
+      renderCmsManager();
+      applyCmsLayout();
+    }
+  }
+
+  function applyCmsLayout() {
+    const container = document.getElementById('dashboard-modules-container');
+    if (!container) return;
+
+    cmsModules.sort((a, b) => a.priority - b.priority);
+
+    cmsModules.forEach(m => {
+      const el = document.getElementById(`wrapper-${m.id}`);
+      if (el) {
+        if (!m.visible) {
+          el.style.display = 'none';
+        } else {
+          el.style.display = 'flex';
+          container.appendChild(el); // Re-order in DOM according to priority
+        }
+      }
+    });
+
+    localStorage.setItem('genesis_cms_modules', JSON.stringify(cmsModules));
+  }
+
+  function saveCmsConfig() {
+    localStorage.setItem('genesis_cms_modules', JSON.stringify(cmsModules));
+    alert('Dashboard Layout and Client Configuration published successfully!');
+  }
+
+  function resetCmsConfig() {
+    cmsModules = JSON.parse(JSON.stringify(DEFAULT_CMS_MODULES));
+    localStorage.removeItem('genesis_cms_modules');
+    renderCmsManager();
+    applyCmsLayout();
+    alert('Reset to default factory layout.');
+  }
+
+  function setCmsTab(tab) {
+    const vOrder = document.getElementById('cms-view-order');
+    const vCopy = document.getElementById('cms-view-copy');
+    const bOrder = document.getElementById('tab-cms-order');
+    const bCopy = document.getElementById('tab-cms-copy');
+
+    if (tab === 'order') {
+      vOrder.classList.remove('hidden');
+      vCopy.classList.add('hidden');
+      bOrder.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold transition';
+      bCopy.className = 'px-4 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition border border-slate-200';
+    } else {
+      vOrder.classList.add('hidden');
+      vCopy.classList.remove('hidden');
+      bCopy.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold transition';
+      bOrder.className = 'px-4 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition border border-slate-200';
+    }
+  }
+
+  function applyContentEdits() {
+    const brand = document.getElementById('edit-cms-brand').value.trim();
+    const tagline = document.getElementById('edit-cms-tagline').value.trim();
+    const heroTitle = document.getElementById('edit-cms-hero-title').value.trim();
+    const heroSub = document.getElementById('edit-cms-hero-subtitle').value.trim();
+    const heroBadge = document.getElementById('edit-cms-hero-badge').value.trim();
+    const telemTitle = document.getElementById('edit-cms-telemetry-title').value.trim();
+
+    if (brand) document.getElementById('cms-brand-name').innerText = brand;
+    if (tagline) document.getElementById('cms-brand-tagline').innerText = tagline;
+    if (heroTitle) document.getElementById('cms-hero-title').innerText = heroTitle;
+    if (heroSub) document.getElementById('cms-hero-subtitle').innerText = heroSub;
+    if (heroBadge) document.getElementById('cms-hero-badge').innerText = heroBadge;
+    if (telemTitle) document.getElementById('cms-telemetry-title').innerText = telemTitle;
+
+    alert('Content updates applied to live dashboard!');
+  }
+
+  function closeCmsLoginModal() {
+    document.getElementById('modal-cms-login').classList.add('hidden');
+  }
+
+  function performCmsLogin() {
+    closeCmsLoginModal();
+    showScreen('cms');
+  }
+
+  // =========================================================================
+  // REAL-TIME MACHINE ACTIVE/INACTIVE CONTROLS
+  // =========================================================================
+  function toggleMachineState(id, isActive) {
+    const g = GENERATORS.find(u => u.id === id);
+    if (!g) return;
+
+    g.isActive = isActive;
+    g.status = isActive ? 'RUNNING' : 'STANDBY';
+    if (!isActive) {
+      g.kw = 0;
+      g.load_pct = 0;
+      g.rpm = 0;
+      g.alert = 'Deactivated (Remote Standby Mode)';
+    } else {
+      g.kw = 18.6;
+      g.load_pct = 38.7;
+      g.rpm = 1500;
+      g.alert = 'Normal Operation (Active Live)';
+    }
+
+    // If currently inspected unit, sync UI
+    if (selectedUnitId === id) {
+      loadIndividual18Data(id);
+    }
+
+    renderCards();
+    renderTable();
+    updateKpiCounts();
+
+    const toastMsg = isActive 
+      ? `Command Dispatched: Machine ${id} [ACTIVATED] • Live Telemetry Running` 
+      : `Command Dispatched: Machine ${id} [DEACTIVATED] • Remote Standby Cut-Off`;
+    console.log(toastMsg);
+  }
+
+  function handleCurrentUnitToggle(isActive) {
+    toggleMachineState(selectedUnitId, isActive);
+  }
+
+  function updateKpiCounts() {
+    const activeCount = GENERATORS.filter(u => u.status === 'RUNNING').length;
+    const criticalCount = GENERATORS.filter(u => u.status === 'CRITICAL').length;
+    const totalRunningKw = GENERATORS.reduce((acc, u) => acc + (u.status === 'RUNNING' ? u.kw : 0), 0);
+
+    const elActive = document.getElementById('kpi-active-count');
+    if (elActive) elActive.innerText = `${activeCount} / ${TOTAL_UNITS_COUNT}`;
+    const elCrit = document.getElementById('kpi-critical-count');
+    if (elCrit) elCrit.innerText = `${criticalCount} Sites`;
+    const elLoad = document.getElementById('kpi-running-load');
+    if (elLoad) elLoad.innerText = `${(totalRunningKw / 1000).toFixed(1)} MW`;
+  }
+
+  // =========================================================================
+  // TELEMETRY DATA INSPECTOR (EXACT PIXEL-MATCH TO REFERENCE)
+  // =========================================================================
+  function populateP18Selector() {
+    const sel = document.getElementById('p18-unit-select');
+    if (!sel) return;
+    sel.innerHTML = GENERATORS.slice(0, 50).map(g => `
+      <option value="${g.id}" ${g.id === selectedUnitId ? 'selected' : ''}>
+        ${g.id} — ${g.station} (${g.operator})
+      </option>
+    `).join('');
+  }
+
+  function describeArc(cx, cy, r, startAngle, endAngle) {
+    const startRad = (startAngle * Math.PI) / 180;
+    const endRad = (endAngle * Math.PI) / 180;
+    const x1 = cx + r * Math.cos(startRad);
+    const y1 = cy + r * Math.sin(startRad);
+    const x2 = cx + r * Math.cos(endRad);
+    const y2 = cy + r * Math.sin(endRad);
+    const largeArcFlag = ((endAngle - startAngle) % 360 + 360) % 360 > 180 ? 1 : 0;
+    return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r.toFixed(2)} ${r.toFixed(2)} 0 ${largeArcFlag} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+  }
+
+  function loadIndividual18Data(id) {
+    selectedUnitId = id;
+    const g = GENERATORS.find(u => u.id === id);
+    if (!g) return;
+
+    // Top Navigation Breadcrumb Sync
+    const tg = document.getElementById('top-genid-text');
+    if (tg) tg.innerText = g.id;
+    const ta = document.getElementById('top-area-text');
+    if (ta) ta.innerText = g.district;
+    const tc = document.getElementById('top-cluster-text');
+    if (tc) tc.innerText = `${g.district} Node`;
+    const ts = document.getElementById('top-station-text');
+    if (ts) ts.innerText = g.station.replace('Tower ', '');
+
+    // Metadata Ribbon Sync
+    document.getElementById('p18-station').innerText = g.station;
+    document.getElementById('p18-operator').innerText = g.operator;
+    document.getElementById('p18-area').innerText = g.area;
+    document.getElementById('p18-model').innerText = g.model;
+    document.getElementById('p18-uid').innerText = g.uid;
+    document.getElementById('p18-capacity').innerText = g.capacity.split(' @')[0];
+
+    // Status Badge & Machine Switch Sync
+    const badge = document.getElementById('p18-badge-status');
+    const toggle = document.getElementById('current-unit-active-toggle');
+    const toggleLabel = document.getElementById('current-unit-state-label');
+
+    if (g.status === 'CRITICAL') {
+      badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 animate-pulse';
+      badge.innerText = 'CRITICAL FAULT';
+    } else if (g.status === 'WARNING') {
+      badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800';
+      badge.innerText = 'WARNING';
+    } else if (g.status === 'STANDBY') {
+      badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-700';
+      badge.innerText = 'STANDBY';
+    } else {
+      badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800';
+      badge.innerText = 'ONLINE';
+    }
+
+    if (toggle) toggle.checked = g.status !== 'STANDBY';
+    if (toggleLabel) toggleLabel.innerText = g.status !== 'STANDBY' ? 'Machine: Active' : 'Machine: Inactive';
+
+    // Populate Card 1: 3-Phase AC Voltages
+    document.getElementById('val-p1').innerText = `${g.p1_v1n} V`;
+    document.getElementById('val-p2').innerText = `${g.p2_v2n} V`;
+    document.getElementById('val-p3').innerText = `${g.p3_v3n} V`;
+    document.getElementById('val-p4').innerText = `${g.p4_v12} V`;
+    document.getElementById('val-p5').innerText = `${g.p5_v23} V`;
+    document.getElementById('val-p6').innerText = `${g.p6_v31} V`;
+
+    // Populate Card 2: Current & Power
+    document.getElementById('val-p7').innerText = `${g.p7_i1} A`;
+    document.getElementById('val-p8').innerText = `${g.p8_i2} A`;
+    document.getElementById('val-p9').innerText = `${g.p9_i3} A`;
+    document.getElementById('val-p10').innerText = `${g.p10_freq} Hz`;
+    document.getElementById('val-p11').innerText = `${g.p11_kw} kW`;
+    document.getElementById('val-p12').innerText = `${g.p12_kva} kVA`;
+    document.getElementById('val-p13').innerText = `${g.p13_kvar} kVAR`;
+    document.getElementById('val-p14').innerText = `${g.p14_pf} Lag`;
+
+    // Populate Card 3: Engine Mechanical
+    document.getElementById('val-p15').innerText = `${g.p15_rpm} RPM`;
+    document.getElementById('val-p16').innerText = `${g.p16_temp} °C`;
+    document.getElementById('val-p17').innerText = `${g.p17_oil} bar`;
+    document.getElementById('bar-p15').style.width = `${Math.min(100, (g.p15_rpm / 1500) * 100)}%`;
+    document.getElementById('bar-p16').style.width = `${Math.min(100, (g.p16_temp / 120) * 100)}%`;
+    document.getElementById('bar-p17').style.width = `${Math.min(100, (g.p17_oil / 6) * 100)}%`;
+
+    // Populate Card 4: Fuel & Reserves (Gauge Arc & 2x2 Grid)
+    document.getElementById('val-fuel-pct').innerText = `${g.fuel}%`;
+    document.getElementById('val-fuel-liters').innerText = `${g.p18_fuel_liters} L`;
+    document.getElementById('val-runtime').innerText = `${g.runtime} hrs`;
+
+    // Dynamic Fuel Gauge Arc Update
+    const fuelArc = document.getElementById('gauge-fuel-arc');
+    if (fuelArc) {
+      const fuelAngle = 160 + (220 * (Math.min(100, Math.max(0, g.fuel)) / 100));
+      fuelArc.setAttribute('d', describeArc(100, 90, 68, 160, fuelAngle));
+    }
+  }
+
+  // Real-time micro-ticks simulation loop (Alive feel)
+  function startTelemetryLiveTicks() {
+    setInterval(() => {
+      const g = GENERATORS.find(u => u.id === selectedUnitId);
+      if (!g || g.status === 'STANDBY') return;
+
+      // Subtle voltage & frequency jitter (Modbus polling simulation)
+      const vJitter = (Math.random() * 0.4 - 0.2).toFixed(1);
+      const fJitter = (Math.random() * 0.02 - 0.01).toFixed(2);
+      const kwJitter = (Math.random() * 0.2 - 0.1).toFixed(1);
+
+      document.getElementById('val-p1').innerText = `${(+g.p1_v1n + +vJitter).toFixed(1)} V`;
+      document.getElementById('val-p10').innerText = `${(+g.p10_freq + +fJitter).toFixed(2)} Hz`;
+      document.getElementById('val-p11').innerText = `${(+g.p11_kw + +kwJitter).toFixed(1)} kW`;
+      // Real-time RPM tachometer micro-jitter (1498 - 1502 RPM)
+      if (typeof setHeroRpm === 'function') {
+        const rpmJitter = Math.round(Math.random() * 6 - 3);
+        const liveRpm = g.status === 'RUNNING' ? Math.max(1495, Math.min(1505, 1500 + rpmJitter)) : (g.status === 'STANDBY' ? 0 : 1500);
+        setHeroRpm(liveRpm, g.status === 'RUNNING' ? 'Running' : (g.status === 'STANDBY' ? 'Standby' : g.status));
+      }
+    }, 2500);
+  }
+
+  // =========================================================================
+  // 6-MONTH DAILY TELEMETRY HISTORICAL TRENDS (SVG AREA CHART)
+  // =========================================================================
+  function setHistoryMetric(metric) {
+    currentHistMetric = metric;
+    ['kwh', 'volt', 'fuel', 'load'].forEach(m => {
+      const btn = document.getElementById(`tab-hist-${m}`);
+      if (btn) {
+        if (m === metric) btn.className = 'px-3 py-1.5 rounded-xl bg-white shadow-xs text-slate-900 transition';
+        else btn.className = 'px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 transition';
+      }
+    });
+
+    const titleEl = document.getElementById('hist-chart-title');
+    if (metric === 'kwh') titleEl.innerText = 'Daily Energy Generation Curve (June – November 2026)';
+    else if (metric === 'volt') titleEl.innerText = 'Daily Average Phase Voltage Stability (June – November 2026)';
+    else if (metric === 'fuel') titleEl.innerText = 'Daily Fuel Consumption Burn Rate (June – November 2026)';
+    else if (metric === 'load') titleEl.innerText = 'Daily Mean Engine Load Factor (%) (June – November 2026)';
+
+    renderHistoryChart();
+  }
+
+  function renderHistoryChart() {
+    const areaPath = document.getElementById('hist-area-path');
+    const linePath = document.getElementById('hist-line-path');
+    if (!areaPath || !linePath) return;
+
+    const data = HISTORY_180_DAYS;
+    const values = data.map(d => d[currentHistMetric]);
+    const minVal = Math.min(...values);
+    const maxVal = Math.max(...values);
+    const range = (maxVal - minVal) || 1;
+
+    let pathD = '';
+    const points = data.map((d, i) => {
+      const x = (i / (data.length - 1)) * 1000;
+      const y = 180 - ((d[currentHistMetric] - minVal) / range) * 150;
+      return [x, y];
+    });
+
+    points.forEach((p, i) => {
+      if (i === 0) pathD += `M ${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
+      else pathD += ` L ${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
+    });
+
+    linePath.setAttribute('d', pathD);
+    areaPath.setAttribute('d', `${pathD} L 1000 200 L 0 200 Z`);
+
+    // Mousemove hover listener on chart wrapper
+    const wrapper = document.getElementById('history-chart-wrapper');
+    const tooltip = document.getElementById('hist-tooltip');
+    const cursor = document.getElementById('hist-cursor-line');
+    const callout = document.getElementById('hist-hover-callout');
+
+    wrapper.onmousemove = (e) => {
+      const rect = wrapper.getBoundingClientRect();
+      const relX = e.clientX - rect.left;
+      const pct = Math.max(0, Math.min(1, relX / rect.width));
+      const idx = Math.min(data.length - 1, Math.floor(pct * data.length));
+      const item = data[idx];
+
+      let unitLabel = currentHistMetric === 'kwh' ? 'kWh' : currentHistMetric === 'volt' ? 'V' : currentHistMetric === 'fuel' ? 'L' : '%';
+      callout.innerText = `${item.date}: ${item[currentHistMetric]} ${unitLabel}`;
+
+      cursor.style.left = `${relX}px`;
+      cursor.classList.remove('hidden');
+
+      tooltip.innerHTML = `<strong>${item.date}</strong><br>${item[currentHistMetric]} ${unitLabel}`;
+      tooltip.style.left = `${Math.min(rect.width - 120, Math.max(10, relX - 50))}px`;
+      tooltip.style.top = `60px`;
+      tooltip.classList.remove('hidden');
+    };
+
+    wrapper.onmouseleave = () => {
+      cursor.classList.add('hidden');
+      tooltip.classList.add('hidden');
+      callout.innerText = 'Hover across chart for daily telemetry record';
+    };
+  }
+
+  // =========================================================================
+  // DEVICE MANAGEMENT GRID (ALESHA HYACINTH GEOMETRY & ACTIVE SWITCHES)
+  // =========================================================================
+  function renderCards() {
+    const container = document.getElementById('cards-container');
+    if (!container) return;
+
+    let filtered = GENERATORS.filter(g => {
+      let matches = true;
+      if (currentFilter === 'running') matches = g.status === 'RUNNING';
+      else if (currentFilter === 'standby') matches = g.status === 'STANDBY';
+      else if (currentFilter === 'warning') matches = g.status === 'WARNING';
+      else if (currentFilter === 'critical') matches = g.status === 'CRITICAL';
+
+      const search = !searchQuery || 
+        g.id.toLowerCase().includes(searchQuery) ||
+        g.uid.toLowerCase().includes(searchQuery) ||
+        g.station.toLowerCase().includes(searchQuery) ||
+        g.operator.toLowerCase().includes(searchQuery) ||
+        g.area.toLowerCase().includes(searchQuery);
+
+      return matches && search;
+    });
+
+    filtered.sort((a, b) => {
+      if (currentSort === 'priority') {
+        const ord = { 'CRITICAL': 0, 'WARNING': 1, 'RUNNING': 2, 'STANDBY': 3 };
+        return ord[a.status] - ord[b.status];
+      } else if (currentSort === 'area') return a.area.localeCompare(b.area);
+      else if (currentSort === 'station') return a.station.localeCompare(b.station);
+      else if (currentSort === 'operator') return a.operator.localeCompare(b.operator);
+      else if (currentSort === 'load_desc') return b.kw - a.kw;
+      else if (currentSort === 'fuel_asc') return a.fuel - b.fuel;
+      return a.id.localeCompare(b.id);
+    });
+
+    const totalPages = Math.ceil(filtered.length / PAGE_SIZE) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    const paginated = filtered.slice(startIndex, startIndex + PAGE_SIZE);
+
+    document.getElementById('pagination-summary').innerText = `Showing ${filtered.length > 0 ? startIndex + 1 : 0}-${Math.min(startIndex + PAGE_SIZE, filtered.length)} of ${filtered.length} units`;
+    document.getElementById('pagination-page-nums').innerText = `${currentPage} / ${totalPages}`;
+
+    container.innerHTML = paginated.map(g => {
+      let strokeColor = '#10b981';
+      let badgeBg = 'bg-emerald-100 text-emerald-800';
+      let badgeText = 'Online (Good Health)';
+
+      if (g.status === 'WARNING') {
+        strokeColor = '#eab308';
+        badgeBg = 'bg-amber-100 text-amber-900';
+        badgeText = g.alert;
+      } else if (g.status === 'CRITICAL') {
+        strokeColor = '#ef4444';
+        badgeBg = 'bg-rose-100 text-rose-800 animate-pulse';
+        badgeText = g.alert;
+      } else if (g.status === 'STANDBY') {
+        strokeColor = '#94a3b8';
+        badgeBg = 'bg-slate-200 text-slate-700';
+        badgeText = 'Standby (Mains Grid Normal)';
+      }
+
+      return `
+        <div class="card-wrap" onclick="inspectUnit('${g.id}')">
+          <svg class="card-svg-bg" viewBox="0 0 340 250" fill="none" preserveAspectRatio="none">
+            <path d="M 32 0 
+                     L 205 0 
+                     C 224 0, 234 14, 242 28 
+                     C 248 42, 256 56, 270 56 
+                     L 316 56 
+                     C 330 56, 340 66, 340 80 
+                     L 340 218 
+                     C 340 236, 324 250, 306 250 
+                     L 32 250 
+                     C 14 250, 0 236, 0 218 
+                     L 0 32 
+                     C 0 14, 14 0, 32 0 Z" 
+                  fill="#ffffff" 
+                  stroke="${strokeColor}" 
+                  stroke-width="1.8" />
+          </svg>
+
+          <div class="card-inner-content">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-2.5">
+                ${g.image ? `
+                <img src="${g.image}" alt="${g.id}" class="w-10 h-10 rounded-xl object-cover border border-slate-200/90 shadow-2xs shrink-0 cursor-pointer hover:opacity-80 transition" onclick="event.stopPropagation(); openGenUploadModal('${g.id}')" title="Click to update 100x100 picture" />
+              ` : `
+                <div class="w-10 h-10 rounded-full bg-slate-900 text-white font-black text-xs flex items-center justify-center shrink-0 cursor-pointer hover:bg-slate-800 transition" onclick="event.stopPropagation(); openGenUploadModal('${g.id}')" title="Click to upload 100x100 picture">
+                  ${g.operator.includes('Grameen') ? 'GP' : g.operator.includes('Robi') ? 'RB' : g.operator.includes('Bangla') ? 'BL' : 'TT'}
+                </div>
+              `}
+                <div>
+                  <div class="text-[10px] font-mono text-slate-400 font-bold">UID: ${g.uid}</div>
+                  <div class="text-xs font-black text-slate-900 leading-tight">${g.id}</div>
+                </div>
+              </div>
+
+              <!-- Top-Right Shelf Dual Circular Buttons -->
+              <div class="flex items-center gap-1.5 -mr-1">
+                <button onclick="event.stopPropagation(); showScreen('alarms');" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200/90 flex items-center justify-center transition" title="Alarms">
+                  <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </button>
+                <button onclick="event.stopPropagation(); inspectUnit('${g.id}');" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200/90 flex items-center justify-center transition" title="Inspect">
+                  <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="my-auto pt-2">
+              <div class="text-xs font-bold text-slate-900">${g.model}</div>
+              <div class="text-[11px] text-slate-600 truncate">${g.station} • ${g.operator}</div>
+              <div class="mt-1.5 inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold ${badgeBg} truncate max-w-full">
+                ${badgeText}
+              </div>
+            </div>
+
+            <!-- Bottom Machine Activation Switch + 4 Metrics -->
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-center font-mono">
+              <div class="text-left" onclick="event.stopPropagation();">
+                <span class="text-[9px] uppercase font-bold text-slate-400 block font-sans">Power</span>
+                <label class="switch-toggle" title="Machine Power Cut-Off / Activation">
+                  <input type="checkbox" ${g.status !== 'STANDBY' ? 'checked' : ''} onchange="toggleMachineState('${g.id}', this.checked)">
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <div>
+                <span class="text-[9px] uppercase font-bold text-slate-400 block font-sans">Load</span>
+                <strong class="text-xs font-extrabold text-slate-900">${g.kw} <span class="text-[9px] font-normal text-slate-400">kW</span></strong>
+              </div>
+              <div>
+                <span class="text-[9px] uppercase font-bold text-slate-400 block font-sans">Speed</span>
+                <strong class="text-xs font-bold text-slate-900">${g.rpm} <span class="text-[9px] font-normal text-slate-400">RPM</span></strong>
+              </div>
+              <div>
+                <span class="text-[9px] uppercase font-bold text-slate-400 block font-sans">Fuel</span>
+                <strong class="text-xs font-bold ${g.fuel < 20 ? 'text-rose-600' : 'text-slate-900'}">${g.fuel}%</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderTable() {
+    const tableBody = document.getElementById('table-body');
+    if (!tableBody) return;
+
+    let filtered = GENERATORS.slice(0, 50);
+    tableBody.innerHTML = filtered.map(g => `
+      <tr class="hover:bg-slate-50 transition cursor-pointer" onclick="inspectUnit('${g.id}')">
+        <td class="py-2.5 px-4" onclick="event.stopPropagation();">
+          <label class="switch-toggle" title="Active/Inactive Switch">
+            <input type="checkbox" ${g.status !== 'STANDBY' ? 'checked' : ''} onchange="toggleMachineState('${g.id}', this.checked)">
+            <span class="switch-slider"></span>
+          </label>
+        </td>
+        <td class="py-2.5 px-4 font-mono font-bold text-slate-900">${g.id}</td>
+        <td class="py-2.5 px-4 font-mono text-slate-600">${g.uid}</td>
+        <td class="py-2.5 px-4 font-bold text-slate-800">${g.station}</td>
+        <td class="py-2.5 px-4">${g.operator}</td>
+        <td class="py-2.5 px-4">${g.district}</td>
+        <td class="py-2.5 px-4">
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${g.status === 'CRITICAL' ? 'bg-rose-100 text-rose-800' : g.status === 'WARNING' ? 'bg-amber-100 text-amber-800' : g.status === 'STANDBY' ? 'bg-slate-200 text-slate-700' : 'bg-emerald-100 text-emerald-800'}">
+            ${g.status}
+          </span>
+        </td>
+        <td class="py-2.5 px-4 font-mono font-bold text-emerald-700">${g.kw} kW</td>
+        <td class="py-2.5 px-4 font-mono">${g.rpm}</td>
+        <td class="py-2.5 px-4 font-mono">${g.temp} °C</td>
+        <td class="py-2.5 px-4 font-mono">${g.fuel}%</td>
+        <td class="py-2.5 px-4 text-right">
+          <button onclick="event.stopPropagation(); inspectUnit('${g.id}');" class="px-2.5 py-1 bg-slate-900 text-white rounded-lg text-xs font-bold hover:bg-slate-800 transition">Inspect</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function setFilter(filter) {
+    currentFilter = filter;
+    ['all', 'running', 'standby', 'warning', 'critical'].forEach(f => {
+      const btn = document.getElementById(`filter-${f}`);
+      if (btn) {
+        if (f === filter) btn.className = 'px-4 py-1.5 rounded-full text-xs font-bold bg-slate-900 text-white transition shadow-xs';
+        else btn.className = 'px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition';
+      }
+    });
+    currentPage = 1;
+    renderCards();
+    renderTable();
+  }
+
+  function setSort(sort) {
+    currentSort = sort;
+    renderCards();
+  }
+
+  function handleSearch(val) {
+    searchQuery = val.toLowerCase().trim();
+    currentPage = 1;
+    renderCards();
+  }
+
+  function setViewMode(mode) {
+    viewMode = mode;
+    const cards = document.getElementById('cards-container');
+    const table = document.getElementById('table-container');
+    const btnC = document.getElementById('view-mode-cards');
+    const btnT = document.getElementById('view-mode-table');
+
+    if (mode === 'cards') {
+      cards.classList.remove('hidden');
+      table.classList.add('hidden');
+      btnC.className = 'px-3 py-1 rounded-lg bg-white shadow-xs text-slate-900 transition';
+      btnT.className = 'px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition';
+    } else {
+      cards.classList.add('hidden');
+      table.classList.remove('hidden');
+      btnT.className = 'px-3 py-1 rounded-lg bg-white shadow-xs text-slate-900 transition';
+      btnC.className = 'px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition';
+    }
+  }
+
+  function prevPage() {
+    if (currentPage > 1) {
+      currentPage--;
+      renderCards();
+    }
+  }
+
+  function nextPage() {
+    const totalPages = Math.ceil(GENERATORS.length / PAGE_SIZE);
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderCards();
+    }
+  }
+
+  function inspectUnit(id) {
+    selectedUnitId = id;
+    loadIndividual18Data(id);
+    showScreen('overview');
+    scrollToModule('telemetry');
+  }
+
+  // =========================================================================
+  // SUB-TOTAL OPERATIONAL SUMMARY
+  // =========================================================================
+  function setSubtotalTab(tab) {
+    currentSubtotalTab = tab;
+    ['area', 'company', 'capacity'].forEach(t => {
+      const btn = document.getElementById(`tab-sub-${t}`);
+      if (btn) {
+        if (t === tab) btn.className = 'px-3.5 py-1.5 rounded-xl bg-white shadow-xs text-slate-900 transition';
+        else btn.className = 'px-3.5 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 transition';
+      }
+    });
+    renderSubtotalTable();
+  }
+
+  function renderSubtotalTable() {
+    const table = document.getElementById('subtotal-matrix-table');
+    if (!table) return;
+
+    if (currentSubtotalTab === 'area') {
+      const areas = ['Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna', 'Barisal', 'Rangpur', 'Mymensingh'];
+      let rows = areas.map(a => {
+        const units = GENERATORS.filter(g => g.area.toLowerCase().includes(a.toLowerCase()));
+        const totalKw = units.reduce((acc, u) => acc + u.kw, 0);
+        const active = units.filter(u => u.status === 'RUNNING').length;
+        const warning = units.filter(u => u.status === 'WARNING').length;
+        const critical = units.filter(u => u.status === 'CRITICAL').length;
+        const standby = units.filter(u => u.status === 'STANDBY').length;
+        const avgFuel = units.length > 0 ? Math.round(units.reduce((acc, u) => acc + u.fuel, 0) / units.length) : 0;
+        const totalKwh = Math.round(totalKw * 720);
+
+        return `
+          <tr class="hover:bg-slate-50 transition cursor-pointer" onclick="handleSearch('${a}')">
+            <td class="py-2.5 px-4 font-bold text-slate-900 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full ${critical > 0 ? 'bg-rose-600 animate-pulse' : warning > 0 ? 'bg-amber-600' : 'bg-emerald-600'}"></span>
+              ${a} Division
+            </td>
+            <td class="py-2.5 px-4 font-mono font-bold">${units.length} Sites</td>
+            <td class="py-2.5 px-4 font-mono font-extrabold text-emerald-700">${(totalKw / 1000).toFixed(2)} MW</td>
+            <td class="py-2.5 px-4 font-mono text-[11px]">
+              <span class="text-emerald-700 font-bold">${active} OK</span> •
+              <span class="text-slate-600">${standby} Stby</span> •
+              <span class="text-amber-700 font-bold">${warning} W</span> •
+              <span class="text-rose-700 font-bold">${critical} Crit</span>
+            </td>
+            <td class="py-2.5 px-4 font-mono">${avgFuel}% avg</td>
+            <td class="py-2.5 px-4 font-mono font-bold text-right">${totalKwh.toLocaleString()} kWh</td>
+          </tr>
+        `;
+      }).join('');
+
+      table.innerHTML = `
+        <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
+          <tr>
+            <th class="py-3 px-4">Area / Division</th>
+            <th class="py-3 px-4">Site Count</th>
+            <th class="py-3 px-4">Running Load (MW)</th>
+            <th class="py-3 px-4">Status Breakdown</th>
+            <th class="py-3 px-4">Fuel Reserves</th>
+            <th class="py-3 px-4 text-right">Sub-Total Energy (Monthly)</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 text-slate-700">${rows}</tbody>
+      `;
+    } else if (currentSubtotalTab === 'company') {
+      const comps = ['Grameenphone', 'Robi Axiata', 'Banglalink', 'Teletalk'];
+      let rows = comps.map(c => {
+        const units = GENERATORS.filter(g => g.operator.toLowerCase().includes(c.toLowerCase().split(' ')[0]));
+        const totalKw = units.reduce((acc, u) => acc + u.kw, 0);
+        const critical = units.filter(u => u.status === 'CRITICAL').length;
+        const totalKwh = Math.round(totalKw * 720);
+        const healthPct = ((units.length - critical) / units.length * 100).toFixed(1);
+
+        return `
+          <tr class="hover:bg-slate-50 transition cursor-pointer" onclick="handleSearch('${c}')">
+            <td class="py-2.5 px-4 font-bold text-slate-900">${c}</td>
+            <td class="py-2.5 px-4 font-mono font-bold">${units.length} Towers</td>
+            <td class="py-2.5 px-4 font-mono font-extrabold text-emerald-700">${(totalKw / 1000).toFixed(2)} MW</td>
+            <td class="py-2.5 px-4 font-mono text-emerald-700 font-bold">${healthPct}% Uptime</td>
+            <td class="py-2.5 px-4 font-mono"><span class="text-rose-600 font-bold">${critical}</span> Outages</td>
+            <td class="py-2.5 px-4 font-mono font-bold text-right">${totalKwh.toLocaleString()} kWh</td>
+          </tr>
+        `;
+      }).join('');
+
+      table.innerHTML = `
+        <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
+          <tr>
+            <th class="py-3 px-4">Telecom Company</th>
+            <th class="py-3 px-4">Tower Sites</th>
+            <th class="py-3 px-4">Total Output (MW)</th>
+            <th class="py-3 px-4">Network Health %</th>
+            <th class="py-3 px-4">Critical Faults</th>
+            <th class="py-3 px-4 text-right">Sub-Total Energy (Monthly)</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 text-slate-700">${rows}</tbody>
+      `;
+    } else {
+      const tiers = ['60 kVA / 48 kW Prime', '30 kVA / 24 kW Standby', '100 kVA / 80 kW Prime', '150 kVA / 120 kW Prime'];
+      let rows = tiers.map(t => {
+        const units = GENERATORS.filter(g => g.capacity.startsWith(t.split(' ')[0]));
+        const totalKw = units.reduce((acc, u) => acc + u.kw, 0);
+        const totalKwh = Math.round(totalKw * 720);
+
+        return `
+          <tr class="hover:bg-slate-50 transition cursor-pointer" onclick="handleSearch('${t.split(' ')[0]}')">
+            <td class="py-2.5 px-4 font-bold text-slate-900">${t}</td>
+            <td class="py-2.5 px-4 font-mono font-bold">${units.length} Units</td>
+            <td class="py-2.5 px-4 font-mono font-extrabold text-emerald-700">${(totalKw / 1000).toFixed(2)} MW</td>
+            <td class="py-2.5 px-4 font-mono text-slate-600">Perkins Industrial Diesel</td>
+            <td class="py-2.5 px-4 font-mono font-bold text-right">${totalKwh.toLocaleString()} kWh</td>
+          </tr>
+        `;
+      }).join('');
+
+      table.innerHTML = `
+        <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
+          <tr>
+            <th class="py-3 px-4">Power Tier</th>
+            <th class="py-3 px-4">Unit Count</th>
+            <th class="py-3 px-4">Aggregate Power (MW)</th>
+            <th class="py-3 px-4">Engine Type</th>
+            <th class="py-3 px-4 text-right">Sub-Total Energy (Monthly)</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 text-slate-700">${rows}</tbody>
+      `;
+    }
+  }
+
+  // =========================================================================
+  // GEOGRAPHIC VECTOR GIS & OPENSTREETMAP LIVE VIEW
+  // =========================================================================
+  function initWhiteLandMap() {
+    const divGroup = document.getElementById('map-divisions-group');
+    const dotGroup = document.getElementById('map-stations-dots-group');
+    if (!divGroup || !dotGroup) return;
+
+    let divHtml = '';
+    for (const [name, pathD] of Object.entries(BD_SVG_PATHS)) {
+      divHtml += `
+        <path id="svg-div-${name}" 
+              d="${pathD}" 
+              fill="#ffffff" 
+              stroke="#cbd5e1" 
+              stroke-width="1.8" 
+              class="transition-all duration-300 hover:fill-slate-50 cursor-pointer"
+              onclick="highlightMapRegion('${name}')">
+          <title>${name} Division</title>
+        </path>
+      `;
+    }
+    divGroup.innerHTML = divHtml;
+
+    let dotHtml = '';
+    GENERATORS.forEach(g => {
+      const x = 50 + ((g.lng - 88.0) / 4.7) * 700;
+      const y = 50 + ((26.6 - g.lat) / 5.9) * 820;
+
+      let dotColor = '#10b981';
+      let r = 3.5;
+      if (g.status === 'WARNING') { dotColor = '#eab308'; r = 4.2; }
+      else if (g.status === 'CRITICAL') { dotColor = '#ef4444'; r = 5.5; }
+      else if (g.status === 'STANDBY') { dotColor = '#94a3b8'; r = 2.8; }
+
+      dotHtml += `
+        <circle id="dot-${g.id}" 
+                class="map-station-dot cursor-pointer" 
+                cx="${x.toFixed(1)}" 
+                cy="${y.toFixed(1)}" 
+                r="${r}" 
+                fill="${dotColor}" 
+                stroke="#ffffff" 
+                stroke-width="1"
+                onclick="openStationMapPopup('${g.id}')">
+          <title>${g.station} (${g.operator}) - ${g.status}</title>
+        </circle>
+      `;
+    });
+    dotGroup.innerHTML = dotHtml;
+  }
+
+  function highlightMapRegion(reg) {
+    selectedMapRegion = reg;
+    ['ALL', 'Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna', 'Barisal', 'Rangpur', 'Mymensingh'].forEach(r => {
+      const btn = document.getElementById(`reg-btn-${r}`);
+      if (btn) {
+        if (r === reg) btn.className = 'px-3 py-1 rounded-lg bg-slate-900 text-white font-bold transition';
+        else btn.className = 'px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition';
+      }
+    });
+
+    for (const name of Object.keys(BD_SVG_PATHS)) {
+      const p = document.getElementById(`svg-div-${name}`);
+      if (p) {
+        if (reg === 'ALL' || reg.toLowerCase() === name.toLowerCase()) {
+          p.setAttribute('fill', '#ffffff');
+          p.setAttribute('stroke', '#0f172a');
+          p.setAttribute('stroke-width', '2.2');
+        } else {
+          p.setAttribute('fill', '#f8fafc');
+          p.setAttribute('stroke', '#e2e8f0');
+          p.setAttribute('stroke-width', '1.2');
+        }
+      }
+    }
+  }
+
+  function openStationMapPopup(id) {
+    selectedUnitId = id;
+    const g = GENERATORS.find(u => u.id === id);
+    if (!g) return;
+
+    const popup = document.getElementById('map-node-popup');
+    document.getElementById('popup-node-station').innerText = g.station;
+    document.getElementById('popup-node-status').innerText = g.status;
+    document.getElementById('popup-node-uid').innerText = g.uid;
+    document.getElementById('popup-node-operator').innerText = g.operator;
+    document.getElementById('popup-node-kw').innerText = `${g.kw} kW`;
+    document.getElementById('popup-node-fuel').innerText = `${g.fuel}% (${g.p18_fuel_liters}L)`;
+    document.getElementById('popup-node-area').innerText = g.area;
+
+    const x = 50 + ((g.lng - 88.0) / 4.7) * 700;
+    const y = 50 + ((26.6 - g.lat) / 5.9) * 820;
+
+    popup.style.left = `${Math.min(480, Math.max(20, x - 120))}px`;
+    popup.style.top = `${Math.min(480, Math.max(20, y - 80))}px`;
+    popup.classList.remove('hidden');
+  }
+
+  function closeMapPopup() {
+    const popup = document.getElementById('map-node-popup');
+    if (popup) popup.classList.add('hidden');
+  }
+
+  function inspectFromMap() {
+    inspectUnit(selectedUnitId);
+    closeMapPopup();
+  }
+
+  function switchMapMode(mode) {
+    const whiteCont = document.getElementById('map-container-white');
+    const osmCont = document.getElementById('map-container-osm');
+    const btnW = document.getElementById('map-mode-white');
+    const btnO = document.getElementById('map-mode-osm');
+
+    if (mode === 'white') {
+      whiteCont.classList.remove('hidden');
+      osmCont.classList.add('hidden');
+      btnW.className = 'px-3 py-1.5 rounded-lg bg-slate-900 text-white font-bold transition shadow-xs flex items-center gap-1.5';
+      btnO.className = 'px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5';
+    } else {
+      whiteCont.classList.add('hidden');
+      osmCont.classList.remove('hidden');
+      btnO.className = 'px-3 py-1.5 rounded-lg bg-slate-900 text-white font-bold transition shadow-xs flex items-center gap-1.5';
+      btnW.className = 'px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5';
+
+      if (!mapInstance) {
+        mapInstance = L.map('gis-map', { zoomControl: false }).setView([23.8103, 90.4125], 7);
+        L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
+
+        osmTileStandard = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors',
+          maxZoom: 19
+        });
+
+        osmTileLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+          maxZoom: 19
+        });
+
+        osmTileLight.addTo(mapInstance);
+
+        GENERATORS.forEach(g => {
+          let col = '#10b981';
+          let rad = 5;
+          if (g.status === 'WARNING') { col = '#eab308'; rad = 6; }
+          else if (g.status === 'CRITICAL') { col = '#ef4444'; rad = 8; }
+          else if (g.status === 'STANDBY') { col = '#94a3b8'; rad = 4; }
+
+          const popupContent = `
+            <div style="font-family: sans-serif; min-width: 180px; padding: 2px;">
+              <strong style="color: #0f172a; font-size: 13px;">${g.station}</strong>
+              <div style="font-size: 11px; color: #64748b; margin-bottom: 6px;">UID: ${g.uid} • ${g.operator}</div>
+              <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 3px;">
+                <span>Status:</span>
+                <strong style="color: ${col};">${g.status}</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 8px;">
+                <span>Active Load:</span>
+                <strong style="color: #047857;">${g.kw} kW</strong>
+              </div>
+              <button onclick="inspectUnit('${g.id}')" style="width: 100%; padding: 6px 10px; background: #0f172a; color: white; border: none; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer;">
+                Inspect Telemetry (18 Data) →
+              </button>
+            </div>
+          `;
+
+          L.circleMarker([g.lat, g.lng], {
+            radius: rad,
+            fillColor: col,
+            color: '#ffffff',
+            weight: 1.5,
+            opacity: 1,
+            fillOpacity: 0.95
+          }).addTo(mapInstance).bindPopup(popupContent);
+        });
+      }
+      setTimeout(() => mapInstance.invalidateSize(), 150);
+    }
+  }
+
+  function toggleOsmTileLayer(type) {
+    if (!mapInstance) return;
+    if (type === 'standard') {
+      if (osmTileLight) mapInstance.removeLayer(osmTileLight);
+      if (osmTileStandard) osmTileStandard.addTo(mapInstance);
+      document.getElementById('btn-tile-osm').className = 'px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-900 text-white transition';
+      document.getElementById('btn-tile-light').className = 'px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+    } else {
+      if (osmTileStandard) mapInstance.removeLayer(osmTileStandard);
+      if (osmTileLight) osmTileLight.addTo(mapInstance);
+      document.getElementById('btn-tile-light').className = 'px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-900 text-white transition';
+      document.getElementById('btn-tile-osm').className = 'px-2.5 py-1 rounded-xl text-[11px] font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+    }
+  }
+
+  function searchOsmNominatim() {
+    const input = document.getElementById('osm-search-input');
+    if (!input || !mapInstance) return;
+    const query = input.value.trim();
+    if (!query) return;
+
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Bangladesh')}&format=json&limit=1`;
+    fetch(url, { headers: { 'User-Agent': 'Genesis-RMS-App' } })
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lon = parseFloat(data[0].lon);
+          mapInstance.setView([lat, lon], 12);
+        } else {
+          alert('Location not found in OpenStreetMap Nominatim index.');
+        }
+      })
+      .catch(err => {
+        console.warn('Nominatim geocode error:', err);
+      });
+  }
+
+  // =========================================================================
+  // ALARMS & EVENT LOG CENTER
+  // =========================================================================
+  function populateAlarms() {
+    const list = document.getElementById('alarms-overview-list');
+    const fullList = document.getElementById('alarms-full-list');
+    if (!list) return;
+
+    const alerts = GENERATORS.filter(u => u.status === 'CRITICAL' || u.status === 'WARNING');
+
+    list.innerHTML = alerts.slice(0, 5).map(a => `
+      <div class="p-3 rounded-2xl ${a.status === 'CRITICAL' ? 'bg-rose-50/70 border border-rose-200' : 'bg-amber-50/70 border border-amber-200'} flex items-center justify-between text-xs cursor-pointer hover:opacity-90 transition" onclick="inspectUnit('${a.id}')">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2.5 h-2.5 rounded-full ${a.status === 'CRITICAL' ? 'bg-rose-600 animate-pulse' : 'bg-amber-600'}"></span>
+          <div>
+            <strong class="text-slate-900">${a.station} (${a.operator})</strong>
+            <span class="text-slate-600 block text-[11px]">${a.alert}</span>
+          </div>
+        </div>
+        <div class="text-right font-mono text-[11px] text-slate-600">
+          <span class="block font-bold ${a.status === 'CRITICAL' ? 'text-rose-700' : 'text-amber-700'}">${a.status}</span>
+          <span>Just now</span>
+        </div>
+      </div>
+    `).join('');
+
+    if (fullList) {
+      fullList.innerHTML = alerts.map(a => `
+        <div class="p-4 rounded-2xl bg-white border border-slate-200 flex items-center justify-between text-xs shadow-2xs">
+          <div>
+            <strong class="text-slate-900 text-sm">${a.station}</strong>
+            <div class="text-slate-600 text-xs">${a.id} • ${a.uid} • ${a.operator} • ${a.area}</div>
+            <div class="mt-1 font-bold ${a.status === 'CRITICAL' ? 'text-rose-600' : 'text-amber-600'}">${a.alert}</div>
+          </div>
+          <button onclick="inspectUnit('${a.id}')" class="px-3 py-1.5 bg-slate-900 text-white rounded-xl text-xs font-bold">Inspect Node</button>
+        </div>
+      `).join('');
+    }
+  }
+
+  // =========================================================================
+  // LIVE WAVEFORM CANVAS
+  // =========================================================================
+  function setupWaveformCanvas() {
+    const canvas = document.getElementById('live-waveform-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let t = 0;
+
+    function draw() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const mid = canvas.height / 2;
+      const amp = canvas.height * 0.35;
+
+      // Phase 1 (Red)
+      ctx.beginPath();
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 2;
+      for (let x = 0; x < canvas.width; x++) {
+        const y = mid + Math.sin((x + t) * 0.04) * amp;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Phase 2 (Amber)
+      ctx.beginPath();
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 2;
+      for (let x = 0; x < canvas.width; x++) {
+        const y = mid + Math.sin((x + t) * 0.04 + (2 * Math.PI / 3)) * amp;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Phase 3 (Blue)
+      ctx.beginPath();
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 2;
+      for (let x = 0; x < canvas.width; x++) {
+        const y = mid + Math.sin((x + t) * 0.04 + (4 * Math.PI / 3)) * amp;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      t += 2;
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+
+  // MODALS & EXPORTS
+  function filterBySpec(spec) {
+    if (spec === '60kva') searchQuery = '60 kVA';
+    else if (spec === '48kw') searchQuery = '48 kW';
+    else if (spec === '4cyl') searchQuery = '1104A';
+    const input = document.getElementById('search-input');
+    if (input) input.value = searchQuery;
+    currentPage = 1;
+    renderCards();
+    renderTable();
+    scrollToModule('devices');
+  }
+
+  function openControllerModal() {
+    alert('DSE-7320 MKII Modbus RTU Register Map:\\n- Status: Controller Online (Continuous 100ms polling)\\n- Registers: 40001-40032 Synced\\n- Baud: 9600 Baud, 8-N-1, RS-485\\n- CAN-bus J1939: Active');
+  }
+
+  function openEngineExplodedView() {
+    alert('Perkins 1104A-44TG2 Mechanical Telemetry:\\n- Architecture: 4-Cylinder Turbocharged Diesel\\n- Displacement: 4.4L\\n- Synchronous Speed: 1500 RPM @ 50 Hz\\n- Lube Oil: 8.0 L 15W-40');
+  }
+
+  function openRemoteModal(id) {
+    alert(`Authorized Remote Terminal: Connection to ${id} open.`);
+  }
+
+  function openHierarchyModal(type) {
+    alert(`Genesis National Hierarchy Explorer: Selecting node by ${type}.`);
+  }
+
+  function exportGeneratorsExcel() {
+    let csv = 'ID,UID,Model,Capacity,Station,Operator,Division,District,Status,Load_kW,Load_Pct,RPM,Temp_C,Fuel_Pct,Oil_Bar,Runtime_h\\n';
+    GENERATORS.forEach(g => {
+      csv += `${g.id},${g.uid},"${g.model}","${g.capacity}","${g.station}","${g.operator}","${g.area}","${g.district}",${g.status},${g.kw},${g.load_pct},${g.rpm},${g.temp},${g.fuel},${g.oil},${g.runtime}\\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Genesis_Telemetry_Records.csv';
+    a.click();
+  }
+
+  function exportCurrentReport() {
+    exportGeneratorsExcel();
+  }
+
+
+  // =========================================================================
+  // V8 ENGINE: DYNAMIC BANNER, MULTI-BRAND CAROUSEL & REAL-TIME RPM TACHOMETER
+  // =========================================================================
+  const BANNER_GENERATORS = [
+    {
+      id: 'GEN-PK-0104',
+      station: 'Tower BTS-GP-0492',
+      operator: 'Grameenphone',
+      area: 'Dhaka North (Mirpur Node)',
+      badge: 'PRIMARY POWER NODE',
+      brand: 'Perkins 1104A-44TG2',
+      subtitle: 'Industrial 4-Cylinder Turbocharged Diesel Generator',
+      subspec: '60 kVA Standby / 48 kW Prime @ 1500 RPM, 50 Hz',
+      spec1: '60 kVA Standby',
+      spec2: '48 kW Prime',
+      spec3: '4 Cylinders',
+      img: 'perkins_pure_clean.png',
+      rpm: 1500,
+      status: 'Running',
+      volts: { l1l2: 400.0, freq: 50.02 },
+      kw: 18.6,
+      oil: 4.2,
+      fuel: 76,
+      efficiency: 0.248,
+      totalEnergy: '1,842,900',
+      runtime: '320 h',
+      nextService: 'in 1,280 h'
+    },
+    {
+      id: 'GEN-CM-0208',
+      station: 'Tower BTS-RO-8442',
+      operator: 'Robi Axiata',
+      area: 'Chittagong Port Node',
+      badge: 'HEAVY INDUSTRIAL NODE',
+      brand: 'Cummins 6BT5.9-G2',
+      subtitle: 'Industrial 6-Cylinder Turbocharged Inline Diesel Engine',
+      subspec: '100 kVA Standby / 80 kW Prime @ 1500 RPM, 50 Hz',
+      spec1: '100 kVA Standby',
+      spec2: '80 kW Prime',
+      spec3: '6 Cylinders',
+      img: 'perkins_pure_clean.png',
+      rpm: 1500,
+      status: 'Running',
+      volts: { l1l2: 401.0, freq: 50.00 },
+      kw: 38.2,
+      oil: 4.5,
+      fuel: 82,
+      efficiency: 0.239,
+      totalEnergy: '2,914,600',
+      runtime: '410 h',
+      nextService: 'in 980 h'
+    },
+    {
+      id: 'GEN-CAT-0312',
+      station: 'Tower BTS-BA-4409',
+      operator: 'Banglalink',
+      area: 'Sylhet Tech Node',
+      badge: 'CONTINUOUS BASELOAD',
+      brand: 'Caterpillar C4.4 ACERT',
+      subtitle: 'Heavy-Duty 4-Cylinder Electronic Common Rail Generator',
+      subspec: '88 kVA Standby / 70 kW Prime @ 1500 RPM, 50 Hz',
+      spec1: '88 kVA Standby',
+      spec2: '70 kW Prime',
+      spec3: '4 Cylinders',
+      img: 'perkins_pure_clean.png',
+      rpm: 1500,
+      status: 'Running',
+      volts: { l1l2: 399.5, freq: 49.98 },
+      kw: 29.4,
+      oil: 4.1,
+      fuel: 68,
+      efficiency: 0.244,
+      totalEnergy: '2,150,400',
+      runtime: '280 h',
+      nextService: 'in 1,420 h'
+    },
+    {
+      id: 'GEN-KH-0416',
+      station: 'Tower BTS-TE-4738',
+      operator: 'Teletalk',
+      area: 'Khulna Regional Hub',
+      badge: 'HIGH CAPACITY NODE',
+      brand: 'Kohler KD62V12 Power',
+      subtitle: 'High Output V-Type Turbo-Intercooled SCADA Generator',
+      subspec: '150 kVA Standby / 120 kW Prime @ 1500 RPM, 50 Hz',
+      spec1: '150 kVA Standby',
+      spec2: '120 kW Prime',
+      spec3: 'V12 Engine',
+      img: 'perkins_pure_clean.png',
+      rpm: 1500,
+      status: 'Running',
+      volts: { l1l2: 400.8, freq: 50.04 },
+      kw: 52.8,
+      oil: 4.6,
+      fuel: 54,
+      efficiency: 0.252,
+      totalEnergy: '4,102,800',
+      runtime: '540 h',
+      nextService: 'in 720 h'
+    }
+  ];
+
+  let currentHeroIndex = 0;
+  let heroAutoSlideTimer = null;
+  let isHeroAutoSlideActive = true;
+
+  function setHeroRpm(rpm, status) {
+    const valEl = document.getElementById('hero-rpm-val');
+    const arcEl = document.getElementById('hero-rpm-arc');
+    const statText = document.getElementById('hero-status-text');
+    const statDot = document.getElementById('hero-status-dot');
+
+    if (valEl) valEl.textContent = Math.round(rpm);
+    if (arcEl) {
+      const totalLen = 235.97;
+      const pct = Math.min(1.0, Math.max(0.0, rpm / 2000.0));
+      const offset = totalLen * (1.0 - pct);
+      arcEl.style.strokeDashoffset = offset.toFixed(2);
+      if (rpm === 0) {
+        arcEl.style.stroke = '#94a3b8';
+      } else if (rpm > 1750) {
+        arcEl.style.stroke = '#f59e0b';
+      } else {
+        arcEl.style.stroke = '#10b981';
+      }
+    }
+    if (statText && status) statText.textContent = status;
+    if (statDot && status) {
+      if (status === 'Running' || status === 'RUNNING') {
+        statDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-600 ring-4 ring-emerald-100';
+      } else if (status === 'Standby' || status === 'STANDBY') {
+        statDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-400 ring-4 ring-slate-100';
+      } else {
+        statDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-600 ring-4 ring-amber-100';
+      }
+    }
+  }
+
+  function switchHeroGenerator(idOrIndex) {
+    let gen;
+    if (typeof idOrIndex === 'number') {
+      currentHeroIndex = (idOrIndex + BANNER_GENERATORS.length) % BANNER_GENERATORS.length;
+      gen = BANNER_GENERATORS[currentHeroIndex];
+    } else {
+      gen = BANNER_GENERATORS.find(g => g.id === idOrIndex) || BANNER_GENERATORS[0];
+      currentHeroIndex = BANNER_GENERATORS.indexOf(gen);
+    }
+    if (!gen) return;
+
+    // 1. Update Hero stage elements
+    const badge = document.getElementById('cms-hero-badge');
+    const title = document.getElementById('cms-hero-title');
+    const sub = document.getElementById('cms-hero-subtitle');
+    const spec1 = document.getElementById('hero-spec-1');
+    const spec2 = document.getElementById('hero-spec-2');
+    const spec3 = document.getElementById('hero-spec-3');
+    const imgEl = document.getElementById('hero-engine-img');
+    const selEl = document.getElementById('hero-device-selector');
+
+    if (badge) badge.textContent = gen.badge;
+    if (title) title.textContent = gen.brand;
+    if (sub) {
+      sub.innerHTML = `${gen.subtitle}<span class="block text-slate-400 font-medium text-xs mt-0.5">${gen.subspec}</span>`;
+    }
+    if (spec1) spec1.textContent = gen.spec1;
+    if (spec2) spec2.textContent = gen.spec2;
+    if (spec3) spec3.textContent = gen.spec3;
+    if (selEl) selEl.value = gen.id;
+
+    // Smooth engine image cross-fade
+    if (imgEl && gen.img) {
+      imgEl.style.opacity = '0.4';
+      imgEl.style.transform = 'scale(0.98)';
+      setTimeout(() => {
+        imgEl.src = gen.img;
+        imgEl.style.opacity = '1';
+        imgEl.style.transform = 'scale(1)';
+      }, 120);
+    }
+
+    // 2. Animate RPM gauge
+    setHeroRpm(gen.rpm, gen.status);
+
+    // 3. Update Underneath 3 Live Cards
+    updateHeroLiveCards(gen);
+
+    // 4. Update Carousel Dots
+    updateCarouselDots(currentHeroIndex);
+
+    // 5. Update Header Breadcrumbs
+    const topStation = document.getElementById('top-station-text');
+    const topGenId = document.getElementById('top-genid-text');
+    const topArea = document.getElementById('top-area-text');
+    if (topStation) topStation.textContent = gen.station.replace('Tower ', '');
+    if (topGenId) topGenId.textContent = gen.id;
+    if (topArea) topArea.textContent = gen.area.split(' ')[0];
+  }
+
+  function updateHeroLiveCards(gen) {
+    // Live Telemetry 4 Gauges
+    const vVal = document.getElementById('val-hero-volt');
+    const fVal = document.getElementById('val-hero-freq');
+    const pVal = document.getElementById('val-hero-power');
+    const oVal = document.getElementById('val-hero-oil');
+    if (vVal) vVal.textContent = `${Math.round(gen.volts.l1l2)} V`;
+    if (fVal) fVal.textContent = `${Math.round(gen.volts.freq)} Hz`;
+    if (pVal) pVal.textContent = `${gen.kw.toFixed(1)} kW`;
+    if (oVal) oVal.textContent = `${gen.oil.toFixed(1)} Bar`;
+
+    // Energy Overview Wave Badge
+    const kwBadge = document.getElementById('hero-energy-kw-badge');
+    if (kwBadge) kwBadge.textContent = `${gen.kw.toFixed(1)} kW`;
+
+    // Key Metrics
+    const kwhEl = document.getElementById('hero-metric-energy');
+    const effEl = document.getElementById('hero-metric-eff');
+    const runEl = document.getElementById('hero-metric-runtime');
+    const nextEl = document.getElementById('hero-metric-next');
+    if (kwhEl) kwhEl.textContent = `${gen.totalEnergy} kWh`;
+    if (effEl) effEl.textContent = `${gen.efficiency} L/kWh`;
+    if (runEl) runEl.textContent = gen.runtime;
+    if (nextEl) nextEl.textContent = gen.nextService;
+  }
+
+  function updateCarouselDots(activeIndex) {
+    const dotsContainer = document.getElementById('hero-carousel-dots');
+    if (!dotsContainer) return;
+    const dots = dotsContainer.querySelectorAll('span');
+    dots.forEach((dot, idx) => {
+      if (idx === activeIndex) {
+        dot.className = 'w-2 h-2 rounded-full bg-slate-900 cursor-pointer shadow-xs';
+      } else {
+        dot.className = 'w-2 h-2 rounded-full bg-slate-300 hover:bg-slate-600 cursor-pointer transition';
+      }
+    });
+  }
+
+  function prevHeroSlide() {
+    switchHeroGenerator(currentHeroIndex - 1);
+  }
+
+  function nextHeroSlide() {
+    switchHeroGenerator(currentHeroIndex + 1);
+  }
+
+  function goToHeroSlide(idx) {
+    switchHeroGenerator(idx);
+  }
+
+  function toggleHeroAutoSlide() {
+    isHeroAutoSlideActive = !isHeroAutoSlideActive;
+    const btn = document.getElementById('hero-autoslide-btn');
+    if (btn) {
+      if (isHeroAutoSlideActive) {
+        btn.className = 'ml-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 hover:bg-emerald-200 transition flex items-center gap-1';
+        btn.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span><span>Auto (8s)</span>';
+      } else {
+        btn.className = 'ml-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-700 hover:bg-slate-300 transition flex items-center gap-1';
+        btn.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span><span>Paused</span>';
+      }
+    }
+  }
+
+  function startHeroAutoSlide() {
+    if (heroAutoSlideTimer) clearInterval(heroAutoSlideTimer);
+    heroAutoSlideTimer = setInterval(() => {
+      if (isHeroAutoSlideActive) {
+        currentHeroIndex = (currentHeroIndex + 1) % BANNER_GENERATORS.length;
+        switchHeroGenerator(currentHeroIndex);
+      }
+    }, 8000);
+  }
+
+  // =========================================================================
+  // OPERATOR PROFILE EDIT & SCADA PERMISSION MANAGEMENT MODAL HANDLERS
+  // =========================================================================
+  function openProfileModal() {
+    const modal = document.getElementById('profile-modal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+  }
+
+  function closeProfileModal() {
+    const modal = document.getElementById('profile-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function saveProfileChanges() {
+    const name = document.getElementById('prof-name-input').value.trim();
+    const role = document.getElementById('prof-role-input').value.trim();
+    const email = document.getElementById('prof-email-input').value.trim();
+
+    // Update Header Display
+    const headerName = document.getElementById('header-op-name');
+    const headerRole = document.getElementById('header-op-role');
+    if (headerName && name) headerName.textContent = name;
+    if (headerRole && role) headerRole.textContent = role;
+
+    // Save Avatar if uploaded
+    if (tempUserAvatarBase64_300) {
+      localStorage.setItem('genesis_user_avatar_300', tempUserAvatarBase64_300);
+      const headerImg = document.getElementById('header-avatar-img');
+      const headerInitials = document.getElementById('header-avatar-initials');
+      if (headerImg) {
+        headerImg.src = tempUserAvatarBase64_300;
+        headerImg.classList.remove('hidden');
+      }
+      if (headerInitials) headerInitials.classList.add('hidden');
+    }
+
+    // Save in LocalStorage
+    const profile = { name, role, email, uid: '#AR-9402', updated: new Date().toISOString() };
+    localStorage.setItem('genesis_scada_profile', JSON.stringify(profile));
+
+    closeProfileModal();
+    alert(`Operator Profile & 300x300 Avatar for ${name} saved successfully.`);
+  }
+
+  // =========================================================================
+  // UPLOAD / ADD GENERATOR MODEL MODAL HANDLERS
+  // =========================================================================
+  let uploadedGenImageBase64 = null;
+
+  function openUploadGenModal() {
+    const modal = document.getElementById('upload-gen-modal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+  }
+
+  function closeUploadGenModal() {
+    const modal = document.getElementById('upload-gen-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function handleGenFileUpload(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedGenImageBase64 = e.target.result;
+        const label = document.getElementById('up-file-label');
+        if (label) label.textContent = `Selected: ${input.files[0].name}`;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  function saveUploadedGenerator() {
+    const brand = document.getElementById('up-gen-brand').value.trim() || 'New Brand Diesel Generator';
+    const kva = document.getElementById('up-gen-kva').value || '100';
+    const kw = document.getElementById('up-gen-kw').value || '80';
+    const rpm = parseInt(document.getElementById('up-gen-rpm').value) || 1500;
+    const cyl = document.getElementById('up-gen-cyl').value.trim() || '6 Cylinders';
+    const station = document.getElementById('up-gen-station').value.trim() || 'Tower Node';
+
+    const newGen = {
+      id: `GEN-CUSTOM-${BANNER_GENERATORS.length + 1}`,
+      station: station,
+      operator: 'Special Node',
+      area: 'Regional Hub',
+      badge: 'CUSTOM CLIENT NODE',
+      brand: brand,
+      subtitle: `Industrial ${cyl} Diesel Generator`,
+      subspec: `${kva} kVA Standby / ${kw} kW Prime @ ${rpm} RPM, 50 Hz`,
+      spec1: `${kva} kVA Standby`,
+      spec2: `${kw} kW Prime`,
+      spec3: cyl,
+      img: uploadedGenImageBase64 || 'perkins_pure_clean.png',
+      rpm: rpm,
+      status: 'Running',
+      volts: { l1l2: 400.0, freq: 50.00 },
+      kw: +kw * 0.45,
+      oil: 4.4,
+      fuel: 85,
+      efficiency: 0.245,
+      totalEnergy: '1,492,000',
+      runtime: '120 h',
+      nextService: 'in 1,880 h'
+    };
+
+    BANNER_GENERATORS.push(newGen);
+
+    // Update Dropdown in Hero
+    const selEl = document.getElementById('hero-device-selector');
+    if (selEl) {
+      const opt = document.createElement('option');
+      opt.value = newGen.id;
+      opt.textContent = `${newGen.id} · ${newGen.brand} (${kva} kVA)`;
+      selEl.appendChild(opt);
+    }
+
+    closeUploadGenModal();
+    switchHeroGenerator(BANNER_GENERATORS.length - 1);
+    alert(`Generator "${brand}" added to Dynamic Banner successfully!`);
+  }
+
+  // =========================================================================
+  // 18-COMPONENT HISTORICAL SCADA TELEMETRY ANALYZER HANDLERS
+  // =========================================================================
+  function set18DDatePreset(preset) {
+    const toDate = new Date('2026-11-15');
+    let fromDate = new Date('2026-11-15');
+
+    if (preset === '24h') {
+      fromDate.setDate(toDate.getDate() - 1);
+    } else if (preset === '7d') {
+      fromDate.setDate(toDate.getDate() - 7);
+    } else if (preset === '30d') {
+      fromDate.setDate(toDate.getDate() - 30);
+    } else if (preset === '90d') {
+      fromDate.setDate(toDate.getDate() - 90);
+    } else if (preset === '180d') {
+      fromDate = new Date('2026-06-01');
+    }
+
+    const fromStr = fromDate.toISOString().split('T')[0];
+    const toStr = toDate.toISOString().split('T')[0];
+
+    const fromInput = document.getElementById('hist-date-from');
+    const toInput = document.getElementById('hist-date-to');
+    if (fromInput) fromInput.value = fromStr;
+    if (toInput) toInput.value = toStr;
+
+    // Update preset button active states
+    ['24h', '7d', '30d', '90d', '180d'].forEach(p => {
+      const btn = document.getElementById(`btn-pre-${p}`);
+      if (btn) {
+        if (p === preset) {
+          btn.className = 'px-2.5 py-1 rounded-lg bg-white text-slate-900 shadow-xs transition';
+        } else {
+          btn.className = 'px-2.5 py-1 rounded-lg hover:text-slate-900 transition';
+        }
+      }
+    });
+
+    apply18DDateFilter();
+  }
+
+  function apply18DDateFilter() {
+    const fromVal = document.getElementById('hist-date-from')?.value || '2026-06-01';
+    const toVal = document.getElementById('hist-date-to')?.value || '2026-11-15';
+    // Visual pulse confirmation
+    const grid = document.getElementById('18d-viz-grid');
+    if (grid) {
+      grid.style.opacity = '0.7';
+      setTimeout(() => { grid.style.opacity = '1'; }, 180);
+    }
+  }
+
+  function switch18DTab(domain) {
+    ['all', 'voltages', 'power', 'mechanical', 'fuel'].forEach(t => {
+      const btn = document.getElementById(`tab-18d-${t}`);
+      if (btn) {
+        if (t === domain) {
+          btn.className = 'px-3.5 py-1.5 rounded-xl bg-slate-900 text-white transition shrink-0 shadow-xs';
+        } else {
+          btn.className = 'px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition shrink-0';
+        }
+      }
+    });
+
+    const cards = document.querySelectorAll('.viz-card');
+    cards.forEach(card => {
+      const cardDomain = card.getAttribute('data-domain');
+      if (domain === 'all' || cardDomain === domain) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function export18DSelectedCSV() {
+    const fromVal = document.getElementById('hist-date-from')?.value || '2026-06-01';
+    const toVal = document.getElementById('hist-date-to')?.value || '2026-11-15';
+    let csv = `GENESIS RMS — 18-Register Telemetry History\n`;
+    csv += `Date Range: ${fromVal} to ${toVal}\n`;
+    csv += `Unit: GEN-PK-0104 (Perkins 1104A-44TG2)\n\n`;
+    csv += `Date,V_L1N,V_L2N,V_L3N,V_L1L2,V_L2L3,V_L3L1,I_L1,I_L2,I_L3,Frequency,Active_kW,Apparent_kVA,Reactive_kVAR,Power_Factor,RPM,Coolant_C,Oil_Bar,Fuel_L\n`;
+
+    const filtered = HISTORY_180_DAYS.filter(r => r.date >= fromVal && r.date <= toVal);
+    filtered.forEach(r => {
+      csv += `${r.date},230.4,229.8,230.1,${r.volt},${r.volt},${r.volt},27.2,26.8,27.0,50.02,${(r.kwh/24).toFixed(1)},${(r.kwh/24/0.8).toFixed(1)},13.95,0.80,1500,84.2,4.2,${r.fuel}\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Genesis_18D_Telemetry_${fromVal}_to_${toVal}.csv`;
+    a.click();
+  }
+
+
+
+  // =========================================================================
+  // V9 IMAGE RESIZING & DYNAMIC UPLOAD ENGINE (100x100 Gen, 300x300 User, Banner)
+  // =========================================================================
+
+  // Generic HTML5 Canvas Image Resizer / Center-Cropper to Exact Target Dimensions
+  function formatImageCanvas(file, targetW, targetH, callback) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        canvas.width = targetW;
+        canvas.height = targetH;
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+
+        // Calculate aspect fill & center crop
+        const scale = Math.max(targetW / img.width, targetH / img.height);
+        const sw = img.width * scale;
+        const sh = img.height * scale;
+        const ox = (targetW - sw) / 2;
+        const oy = (targetH - sh) / 2;
+
+        ctx.clearRect(0, 0, targetW, targetH);
+        ctx.drawImage(img, ox, oy, sw, sh);
+        const base64 = canvas.toDataURL('image/png');
+        callback(base64, targetW, targetH);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // -------------------------------------------------------------------------
+  // A. USER PROFILE AVATAR (300x300 FORMAT)
+  // -------------------------------------------------------------------------
+  let tempUserAvatarBase64_300 = null;
+
+  function handleUserAvatarUpload(input) {
+    if (input.files && input.files[0]) {
+      formatImageCanvas(input.files[0], 300, 300, function(base64, w, h) {
+        tempUserAvatarBase64_300 = base64;
+        const previewImg = document.getElementById('prof-avatar-img');
+        const previewInitials = document.getElementById('prof-avatar-initials');
+        const badge = document.getElementById('prof-avatar-dim-badge');
+        if (previewImg) {
+          previewImg.src = base64;
+          previewImg.classList.remove('hidden');
+        }
+        if (previewInitials) previewInitials.classList.add('hidden');
+        if (badge) badge.textContent = `Calibrated: ${w} x ${h} pxl`;
+      });
+    }
+  }
+
+  function removeUserAvatar() {
+    tempUserAvatarBase64_300 = null;
+    localStorage.removeItem('genesis_user_avatar_300');
+    const previewImg = document.getElementById('prof-avatar-img');
+    const previewInitials = document.getElementById('prof-avatar-initials');
+    const headerImg = document.getElementById('header-avatar-img');
+    const headerInitials = document.getElementById('header-avatar-initials');
+    
+    if (previewImg) previewImg.classList.add('hidden');
+    if (previewInitials) previewInitials.classList.remove('hidden');
+    if (headerImg) headerImg.classList.add('hidden');
+    if (headerInitials) headerInitials.classList.remove('hidden');
+  }
+
+  // -------------------------------------------------------------------------
+  // B. GENERATOR THUMBNAIL (100x100 FORMAT)
+  // -------------------------------------------------------------------------
+  let tempGenThumbBase64_100 = null;
+
+  function openGenUploadModal(unitId) {
+    const modal = document.getElementById('gen-thumb-modal');
+    if (!modal) return;
+    
+    const targetSelect = document.getElementById('thumb-target-gen');
+    if (targetSelect) {
+      targetSelect.innerHTML = GENERATORS.map(g => `
+        <option value="${g.id}" ${g.id === unitId ? 'selected' : ''}>
+          ${g.id} · ${g.station} (${g.operator})
+        </option>
+      `).join('');
+    }
+
+    // Check if target already has an image
+    const activeGen = GENERATORS.find(g => g.id === (unitId || targetSelect?.value));
+    const previewImg = document.getElementById('thumb-preview-img');
+    const placeholder = document.getElementById('thumb-preview-placeholder');
+    const statusLabel = document.getElementById('thumb-file-status');
+
+    if (activeGen && activeGen.image) {
+      if (previewImg) {
+        previewImg.src = activeGen.image;
+        previewImg.classList.remove('hidden');
+      }
+      if (placeholder) placeholder.classList.add('hidden');
+      if (statusLabel) statusLabel.textContent = `Current: 100 x 100 pxl Picture`;
+    } else {
+      if (previewImg) previewImg.classList.add('hidden');
+      if (placeholder) placeholder.classList.remove('hidden');
+      if (statusLabel) statusLabel.textContent = `Click or drag image to format to 100x100 px`;
+    }
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  function closeGenThumbModal() {
+    const modal = document.getElementById('gen-thumb-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function handleGenThumbUpload(input) {
+    if (input.files && input.files[0]) {
+      formatImageCanvas(input.files[0], 100, 100, function(base64, w, h) {
+        tempGenThumbBase64_100 = base64;
+        const previewImg = document.getElementById('thumb-preview-img');
+        const placeholder = document.getElementById('thumb-preview-placeholder');
+        const statusLabel = document.getElementById('thumb-file-status');
+        
+        if (previewImg) {
+          previewImg.src = base64;
+          previewImg.classList.remove('hidden');
+        }
+        if (placeholder) placeholder.classList.add('hidden');
+        if (statusLabel) statusLabel.textContent = `Loaded: ${w} x ${h} pxl Square Image`;
+      });
+    }
+  }
+
+  function saveGenThumbnail() {
+    const targetId = document.getElementById('thumb-target-gen')?.value;
+    if (!targetId || !tempGenThumbBase64_100) {
+      closeGenThumbModal();
+      return;
+    }
+
+    const gen = GENERATORS.find(g => g.id === targetId);
+    if (gen) {
+      gen.image = tempGenThumbBase64_100;
+      
+      // Save to localStorage
+      try {
+        let savedThumbs = JSON.parse(localStorage.getItem('genesis_gen_thumbnails') || '{}');
+        savedThumbs[targetId] = tempGenThumbBase64_100;
+        localStorage.setItem('genesis_gen_thumbnails', JSON.stringify(savedThumbs));
+      } catch (e) {
+        console.warn('Storage limit for thumbnails:', e);
+      }
+
+      // Re-render unit cards and dense table dynamically
+      if (typeof renderCards === 'function') renderCards();
+      if (typeof renderTable === 'function') renderTable();
+
+      closeGenThumbModal();
+      alert(`100x100 picture applied dynamically to Generator ${targetId}!`);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // C. BANNER DEVICE PHOTO & UPDATE (SHOWROOM STAGE)
+  // -------------------------------------------------------------------------
+  let tempBannerImageBase64 = null;
+  let bannerUploadMode = 'update'; // 'update' or 'new'
+
+  function openBannerUploadModal() {
+    const modal = document.getElementById('banner-upload-modal');
+    if (!modal) return;
+
+    const currentGen = BANNER_GENERATORS[currentHeroIndex] || BANNER_GENERATORS[0];
+    const previewImg = document.getElementById('banner-preview-img');
+    const brandInput = document.getElementById('banner-gen-brand');
+    const kvaInput = document.getElementById('banner-gen-kva');
+    const kwInput = document.getElementById('banner-gen-kw');
+    const rpmInput = document.getElementById('banner-gen-rpm');
+    const cylInput = document.getElementById('banner-gen-cyl');
+
+    if (previewImg && currentGen.img) previewImg.src = currentGen.img;
+    if (brandInput) brandInput.value = currentGen.brand;
+    if (kvaInput) kvaInput.value = parseInt(currentGen.spec1) || 60;
+    if (kwInput) kwInput.value = parseInt(currentGen.spec2) || 48;
+    if (rpmInput) rpmInput.value = currentGen.rpm || 1500;
+    if (cylInput) cylInput.value = currentGen.spec3 || '4 Cylinders';
+
+    setBannerUploadMode('update');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  function closeBannerUploadModal() {
+    const modal = document.getElementById('banner-upload-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function setBannerUploadMode(mode) {
+    bannerUploadMode = mode;
+    const btnUp = document.getElementById('btn-banner-mode-update');
+    const btnNew = document.getElementById('btn-banner-mode-new');
+    const saveLabel = document.getElementById('banner-save-btn-label');
+
+    if (mode === 'update') {
+      if (btnUp) btnUp.className = 'flex-1 py-1.5 rounded-lg bg-white shadow-xs text-slate-900 font-bold transition';
+      if (btnNew) btnNew.className = 'flex-1 py-1.5 rounded-lg hover:text-slate-900 transition font-medium';
+      if (saveLabel) saveLabel.textContent = 'Update Current Banner Device';
+    } else {
+      if (btnUp) btnUp.className = 'flex-1 py-1.5 rounded-lg hover:text-slate-900 transition font-medium';
+      if (btnNew) btnNew.className = 'flex-1 py-1.5 rounded-lg bg-white shadow-xs text-slate-900 font-bold transition';
+      if (saveLabel) saveLabel.textContent = '+ Add as New Banner Generator';
+    }
+  }
+
+  function handleBannerDeviceImageUpload(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        tempBannerImageBase64 = e.target.result;
+        const previewImg = document.getElementById('banner-preview-img');
+        const fileLabel = document.getElementById('banner-file-name-label');
+        if (previewImg) previewImg.src = tempBannerImageBase64;
+        if (fileLabel) fileLabel.textContent = `Selected: ${input.files[0].name}`;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  function saveBannerDeviceUpdate() {
+    const brand = document.getElementById('banner-gen-brand')?.value.trim() || 'Perkins 1104A-44TG2';
+    const kva = document.getElementById('banner-gen-kva')?.value || '60';
+    const kw = document.getElementById('banner-gen-kw')?.value || '48';
+    const rpm = parseInt(document.getElementById('banner-gen-rpm')?.value) || 1500;
+    const cyl = document.getElementById('banner-gen-cyl')?.value.trim() || '4 Cylinders';
+
+    if (bannerUploadMode === 'update') {
+      const gen = BANNER_GENERATORS[currentHeroIndex];
+      if (gen) {
+        if (tempBannerImageBase64) gen.img = tempBannerImageBase64;
+        gen.brand = brand;
+        gen.spec1 = `${kva} kVA Standby`;
+        gen.spec2 = `${kw} kW Prime`;
+        gen.spec3 = cyl;
+        gen.subspec = `${kva} kVA Standby / ${kw} kW Prime @ ${rpm} RPM, 50 Hz`;
+        gen.rpm = rpm;
+      }
+      switchHeroGenerator(currentHeroIndex);
+      alert(`Banner Device "${brand}" updated successfully!`);
+    } else {
+      const newGen = {
+        id: `GEN-USER-${BANNER_GENERATORS.length + 1}`,
+        station: 'Tower BTS-Custom-Node',
+        operator: 'Enterprise network',
+        area: 'Special Grid',
+        badge: 'USER DEPLOYED NODE',
+        brand: brand,
+        subtitle: `Industrial ${cyl} Diesel Generator`,
+        subspec: `${kva} kVA Standby / ${kw} kW Prime @ ${rpm} RPM, 50 Hz`,
+        spec1: `${kva} kVA Standby`,
+        spec2: `${kw} kW Prime`,
+        spec3: cyl,
+        img: tempBannerImageBase64 || 'perkins_pure_clean.png',
+        rpm: rpm,
+        status: 'Running',
+        volts: { l1l2: 400.0, freq: 50.00 },
+        kw: +kw * 0.45,
+        oil: 4.3,
+        fuel: 80,
+        efficiency: 0.245,
+        totalEnergy: '1,200,000',
+        runtime: '85 h',
+        nextService: 'in 1,915 h'
+      };
+      BANNER_GENERATORS.push(newGen);
+
+      // Add to hero dropdown
+      const selEl = document.getElementById('hero-device-selector');
+      if (selEl) {
+        const opt = document.createElement('option');
+        opt.value = newGen.id;
+        opt.textContent = `${newGen.id} · ${brand} (${kva} kVA)`;
+        selEl.appendChild(opt);
+      }
+
+      switchHeroGenerator(BANNER_GENERATORS.length - 1);
+      alert(`New Generator "${brand}" added to Dynamic Banner!`);
+    }
+
+    closeBannerUploadModal();
+  }
+
+  // Restore Persisted Data on DOM ready
+  function initDynamicUploadRestoration() {
+    // 1. User Avatar (300x300)
+    const savedAvatar = localStorage.getItem('genesis_user_avatar_300');
+    if (savedAvatar) {
+      const headerImg = document.getElementById('header-avatar-img');
+      const headerInitials = document.getElementById('header-avatar-initials');
+      const profImg = document.getElementById('prof-avatar-img');
+      const profInitials = document.getElementById('prof-avatar-initials');
+      if (headerImg) {
+        headerImg.src = savedAvatar;
+        headerImg.classList.remove('hidden');
+      }
+      if (headerInitials) headerInitials.classList.add('hidden');
+      if (profImg) {
+        profImg.src = savedAvatar;
+        profImg.classList.remove('hidden');
+      }
+      if (profInitials) profInitials.classList.add('hidden');
+    }
+
+    // 2. Generator Thumbnails (100x100)
+    try {
+      const savedThumbs = JSON.parse(localStorage.getItem('genesis_gen_thumbnails') || '{}');
+      Object.keys(savedThumbs).forEach(id => {
+        const gen = GENERATORS.find(g => g.id === id);
+        if (gen) gen.image = savedThumbs[id];
+      });
+      if (typeof renderCards === 'function') renderCards();
+    } catch (e) {}
+  }
+
+</script>
+</body>
+</html>

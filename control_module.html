@@ -1,0 +1,252 @@
+<!-- ===================================================================== -->
+<!-- AUTHORIZED REMOTE CONTROL & DSE-7320 MKII HARDWARE CONSOLE MODULE     -->
+<!-- ===================================================================== -->
+<div id="screen-control" class="flex flex-col gap-6">
+  
+  <!-- Header Bar & Target Machine Selector -->
+  <div class="bg-white/80 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <h2 class="text-xl font-black text-slate-900">DSE-7320 MKII Remote Control Console</h2>
+        <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">CLEARANCE LEVEL 4</span>
+      </div>
+      <p class="text-xs text-slate-600 mt-1 font-medium">Interactive Modbus RTU hardware sequencer, engine starting, breaker switching, and emergency safety lockout</p>
+    </div>
+
+    <!-- Generator Target Selector -->
+    <div class="flex items-center gap-2.5 w-full md:w-auto">
+      <span class="text-xs font-bold text-slate-600 whitespace-nowrap">Target Unit:</span>
+      <select id="ctrl-unit-sel" onchange="switchControlUnit(this.value)" class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 font-bold text-slate-900 text-xs outline-none focus:border-slate-900 w-full md:w-64">
+        <option value="GEN-PK-0104">GEN-PK-0104 · Perkins 1104A (BTS-GP-0492)</option>
+        <option value="GEN-CM-0208">GEN-CM-0208 · Cummins 6BT5.9 (BTS-RO-8442)</option>
+        <option value="GEN-CAT-0312">GEN-CAT-0312 · Caterpillar C4.4 (BTS-BL-1944)</option>
+        <option value="GEN-KH-0416">GEN-KH-0416 · Kohler KD62 (BTS-TE-4738)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Physical DSE-7320 Hardware Console Stage -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- Left: Authentic DSE 7320 Fascia Controller -->
+    <div class="lg:col-span-8 bg-[#13161c] rounded-[32px] p-6 sm:p-8 shadow-2xl border-4 border-[#242b38] flex flex-col items-center gap-6 select-none relative overflow-hidden">
+      <!-- Metallic Corner Screws -->
+      <div class="absolute top-3 left-3 w-3 h-3 rounded-full bg-slate-600 border border-slate-400 flex items-center justify-center"><div class="w-2 h-0.5 bg-slate-800"></div></div>
+      <div class="absolute top-3 right-3 w-3 h-3 rounded-full bg-slate-600 border border-slate-400 flex items-center justify-center"><div class="w-2 h-0.5 bg-slate-800"></div></div>
+      <div class="absolute bottom-3 left-3 w-3 h-3 rounded-full bg-slate-600 border border-slate-400 flex items-center justify-center"><div class="w-2 h-0.5 bg-slate-800"></div></div>
+      <div class="absolute bottom-3 right-3 w-3 h-3 rounded-full bg-slate-600 border border-slate-400 flex items-center justify-center"><div class="w-2 h-0.5 bg-slate-800"></div></div>
+
+      <!-- Top Branding Strip -->
+      <div class="w-full flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="px-2 py-0.5 bg-white text-black font-black text-xs tracking-wider rounded-sm">DSE</div>
+          <span class="text-xs font-black tracking-widest text-slate-300">DEEP SEA ELECTRONICS</span>
+        </div>
+        <div class="text-[11px] font-mono font-bold text-slate-400">DSE 7320 MKII</div>
+      </div>
+
+      <!-- Center Stage: Screen & Keypad -->
+      <div class="w-full grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
+        
+        <!-- Navigation 5-Way Keypad -->
+        <div class="sm:col-span-4 flex flex-col items-center justify-center gap-2">
+          <button onclick="navDseScreen('up')" class="w-10 h-10 rounded-full bg-[#1e2430] hover:bg-[#2c3547] active:scale-95 text-slate-300 flex items-center justify-center border border-slate-700 shadow-md transition" title="Menu Up">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-8 8h16z"/></svg>
+          </button>
+          <div class="flex items-center gap-3">
+            <button onclick="navDseScreen('left')" class="w-10 h-10 rounded-full bg-[#1e2430] hover:bg-[#2c3547] active:scale-95 text-slate-300 flex items-center justify-center border border-slate-700 shadow-md transition" title="Menu Left">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M4 12l8-8v16z"/></svg>
+            </button>
+            <button onclick="navDseScreen('ok')" class="w-11 h-11 rounded-full bg-white hover:bg-slate-200 active:scale-95 text-black font-bold flex items-center justify-center shadow-md transition" title="Confirm / Select">
+              <svg class="w-5 h-5 text-slate-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <button onclick="navDseScreen('right')" class="w-10 h-10 rounded-full bg-[#1e2430] hover:bg-[#2c3547] active:scale-95 text-slate-300 flex items-center justify-center border border-slate-700 shadow-md transition" title="Menu Right">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M20 12l-8-8v16z"/></svg>
+            </button>
+          </div>
+          <button onclick="navDseScreen('down')" class="w-10 h-10 rounded-full bg-[#1e2430] hover:bg-[#2c3547] active:scale-95 text-slate-300 flex items-center justify-center border border-slate-700 shadow-md transition" title="Menu Down">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20l-8-8h16z"/></svg>
+          </button>
+          <span class="text-[9px] font-mono font-bold text-slate-600 uppercase tracking-wider mt-1">Screen Cycle: <span id="dse-screen-name" class="text-slate-300">1 / 4 (Voltages)</span></span>
+        </div>
+
+        <!-- LCD Screen Matrix -->
+        <div class="sm:col-span-8 bg-[#0a1f14] border-2 border-[#52b788] rounded-2xl p-4 sm:p-5 font-mono shadow-[inset_0_2px_10px_rgba(0,0,0,0.8)] min-h-[175px] flex flex-col justify-between text-[#74c69d] relative overflow-hidden" style="text-shadow: 0 0 6px rgba(82,183,136,0.5);">
+          <div class="absolute inset-0 bg-gradient-to-b from-[#52b788]/15 via-transparent to-[#52b788]/5 pointer-events-none"></div>
+
+          <!-- LCD Header -->
+          <div class="flex items-center justify-between border-b border-[#52b788]/40 pb-2 relative z-10">
+            <span id="dse-lcd-title" class="text-xs sm:text-sm font-black tracking-wider uppercase text-[#95d5b2]">Generator Voltage</span>
+            <span id="dse-lcd-status-badge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-[#1b4332] text-[#95d5b2] border border-[#52b788]/50">ONLINE</span>
+          </div>
+
+          <!-- LCD Dynamic Content -->
+          <div id="dse-lcd-body" class="py-3 relative z-10 text-xs sm:text-sm font-bold space-y-1 text-[#74c69d]">
+            <div class="flex justify-between"><span>L1-N:</span><span id="lcd-v1" class="text-[#d8f3dc]">230.4 V</span></div>
+            <div class="flex justify-between"><span>L2-N:</span><span id="lcd-v2" class="text-[#d8f3dc]">229.8 V</span></div>
+            <div class="flex justify-between"><span>L3-N:</span><span id="lcd-v3" class="text-[#d8f3dc]">230.1 V</span></div>
+            <div class="flex justify-between pt-1 border-t border-[#52b788]/30 text-[#95d5b2]"><span>L1-L2:</span><span id="lcd-v12" class="text-[#d8f3dc]">399.8 V</span></div>
+          </div>
+
+          <!-- LCD Footer -->
+          <div class="flex items-center justify-between text-[10px] border-t border-[#52b788]/40 pt-1.5 relative z-10 text-[#52b788]">
+            <span id="dse-lcd-mode-lbl">MODE: AUTO</span>
+            <span id="dse-lcd-freq">50.02 HZ · 1500 RPM</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Single Line Diagram (SLD) Schematic -->
+      <div class="w-full bg-[#181d26] rounded-2xl p-3 border border-slate-800 flex items-center justify-between text-xs font-mono text-slate-400">
+        <div class="flex items-center gap-2">
+          <div id="sld-mains-icon" class="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-600 text-emerald-400 flex items-center justify-center font-bold text-[10px]">GRID</div>
+          <div class="h-0.5 w-10 sm:w-16 bg-emerald-600" id="sld-mains-line"></div>
+        </div>
+        <div class="flex flex-col items-center gap-0.5">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" id="sld-bus-status"></div>
+          <span class="text-[9px] uppercase tracking-wider text-slate-600">COMMON BUS</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="h-0.5 w-10 sm:w-16 bg-emerald-600" id="sld-gen-line"></div>
+          <div id="sld-gen-icon" class="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-600 text-emerald-400 flex items-center justify-center font-bold text-[10px]">GEN</div>
+        </div>
+      </div>
+
+      <!-- Physical Pushbutton Operation Row -->
+      <div class="w-full grid grid-cols-3 sm:grid-cols-6 gap-3">
+        <!-- 1. Stop / Reset -->
+        <button onclick="stopGenerator()" id="ctrl-btn-stop" class="p-3 rounded-2xl bg-[#262c3a] hover:bg-rose-950/80 active:scale-95 border border-slate-700 hover:border-rose-600 flex flex-col items-center gap-1 text-slate-300 hover:text-white transition group shadow-md" title="Stop Generator Engine">
+          <div class="w-6 h-6 rounded-full bg-rose-600 flex items-center justify-center text-white text-xs font-black shadow-xs">O</div>
+          <span class="text-[10px] font-bold tracking-wider">STOP</span>
+        </button>
+
+        <!-- 2. Manual Mode -->
+        <button onclick="setControllerMode('MANUAL')" id="ctrl-btn-manual" class="p-3 rounded-2xl bg-[#262c3a] hover:bg-[#323a4d] active:scale-95 border border-slate-700 flex flex-col items-center gap-1 text-slate-300 transition shadow-md" title="Engage Manual Mode">
+          <div class="w-6 h-6 rounded-full bg-slate-700 flex items-center justify-center text-slate-200">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+          </div>
+          <span class="text-[10px] font-bold tracking-wider">MANUAL</span>
+        </button>
+
+        <!-- 3. Auto Mode -->
+        <button onclick="setControllerMode('AUTO')" id="ctrl-btn-auto" class="p-3 rounded-2xl bg-indigo-950/70 border border-indigo-600 active:scale-95 flex flex-col items-center gap-1 text-white transition shadow-md" title="Engage Auto Mode">
+          <div class="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-white font-mono text-[9px] font-black">AUTO</div>
+          <span class="text-[10px] font-bold tracking-wider text-indigo-300">AUTO</span>
+        </button>
+
+        <!-- 4. Test on Load -->
+        <button onclick="testGeneratorLoad()" id="ctrl-btn-test" class="p-3 rounded-2xl bg-[#262c3a] hover:bg-[#323a4d] active:scale-95 border border-slate-700 flex flex-col items-center gap-1 text-slate-300 transition shadow-md" title="Test Generator Under Load">
+          <div class="w-6 h-6 rounded-full bg-amber-600/60 flex items-center justify-center text-amber-300 text-xs font-bold">TEST</div>
+          <span class="text-[10px] font-bold tracking-wider">TEST</span>
+        </button>
+
+        <!-- 5. Mute Alarm Siren -->
+        <button onclick="muteAudibleAlarm()" id="ctrl-btn-mute" class="p-3 rounded-2xl bg-[#262c3a] hover:bg-[#323a4d] active:scale-95 border border-slate-700 flex flex-col items-center gap-1 text-slate-300 transition shadow-md" title="Silence Acoustic Alarm">
+          <div class="w-6 h-6 rounded-full bg-slate-700 flex items-center justify-center text-slate-300">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          </div>
+          <span class="text-[10px] font-bold tracking-wider">MUTE</span>
+        </button>
+
+        <!-- 6. Start Engine -->
+        <button onclick="startGenerator()" id="ctrl-btn-start" class="p-3 rounded-2xl bg-[#262c3a] hover:bg-emerald-950/80 active:scale-95 border border-slate-700 hover:border-emerald-600 flex flex-col items-center gap-1 text-slate-300 hover:text-white transition group shadow-md" title="Initiate Engine Crank">
+          <div class="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs font-black shadow-xs">I</div>
+          <span class="text-[10px] font-bold tracking-wider">START</span>
+        </button>
+      </div>
+
+      <!-- Emergency E-Stop Pushbutton -->
+      <div class="w-full flex items-center justify-between p-3.5 rounded-2xl bg-rose-950/40 border border-rose-900/60">
+        <div class="flex items-center gap-3">
+          <div class="w-3 h-3 rounded-full bg-rose-600 animate-ping"></div>
+          <div>
+            <div class="text-xs font-black text-rose-300 tracking-wide">EMERGENCY STOP (E-STOP) INTERLOCK</div>
+            <div class="text-[10px] text-rose-400/80 font-mono">Immediate fuel solenoid cutoff and generator shutdown</div>
+          </div>
+        </div>
+        <button onclick="triggerEmergencyStop()" class="px-5 py-2.5 rounded-full bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-black text-xs uppercase tracking-wider shadow-lg border border-rose-400 transition flex items-center gap-2 cursor-pointer">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>TRIP E-STOP</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Right: Operational Status & Command Action Log -->
+    <div class="lg:col-span-4 flex flex-col gap-6">
+      
+      <!-- Live Controller Telemetry State Card -->
+      <div class="bg-white/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md flex flex-col gap-4">
+        <h3 class="text-sm font-black text-slate-900 border-b border-slate-100 pb-2 flex items-center justify-between">
+          <span>Active Controller Registers</span>
+          <span class="text-[10px] font-mono font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">SLAVE 01</span>
+        </h3>
+
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+            <span class="text-[10px] text-slate-600 font-bold block">Engine State</span>
+            <span id="ctrl-state-rpm" class="text-base font-black text-slate-900 font-mono mt-0.5 block">1500 RPM</span>
+            <span id="ctrl-state-sub" class="text-[10px] text-emerald-600 font-bold">Running At Rated</span>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+            <span class="text-[10px] text-slate-600 font-bold block">Active Power</span>
+            <span id="ctrl-state-kw" class="text-base font-black text-slate-900 font-mono mt-0.5 block">18.6 kW</span>
+            <span class="text-[10px] text-slate-600 font-bold">48 kW Prime</span>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+            <span class="text-[10px] text-slate-600 font-bold block">Coolant Temp</span>
+            <span id="ctrl-state-temp" class="text-base font-black text-slate-900 font-mono mt-0.5 block">84.2 °C</span>
+            <span class="text-[10px] text-emerald-600 font-bold">Normal Thermal</span>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+            <span class="text-[10px] text-slate-600 font-bold block">Oil Pressure</span>
+            <span id="ctrl-state-oil" class="text-base font-black text-slate-900 font-mono mt-0.5 block">4.20 bar</span>
+            <span class="text-[10px] text-emerald-600 font-bold">Optimal Hydro</span>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-indigo-50 border border-indigo-200/80 text-xs">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-indigo-900">Modbus RTU over RS-485</span>
+            <span class="font-mono font-bold text-indigo-700">9600-8-N-1</span>
+          </div>
+          <p class="text-[11px] text-indigo-700 mt-1">Continuous polling cycle active with zero frame CRC drops across 492 national towers.</p>
+        </div>
+      </div>
+
+      <!-- Real-Time SCADA Execution Log -->
+      <div class="bg-white/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md flex-1 flex flex-col gap-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h3 class="text-sm font-black text-slate-900">SCADA Command Execution Audit</h3>
+          <span class="text-[10px] font-mono text-slate-400">LIVE FEED</span>
+        </div>
+
+        <div id="ctrl-audit-log" class="space-y-2 text-xs font-mono max-h-64 overflow-y-auto pr-1">
+          <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col gap-0.5">
+            <div class="flex items-center justify-between text-[10px] text-slate-600">
+              <span class="text-emerald-700 font-bold">MODBUS ACK</span>
+              <span>15:42:10 UTC</span>
+            </div>
+            <div class="font-bold text-slate-800">GEN-PK-0104 · Telemetry Sync Confirmed</div>
+            <div class="text-[10px] text-slate-600">Operator: Lian Ahmed (#AR-9402) · Auto Polling</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col gap-0.5">
+            <div class="flex items-center justify-between text-[10px] text-slate-600">
+              <span class="text-indigo-700 font-bold">MODE SET</span>
+              <span>15:30:00 UTC</span>
+            </div>
+            <div class="font-bold text-slate-800">Operational Sequencer set to AUTO</div>
+            <div class="text-[10px] text-slate-600">Clearance: Level 4 Authorized</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
