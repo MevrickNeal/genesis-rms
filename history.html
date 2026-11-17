@@ -2602,7 +2602,7 @@
       spec1: '100 kVA Standby',
       spec2: '80 kW Prime',
       spec3: '6 Cylinders',
-      img: 'perkins_pure_clean.png',
+      img: 'cummins_6bt_clean.png',
       rpm: 1500,
       status: 'Running',
       volts: { l1l2: 401.0, freq: 50.00 },
@@ -2626,7 +2626,7 @@
       spec1: '88 kVA Standby',
       spec2: '70 kW Prime',
       spec3: '4 Cylinders',
-      img: 'perkins_pure_clean.png',
+      img: 'cat_c44_clean.png',
       rpm: 1500,
       status: 'Running',
       volts: { l1l2: 399.5, freq: 49.98 },
@@ -2650,7 +2650,7 @@
       spec1: '150 kVA Standby',
       spec2: '120 kW Prime',
       spec3: 'V12 Engine',
-      img: 'perkins_pure_clean.png',
+      img: 'kohler_kd62_clean.png',
       rpm: 1500,
       status: 'Running',
       volts: { l1l2: 400.8, freq: 50.04 },
@@ -2733,13 +2733,15 @@
 
     // Smooth engine image cross-fade
     if (imgEl && gen.img) {
-      imgEl.style.opacity = '0.4';
-      imgEl.style.transform = 'scale(0.98)';
-      setTimeout(() => {
+      if (imgEl.getAttribute('src') !== gen.img) {
+        imgEl.style.opacity = '0.3';
+        imgEl.style.transform = 'scale(0.97)';
         imgEl.src = gen.img;
-        imgEl.style.opacity = '1';
-        imgEl.style.transform = 'scale(1)';
-      }, 120);
+        setTimeout(() => {
+          imgEl.style.opacity = '1';
+          imgEl.style.transform = 'scale(1)';
+        }, 50);
+      }
     }
 
     // 2. Animate RPM gauge
