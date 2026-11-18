@@ -186,6 +186,9 @@
 
   // INITIALIZATION ON DOM READY
   window.addEventListener('DOMContentLoaded', () => {
+    initScadaTheme();
+    initGlobalSearch();
+    initHeroSwipe();
     applyCmsLayout();
     renderCards();
     renderTable();
@@ -556,20 +559,54 @@
     }
   }
 
-  // Real-time micro-ticks simulation loop (Alive feel)
+  // Real-time micro-ticks simulation loop (Alive feel) + Fuel Siphon Theft Rate Detector
+  let lastFuelTickSample = {};
+  function checkFuelSiphonTheft(g) {
+    if (!g) return;
+    const now = Date.now();
+    const currentLiters = parseFloat(g.p18_fuel_liters) || 0;
+    const sample = lastFuelTickSample[g.id];
+    if (!sample) {
+      lastFuelTickSample[g.id] = { liters: currentLiters, time: now };
+      return;
+    }
+    const elapsedMinutes = (now - sample.time) / 60000.0;
+    if (elapsedMinutes >= 0.05) {
+      const dropLiters = sample.liters - currentLiters;
+      const rateLpm = elapsedMinutes > 0 ? dropLiters / elapsedMinutes : 0;
+      if (rateLpm > 5.0 && (g.status === 'STANDBY' || g.rpm === 0)) {
+        if (typeof showScadaToast === 'function') {
+          showScadaToast(
+            'CRITICAL: SUDDEN FUEL DROP DETECTED',
+            `Fuel level dropping at ${rateLpm.toFixed(1)} L/min while engine is stopped on ${g.station}! Potential fuel theft or tank leak.`,
+            'error'
+          );
+        }
+      }
+      lastFuelTickSample[g.id] = { liters: currentLiters, time: now };
+    }
+  }
+
   function startTelemetryLiveTicks() {
     setInterval(() => {
       const g = GENERATORS.find(u => u.id === selectedUnitId);
-      if (!g || g.status === 'STANDBY') return;
+      if (!g) return;
+
+      checkFuelSiphonTheft(g);
+
+      if (g.status === 'STANDBY') return;
 
       // Subtle voltage & frequency jitter (Modbus polling simulation)
       const vJitter = (Math.random() * 0.4 - 0.2).toFixed(1);
       const fJitter = (Math.random() * 0.02 - 0.01).toFixed(2);
       const kwJitter = (Math.random() * 0.2 - 0.1).toFixed(1);
 
-      document.getElementById('val-p1').innerText = `${(+g.p1_v1n + +vJitter).toFixed(1)} V`;
-      document.getElementById('val-p10').innerText = `${(+g.p10_freq + +fJitter).toFixed(2)} Hz`;
-      document.getElementById('val-p11').innerText = `${(+g.p11_kw + +kwJitter).toFixed(1)} kW`;
+      const p1El = document.getElementById('val-p1');
+      const p10El = document.getElementById('val-p10');
+      const p11El = document.getElementById('val-p11');
+      if (p1El) p1El.innerText = `${(+g.p1_v1n + +vJitter).toFixed(1)} V`;
+      if (p10El) p10El.innerText = `${(+g.p10_freq + +fJitter).toFixed(2)} Hz`;
+      if (p11El) p11El.innerText = `${(+g.p11_kw + +kwJitter).toFixed(1)} kW`;
       // Real-time RPM tachometer micro-jitter (1498 - 1502 RPM)
       if (typeof setHeroRpm === 'function') {
         const rpmJitter = Math.round(Math.random() * 6 - 3);
@@ -1237,26 +1274,68 @@
     }
   }
 
+  const BD_GEO_LOCATIONS = {
+    'dhaka': [23.8103, 90.4125, 12],
+    'chittagong': [22.3569, 91.7832, 12],
+    'chattogram': [22.3569, 91.7832, 12],
+    'sylhet': [24.8949, 91.8687, 12],
+    'khulna': [22.8456, 89.5403, 12],
+    'rajshahi': [24.3745, 88.6042, 12],
+    'barisal': [22.7010, 90.3535, 12],
+    'barishal': [22.7010, 90.3535, 12],
+    'rangpur': [25.7439, 89.2752, 12],
+    'mymensingh': [24.7471, 90.4203, 12],
+    'coxsbazar': [21.4272, 92.0058, 13],
+    "cox's bazar": [21.4272, 92.0058, 13],
+    'gazipur': [23.9999, 90.4203, 13],
+    'narayanganj': [23.6238, 90.5000, 13],
+    'comilla': [23.4607, 91.1809, 13],
+    'cumilla': [23.4607, 91.1809, 13],
+    'bogra': [24.8465, 89.3777, 13],
+    'bogura': [24.8465, 89.3777, 13],
+    'jessore': [23.1664, 89.2081, 13],
+    'jashore': [23.1664, 89.2081, 13]
+  };
+
   function searchOsmNominatim() {
     const input = document.getElementById('osm-search-input');
     if (!input || !mapInstance) return;
     const query = input.value.trim();
     if (!query) return;
 
+    const key = query.toLowerCase();
+    for (const [cityName, coords] of Object.entries(BD_GEO_LOCATIONS)) {
+      if (key.includes(cityName) || cityName.includes(key)) {
+        mapInstance.setView([coords[0], coords[1]], coords[2]);
+        if (typeof showScadaToast === 'function') {
+          showScadaToast('GIS Map Panned', `Panned to ${cityName.toUpperCase()} Coordinates [${coords[0]}, ${coords[1]}]`);
+        }
+        return;
+      }
+    }
+
     const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Bangladesh')}&format=json&limit=1`;
-    fetch(url, { headers: { 'User-Agent': 'Genesis-RMS-App' } })
+    fetch(url)
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {
           const lat = parseFloat(data[0].lat);
           const lon = parseFloat(data[0].lon);
           mapInstance.setView([lat, lon], 12);
+          if (typeof showScadaToast === 'function') {
+            showScadaToast('GIS Location Found', `Panned to ${data[0].display_name.split(',')[0]}`);
+          }
         } else {
-          alert('Location not found in OpenStreetMap Nominatim index.');
+          if (typeof showScadaToast === 'function') {
+            showScadaToast('Location Not Found', 'Could not locate query in OpenStreetMap index.', 'warn');
+          } else {
+            alert('Location not found in OpenStreetMap Nominatim index.');
+          }
         }
       })
       .catch(err => {
-        console.warn('Nominatim geocode error:', err);
+        console.warn('Nominatim search error, fallback:', err);
+        mapInstance.setView([23.8103, 90.4125], 11);
       });
   }
 
@@ -1419,6 +1498,11 @@
       spec1: '60 kVA Standby',
       spec2: '48 kW Prime',
       spec3: '4 Cylinders',
+      displacement: '4.4 Liters',
+      aspiration: 'Turbocharged Mechanical Intercooler',
+      fuelBurn: '12.8 L/h @ 75% Load',
+      oilCapacity: '8.0 L Sump (15W-40 CI-4)',
+      coolantCapacity: '13.0 L 50/50 Premix',
       img: 'perkins_pure_clean.png',
       rpm: 1500,
       status: 'Running',
@@ -1443,6 +1527,11 @@
       spec1: '100 kVA Standby',
       spec2: '80 kW Prime',
       spec3: '6 Cylinders',
+      displacement: '5.9 Liters In-Line',
+      aspiration: 'Holset Turbocharged Aftercooled',
+      fuelBurn: '19.2 L/h @ 75% Load',
+      oilCapacity: '16.4 L Sump (15W-40 CI-4)',
+      coolantCapacity: '24.5 L Heavy-Duty Coolant',
       img: 'cummins_6bt_clean.png',
       rpm: 1500,
       status: 'Running',
@@ -1467,6 +1556,11 @@
       spec1: '88 kVA Standby',
       spec2: '70 kW Prime',
       spec3: '4 Cylinders',
+      displacement: '4.4 Liters Common Rail',
+      aspiration: 'Cat ACERT Turbocharged',
+      fuelBurn: '15.4 L/h @ 75% Load',
+      oilCapacity: '10.5 L Cat DEO Sump',
+      coolantCapacity: '18.2 L Cat ELC Coolant',
       img: 'cat_c44_clean.png',
       rpm: 1500,
       status: 'Running',
@@ -1491,6 +1585,11 @@
       spec1: '150 kVA Standby',
       spec2: '120 kW Prime',
       spec3: 'V12 Engine',
+      displacement: '62.4 Liters V12',
+      aspiration: 'Twin Turbocharged Intercooled',
+      fuelBurn: '28.6 L/h @ 75% Load',
+      oilCapacity: '45.0 L Synthetic Sump',
+      coolantCapacity: '72.0 L High-Capacity Core',
       img: 'kohler_kd62_clean.png',
       rpm: 1500,
       status: 'Running',

@@ -13,8 +13,8 @@
           <div id="wrapper-hero" class="dashboard-module flex flex-col gap-4" data-module="hero">
             <div class="relative w-full rounded-[32px] overflow-hidden border border-white/90 shadow-lg bg-white/80 backdrop-blur-2xl p-4 sm:p-6 flex flex-col gap-4">
               
-              <!-- TOP HALF: SHOWROOM STAGE -->
-              <div class="relative w-full min-h-[380px] lg:min-h-[410px] p-6 sm:p-8 lg:p-10 flex flex-col justify-between rounded-3xl overflow-hidden hero-stage-bg border border-white/80">
+              <!-- TOP HALF: SHOWROOM STAGE (Supports Touch & Mouse Swipe) -->
+              <div id="hero-showroom-stage" class="relative w-full min-h-[380px] lg:min-h-[410px] p-6 sm:p-8 lg:p-10 flex flex-col justify-between rounded-3xl overflow-hidden hero-stage-bg border border-white/80 select-none cursor-grab active:cursor-grabbing">
                 
                 <!-- Elliptical Showroom Pedestal -->
                 <div class="hero-pedestal hidden sm:block"></div>
@@ -98,26 +98,26 @@
                     </p>
 
                     <!-- Interactive Specification Buttons -->
-                    <div class="flex flex-wrap items-center gap-2.5 mb-5">
-                      <button onclick="filterBySpec('60kva')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 hover:bg-white border border-white shadow-2xs text-xs font-bold text-slate-700 transition" title="Filter 60 kVA Standby">
+                    <div class="flex flex-wrap items-center gap-2.5 mb-5" id="hero-specs-container">
+                      <button type="button" onclick="inspectActiveHeroSpec('spec1')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 hover:bg-white border border-white shadow-2xs text-xs font-bold text-slate-700 transition cursor-pointer hover:scale-[1.02] shadow-xs" title="Click to inspect Standby rating and ISO 8528 curves">
                         <div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
                           <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                         </div>
-                        <span><strong class="text-slate-900 font-extrabold">60 kVA</strong> Standby</span>
+                        <span id="hero-spec-1"><strong class="text-slate-900 font-extrabold">60 kVA</strong> Standby</span>
                       </button>
 
-                      <button onclick="filterBySpec('48kw')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 hover:bg-white border border-white shadow-2xs text-xs font-bold text-slate-700 transition" title="Filter 48 kW Prime">
+                      <button type="button" onclick="inspectActiveHeroSpec('spec2')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 hover:bg-white border border-white shadow-2xs text-xs font-bold text-slate-700 transition cursor-pointer hover:scale-[1.02] shadow-xs" title="Click to inspect Prime base-load rating">
                         <div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
                           <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                         </div>
-                        <span><strong class="text-slate-900 font-extrabold">48 kW</strong> Prime</span>
+                        <span id="hero-spec-2"><strong class="text-slate-900 font-extrabold">48 kW</strong> Prime</span>
                       </button>
 
-                      <button onclick="filterBySpec('4cyl')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 hover:bg-white border border-white shadow-2xs text-xs font-bold text-slate-700 transition" title="4 Cylinders Architecture">
+                      <button type="button" onclick="inspectActiveHeroSpec('spec3')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 hover:bg-white border border-white shadow-2xs text-xs font-bold text-slate-700 transition cursor-pointer hover:scale-[1.02] shadow-xs" title="Click to inspect engine architecture & cylinder telemetry">
                         <div class="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
                           <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
                         </div>
-                        <span><strong class="text-slate-900 font-extrabold">4</strong> Cylinders</span>
+                        <span id="hero-spec-3"><strong class="text-slate-900 font-extrabold">4</strong> Cylinders</span>
                       </button>
                     </div>
                   </div>

@@ -1,7 +1,7 @@
       <!-- ===================================================================== -->
       <!-- SCREEN 02: CMS MANAGEMENT & VISUAL PAGE BUILDER STUDIO                -->
       <!-- ===================================================================== -->
-      <div id="screen-cms" class="hidden flex flex-col gap-6">
+      <div id="screen-cms" class="flex flex-col gap-6">
         
         <!-- CMS Top Banner & Controls -->
         <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-6 border border-white/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -98,68 +98,6 @@
         </div>
 
       </div>
-
-      <!-- OTHER SCREENS (Live Waveforms, Map Standalone, Alarms Full, Control, Comm, NOC, Settings) -->
-      <div id="screen-live" class="hidden flex flex-col gap-5">
-        <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs">
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <h2 class="text-lg font-bold text-slate-900">Perkins 1104A-44TG2 3-Phase Telemetry Waveform Suite</h2>
-              <p class="text-xs text-slate-600">Continuous 50 Hz cycle acquisition • 400V L-L / 230V L-N balanced waveforms</p>
-            </div>
-            <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 animate-pulse">● RS-485 LIVE</span>
-          </div>
-          <div class="w-full h-80 bg-slate-950 rounded-2xl p-4 flex flex-col justify-between shadow-inner relative overflow-hidden">
-            <canvas id="live-waveform-canvas" class="w-full h-full"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <div id="screen-alarms" class="hidden flex flex-col gap-5">
-        <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs">
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <h2 class="text-lg font-bold text-slate-900">National SCADA Alarm & Fault Center</h2>
-              <p class="text-xs text-slate-600">Real-time RTU event queue with cryptographic priority dispatch</p>
-            </div>
-          </div>
-          <div id="alarms-full-list" class="space-y-3"></div>
-        </div>
-      </div>
-
-      <div id="screen-control" class="hidden flex flex-col gap-5">
-        <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs">
-          <h2 class="text-lg font-bold text-slate-900 mb-1">Cryptographic Remote Command Center</h2>
-          <p class="text-xs text-slate-600 mb-5">Authorized machine state manipulation over secure Modbus gateway</p>
-          <div class="p-5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-            Notice: Remote start/stop commands require dual SCADA engineer sign-off and encrypted TLS token.
-          </div>
-        </div>
-      </div>
-
-      <div id="screen-comm" class="hidden flex flex-col gap-5">
-        <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs">
-          <h2 class="text-lg font-bold text-slate-900 mb-1">Gateway Communication & Topic Publisher</h2>
-          <p class="text-xs text-slate-600 mb-5">RTU Gateway telemetry transmission monitor</p>
-        </div>
-      </div>
-
-      <div id="screen-noc" class="hidden flex flex-col gap-5">
-        <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs">
-          <h2 class="text-lg font-bold text-slate-900 mb-1">NOC Operator Profile</h2>
-          <p class="text-xs text-slate-600 mb-5">Engr. Lian Ahmed • Lead SCADA Engineer • UID: #AR-9402</p>
-        </div>
-      </div>
-
-      <div id="screen-settings" class="hidden flex flex-col gap-5">
-        <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs">
-          <h2 class="text-lg font-bold text-slate-900 mb-1">System Settings</h2>
-          <p class="text-xs text-slate-600 mb-5">Configure polling intervals, alerting thresholds, and Modbus RTU telemetry channels</p>
-        </div>
-      </div>
-
-    </main>
-  </div>
 
   <!-- CMS AUTHENTICATION MODAL -->
   <div id="modal-cms-login" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">

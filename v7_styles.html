@@ -285,6 +285,75 @@
       opacity: 0.5;
       transform: scale(0.98);
     }
+
+    /* Interactive Showroom Touch & Mouse Swipe cursor */
+    #hero-showroom-stage {
+      cursor: grab;
+      touch-action: pan-y;
+      user-select: none;
+    }
+    #hero-showroom-stage:active {
+      cursor: grabbing;
+    }
+
+    /* SCADA Night Shift Dark Mode Theme */
+    body.theme-dark {
+      background: #090d16 !important;
+      background-image: 
+        radial-gradient(at 10% 10%, rgba(30, 41, 59, 0.4) 0px, transparent 50%),
+        radial-gradient(at 90% 10%, rgba(15, 23, 42, 0.6) 0px, transparent 50%),
+        radial-gradient(at 50% 90%, rgba(2, 6, 23, 0.8) 0px, transparent 50%) !important;
+      color: #f1f5f9 !important;
+    }
+    body.theme-dark .bg-white\/80,
+    body.theme-dark .bg-white\/90,
+    body.theme-dark .bg-white\/95,
+    body.theme-dark .bg-white {
+      background-color: rgba(15, 23, 42, 0.88) !important;
+      border-color: rgba(51, 65, 85, 0.6) !important;
+      color: #f8fafc !important;
+    }
+    body.theme-dark .text-slate-900 {
+      color: #f8fafc !important;
+    }
+    body.theme-dark .text-slate-800 {
+      color: #f1f5f9 !important;
+    }
+    body.theme-dark .text-slate-700 {
+      color: #cbd5e1 !important;
+    }
+    body.theme-dark .text-slate-600 {
+      color: #94a3b8 !important;
+    }
+    body.theme-dark .bg-slate-50,
+    body.theme-dark .bg-slate-100 {
+      background-color: rgba(30, 41, 59, 0.6) !important;
+      border-color: rgba(51, 65, 85, 0.5) !important;
+    }
+    body.theme-dark .glass-pill {
+      background: rgba(15, 23, 42, 0.75) !important;
+      border-color: rgba(51, 65, 85, 0.6) !important;
+      color: #f8fafc !important;
+    }
+    body.theme-dark .left-rail {
+      background: rgba(15, 23, 42, 0.92) !important;
+      border-color: rgba(51, 65, 85, 0.6) !important;
+    }
+    body.theme-dark .rail-btn {
+      color: #94a3b8 !important;
+    }
+    body.theme-dark .rail-btn:hover {
+      background: rgba(30, 41, 59, 0.8) !important;
+      color: #f8fafc !important;
+    }
+    body.theme-dark .border-slate-100,
+    body.theme-dark .border-slate-200 {
+      border-color: rgba(51, 65, 85, 0.5) !important;
+    }
+    body.theme-dark .hero-stage-bg {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
+      border-color: rgba(51, 65, 85, 0.5) !important;
+    }
   </style>
 </head>
 <body class="selection:bg-slate-900 selection:text-[#9ede4c]">
