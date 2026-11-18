@@ -19,6 +19,10 @@
 
             <!-- Quick Action Counters -->
             <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
+              <button onclick="document.getElementById('datasheet-dropzone').scrollIntoView({behavior: 'smooth'}); document.getElementById('datasheet-file-input').click();" class="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-md transition flex items-center gap-2 cursor-pointer group" title="Upload Generator Technical Datasheet & Parse Specs">
+                <svg class="w-4 h-4 transition group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span>Upload Machine Datasheet</span>
+              </button>
               <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-center min-w-[110px]">
                 <div class="text-[10px] uppercase font-bold text-slate-400">Registered Models</div>
                 <div class="text-xl font-black text-slate-900 mt-0.5" id="gen-count-models">12 Models</div>

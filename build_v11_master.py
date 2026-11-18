@@ -7,7 +7,7 @@ SRC_DIR = r"c:\Users\Arena\Desktop\Lian Testing\ArenaIoT"
 ARTIFACT_DIR = r"c:\Users\Arena\.gemini\antigravity\brain\b54bd6e6-189e-4bc1-ae5f-64a9b3863f38"
 
 # 1. Sync Image Assets
-image_files = ["Arena IoT Connected Logo.png", "perkins_pure_clean.png", "dse_7320_mkii_refined.png", "ArenaIoT.png"]
+image_files = ["Arena IoT Connected Logo.png", "perkins_pure_clean.png", "cummins_6bt_clean.png", "cat_c44_clean.png", "kohler_kd62_clean.png", "dse_7320_mkii_refined.png", "ArenaIoT.png"]
 for img in image_files:
     src = os.path.join(SRC_DIR, img)
     dst = os.path.join(ARTIFACT_DIR, img)
