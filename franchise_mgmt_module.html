@@ -46,8 +46,13 @@
 
               <!-- Area Actions Toolbar -->
               <div class="flex items-center gap-2.5 flex-wrap">
-                <input type="text" id="area-search-input" onkeyup="filterAreaRows()" placeholder="Search area name, code..." class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none focus:border-slate-900" />
-                <button type="button" onclick="openCreateAreaModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-xs">
+                <div class="relative flex items-center">
+                  <input type="text" id="area-search-input" onkeyup="filterAreaRows()" placeholder="Search area name, code..." class="scada-input-control pr-10" />
+                  <button type="button" onclick="filterAreaRows()" class="absolute right-1.5 w-7 h-7 rounded-lg bg-slate-200/70 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition" title="Search Areas">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </button>
+                </div>
+                <button type="button" onclick="openCreateAreaModal()" class="scada-btn-indigo">
                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                   <span>Create Area</span>
                 </button>
@@ -59,13 +64,27 @@
               <table class="w-full text-left border-collapse text-xs" id="areas-table">
                 <thead>
                   <tr class="bg-slate-50 border-b border-slate-200 text-[10px] font-black uppercase text-slate-400">
-                    <th class="py-3 px-3.5">Area Name & Code</th>
-                    <th class="py-3 px-3.5">Division</th>
-                    <th class="py-3 px-3.5">Regional Director</th>
-                    <th class="py-3 px-3.5">Clusters</th>
-                    <th class="py-3 px-3.5">Towers</th>
-                    <th class="py-3 px-3.5">Installed Power</th>
-                    <th class="py-3 px-3.5">SLA Target</th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('areas-table', 0, 'text')">
+                      <span>Area Name & Code <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('areas-table', 1, 'text')">
+                      <span>Division <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('areas-table', 2, 'text')">
+                      <span>Regional Director <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('areas-table', 3, 'number')">
+                      <span>Clusters <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('areas-table', 4, 'number')">
+                      <span>Towers <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('areas-table', 5, 'number')">
+                      <span>Installed Power <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('areas-table', 6, 'number')">
+                      <span>SLA Target <span class="sort-indicator">▲▼</span></span>
+                    </th>
                     <th class="py-3 px-3.5 text-right">Actions (3 Controls)</th>
                   </tr>
                 </thead>
@@ -77,16 +96,16 @@
                       <div class="text-[10px] font-mono text-slate-400">AREA-DHK-N</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">Dhaka</td>
-                    <td class="py-2.5 px-3.5">Engr. Tariqul Islam</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Tariqul Islam')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Tariqul Islam</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">6 Clusters</td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">114 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">6.84 MW</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">99.8%</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewAreaDetails('AREA-DHK-N')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs" title="Default: View Area Hierarchy">View</button>
-                        <button type="button" onclick="editAreaModal('AREA-DHK-N')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition" title="Edit Area Details">Edit</button>
-                        <button type="button" onclick="deleteAreaPrompt('AREA-DHK-N')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition" title="Delete Area">Delete</button>
+                        <button type="button" onclick="viewAreaDetails('AREA-DHK-N')" class="scada-btn-action action-view" title="Default: View Area Hierarchy">View</button>
+                        <button type="button" onclick="editAreaModal('AREA-DHK-N')" class="scada-btn-action action-edit" title="Edit Area Details">Edit</button>
+                        <button type="button" onclick="deleteAreaPrompt('AREA-DHK-N')" class="scada-btn-action action-delete" title="Delete Area">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -97,16 +116,16 @@
                       <div class="text-[10px] font-mono text-slate-400">AREA-DHK-S</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">Dhaka</td>
-                    <td class="py-2.5 px-3.5">Engr. Shamim Hossain</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Shamim Hossain')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Shamim Hossain</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">5 Clusters</td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">94 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">5.64 MW</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">99.7%</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewAreaDetails('AREA-DHK-S')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editAreaModal('AREA-DHK-S')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteAreaPrompt('AREA-DHK-S')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewAreaDetails('AREA-DHK-S')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editAreaModal('AREA-DHK-S')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteAreaPrompt('AREA-DHK-S')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -117,16 +136,16 @@
                       <div class="text-[10px] font-mono text-slate-400">AREA-CTG-M</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">Chittagong</td>
-                    <td class="py-2.5 px-3.5">Engr. Faisal Mahmud</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Faisal Mahmud')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Faisal Mahmud</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">4 Clusters</td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">68 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">4.08 MW</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">99.6%</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewAreaDetails('AREA-CTG-M')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editAreaModal('AREA-CTG-M')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteAreaPrompt('AREA-CTG-M')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewAreaDetails('AREA-CTG-M')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editAreaModal('AREA-CTG-M')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteAreaPrompt('AREA-CTG-M')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -137,16 +156,16 @@
                       <div class="text-[10px] font-mono text-slate-400">AREA-CTG-N</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">Chittagong</td>
-                    <td class="py-2.5 px-3.5">Engr. Rafiqul Alam</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Rafiqul Alam')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Rafiqul Alam</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">3 Clusters</td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">50 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">3.00 MW</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">99.5%</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewAreaDetails('AREA-CTG-N')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editAreaModal('AREA-CTG-N')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteAreaPrompt('AREA-CTG-N')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewAreaDetails('AREA-CTG-N')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editAreaModal('AREA-CTG-N')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteAreaPrompt('AREA-CTG-N')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -157,16 +176,16 @@
                       <div class="text-[10px] font-mono text-slate-400">AREA-SYL</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">Sylhet</td>
-                    <td class="py-2.5 px-3.5">Engr. Kamrul Hasan</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Kamrul Hasan')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Kamrul Hasan</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">3 Clusters</td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">58 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">3.48 MW</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">99.4%</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewAreaDetails('AREA-SYL')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editAreaModal('AREA-SYL')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteAreaPrompt('AREA-SYL')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewAreaDetails('AREA-SYL')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editAreaModal('AREA-SYL')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteAreaPrompt('AREA-SYL')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -177,16 +196,16 @@
                       <div class="text-[10px] font-mono text-slate-400">AREA-RAJ</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">Rajshahi</td>
-                    <td class="py-2.5 px-3.5">Engr. Mofazzal Hossain</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Mofazzal Hossain')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Mofazzal Hossain</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">2 Clusters</td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">38 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">2.28 MW</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">99.6%</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewAreaDetails('AREA-RAJ')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editAreaModal('AREA-RAJ')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteAreaPrompt('AREA-RAJ')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewAreaDetails('AREA-RAJ')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editAreaModal('AREA-RAJ')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteAreaPrompt('AREA-RAJ')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -197,16 +216,16 @@
                       <div class="text-[10px] font-mono text-slate-400">AREA-KHU</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">Khulna</td>
-                    <td class="py-2.5 px-3.5">Engr. Anisur Rahman</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Anisur Rahman')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Anisur Rahman</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">2 Clusters</td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">30 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">1.80 MW</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">99.3%</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewAreaDetails('AREA-KHU')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editAreaModal('AREA-KHU')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteAreaPrompt('AREA-KHU')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewAreaDetails('AREA-KHU')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editAreaModal('AREA-KHU')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteAreaPrompt('AREA-KHU')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -217,16 +236,16 @@
                       <div class="text-[10px] font-mono text-slate-400">AREA-BAR</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">Barisal</td>
-                    <td class="py-2.5 px-3.5">Engr. Jahangir Kabir</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Jahangir Kabir')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Jahangir Kabir</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">1 Cluster</td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">15 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">0.90 MW</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">99.1%</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewAreaDetails('AREA-BAR')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editAreaModal('AREA-BAR')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteAreaPrompt('AREA-BAR')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewAreaDetails('AREA-BAR')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editAreaModal('AREA-BAR')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteAreaPrompt('AREA-BAR')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -237,16 +256,16 @@
                       <div class="text-[10px] font-mono text-slate-400">AREA-RAN</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">Rangpur</td>
-                    <td class="py-2.5 px-3.5">Engr. Nurul Huda</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Nurul Huda')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Nurul Huda</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">1 Cluster</td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">15 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">0.90 MW</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">99.2%</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewAreaDetails('AREA-RAN')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editAreaModal('AREA-RAN')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteAreaPrompt('AREA-RAN')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewAreaDetails('AREA-RAN')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editAreaModal('AREA-RAN')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteAreaPrompt('AREA-RAN')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -257,16 +276,16 @@
                       <div class="text-[10px] font-mono text-slate-400">AREA-MYM</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">Mymensingh</td>
-                    <td class="py-2.5 px-3.5">Engr. Delowar Hossain</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Delowar Hossain')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Delowar Hossain</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-bold text-slate-800">1 Cluster</td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">10 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">0.60 MW</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">99.5%</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewAreaDetails('AREA-MYM')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editAreaModal('AREA-MYM')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteAreaPrompt('AREA-MYM')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewAreaDetails('AREA-MYM')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editAreaModal('AREA-MYM')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteAreaPrompt('AREA-MYM')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -291,8 +310,13 @@
 
               <!-- Cluster Actions Toolbar -->
               <div class="flex items-center gap-2.5 flex-wrap">
-                <input type="text" id="cluster-search-input" onkeyup="filterClusterRows()" placeholder="Search cluster name, area..." class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none focus:border-slate-900" />
-                <button type="button" onclick="openCreateClusterModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-xs">
+                <div class="relative flex items-center">
+                  <input type="text" id="cluster-search-input" onkeyup="filterClusterRows()" placeholder="Search cluster name, area..." class="scada-input-control pr-10" />
+                  <button type="button" onclick="filterClusterRows()" class="absolute right-1.5 w-7 h-7 rounded-lg bg-slate-200/70 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition" title="Search Clusters">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </button>
+                </div>
+                <button type="button" onclick="openCreateClusterModal()" class="scada-btn-indigo">
                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                   <span>Create Cluster</span>
                 </button>
@@ -304,12 +328,24 @@
               <table class="w-full text-left border-collapse text-xs" id="clusters-table">
                 <thead>
                   <tr class="bg-slate-50 border-b border-slate-200 text-[10px] font-black uppercase text-slate-400">
-                    <th class="py-3 px-3.5">Cluster ID & Name</th>
-                    <th class="py-3 px-3.5">Parent Area</th>
-                    <th class="py-3 px-3.5">Lead Field Engineer</th>
-                    <th class="py-3 px-3.5">Towers Count</th>
-                    <th class="py-3 px-3.5">Modbus IP Gateway</th>
-                    <th class="py-3 px-3.5">Dispatch Route</th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('clusters-table', 0, 'text')">
+                      <span>Cluster ID & Name <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('clusters-table', 1, 'text')">
+                      <span>Parent Area <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('clusters-table', 2, 'text')">
+                      <span>Lead Field Engineer <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('clusters-table', 3, 'number')">
+                      <span>Towers Count <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('clusters-table', 4, 'text')">
+                      <span>Modbus IP Gateway <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('clusters-table', 5, 'text')">
+                      <span>Dispatch Route <span class="sort-indicator">▲▼</span></span>
+                    </th>
                     <th class="py-3 px-3.5 text-right">Actions (3 Controls)</th>
                   </tr>
                 </thead>
@@ -320,15 +356,15 @@
                       <div class="text-[10px] font-mono text-slate-400">CLUST-DHK-01</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-indigo-700">Dhaka North</td>
-                    <td class="py-2.5 px-3.5">Engr. Lian Ahmed (#AR-9402)</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Lian Ahmed')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Lian Ahmed (#AR-9402)</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">24 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">192.168.10.1:502</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">ROUTE ACTIVE</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewClusterDetails('CLUST-DHK-01')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editClusterModal('CLUST-DHK-01')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteClusterPrompt('CLUST-DHK-01')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewClusterDetails('CLUST-DHK-01')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editClusterModal('CLUST-DHK-01')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteClusterPrompt('CLUST-DHK-01')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -338,15 +374,15 @@
                       <div class="text-[10px] font-mono text-slate-400">CLUST-DHK-02</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-indigo-700">Dhaka North</td>
-                    <td class="py-2.5 px-3.5">Engr. Naimul Islam</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Naimul Islam')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Naimul Islam</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">20 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">192.168.10.2:502</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">ROUTE ACTIVE</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewClusterDetails('CLUST-DHK-02')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editClusterModal('CLUST-DHK-02')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteClusterPrompt('CLUST-DHK-02')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewClusterDetails('CLUST-DHK-02')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editClusterModal('CLUST-DHK-02')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteClusterPrompt('CLUST-DHK-02')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -356,15 +392,15 @@
                       <div class="text-[10px] font-mono text-slate-400">CLUST-DHK-03</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-indigo-700">Dhaka South</td>
-                    <td class="py-2.5 px-3.5">Engr. Hasan Chowdhury</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Hasan Chowdhury')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Hasan Chowdhury</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">22 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">192.168.10.3:502</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">ROUTE ACTIVE</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewClusterDetails('CLUST-DHK-03')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editClusterModal('CLUST-DHK-03')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteClusterPrompt('CLUST-DHK-03')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewClusterDetails('CLUST-DHK-03')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editClusterModal('CLUST-DHK-03')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteClusterPrompt('CLUST-DHK-03')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -374,15 +410,15 @@
                       <div class="text-[10px] font-mono text-slate-400">CLUST-CTG-01</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-indigo-700">Chittagong Metro</td>
-                    <td class="py-2.5 px-3.5">Engr. Tanvir Ahmed</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Tanvir Ahmed')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Tanvir Ahmed</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">18 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">192.168.20.1:502</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">ROUTE ACTIVE</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewClusterDetails('CLUST-CTG-01')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editClusterModal('CLUST-CTG-01')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteClusterPrompt('CLUST-CTG-01')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewClusterDetails('CLUST-CTG-01')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editClusterModal('CLUST-CTG-01')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteClusterPrompt('CLUST-CTG-01')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -392,15 +428,15 @@
                       <div class="text-[10px] font-mono text-slate-400">CLUST-SYL-01</div>
                     </td>
                     <td class="py-2.5 px-3.5 font-bold text-indigo-700">Sylhet Zone</td>
-                    <td class="py-2.5 px-3.5">Engr. Babul Miah</td>
+                    <td class="py-2.5 px-3.5"><button type="button" onclick="openPersonnelProfile('Engr. Babul Miah')" class="font-bold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1.5 transition text-left group" title="View Commander Profile & SCADA Audit Log"><span>Engr. Babul Miah</span><svg class="w-3 h-3 opacity-40 group-hover:opacity-100 transition shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button></td>
                     <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-600">20 Towers</td>
                     <td class="py-2.5 px-3.5 font-mono">192.168.30.1:502</td>
                     <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold">ROUTE ACTIVE</span></td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewClusterDetails('CLUST-SYL-01')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editClusterModal('CLUST-SYL-01')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteClusterPrompt('CLUST-SYL-01')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewClusterDetails('CLUST-SYL-01')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editClusterModal('CLUST-SYL-01')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteClusterPrompt('CLUST-SYL-01')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -425,8 +461,13 @@
 
               <!-- Tower Actions Toolbar -->
               <div class="flex items-center gap-2.5 flex-wrap">
-                <input type="text" id="tower-search-input" onkeyup="filterTowerRows()" placeholder="Search Tower ID, station, operator..." class="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none focus:border-slate-900" />
-                <button type="button" onclick="openCreateTowerModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-xs">
+                <div class="relative flex items-center">
+                  <input type="text" id="tower-search-input" onkeyup="filterTowerRows()" placeholder="Search Tower ID, station, operator..." class="scada-input-control pr-10" />
+                  <button type="button" onclick="filterTowerRows()" class="absolute right-1.5 w-7 h-7 rounded-lg bg-slate-200/70 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition" title="Search Towers">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </button>
+                </div>
+                <button type="button" onclick="openCreateTowerModal()" class="scada-btn-indigo">
                   <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                   <span>Create Tower</span>
                 </button>
@@ -438,12 +479,24 @@
               <table class="w-full text-left border-collapse text-xs" id="towers-table">
                 <thead>
                   <tr class="bg-slate-50 border-b border-slate-200 text-[10px] font-black uppercase text-slate-400">
-                    <th class="py-3 px-3.5">Tower UID & Name</th>
-                    <th class="py-3 px-3.5">Cluster & Area</th>
-                    <th class="py-3 px-3.5">Telecom Operator</th>
-                    <th class="py-3 px-3.5">Assigned Generator</th>
-                    <th class="py-3 px-3.5">Power Source</th>
-                    <th class="py-3 px-3.5">Telemetry Status</th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('towers-table', 0, 'text')">
+                      <span>Tower UID & Name <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('towers-table', 1, 'text')">
+                      <span>Cluster & Area <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('towers-table', 2, 'text')">
+                      <span>Telecom Operator <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('towers-table', 3, 'text')">
+                      <span>Assigned Generator <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('towers-table', 4, 'text')">
+                      <span>Power Source <span class="sort-indicator">▲▼</span></span>
+                    </th>
+                    <th class="py-3 px-3.5 th-sortable" onclick="sortScadaTable('towers-table', 5, 'text')">
+                      <span>Telemetry Status <span class="sort-indicator">▲▼</span></span>
+                    </th>
                     <th class="py-3 px-3.5 text-right">Actions (3 Controls)</th>
                   </tr>
                 </thead>
@@ -473,9 +526,9 @@
                     <td class="py-2.5 px-3.5 font-mono text-slate-600">Sync: 12s ago</td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewTowerTelemetry('BTS-GP-0492')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editTowerModal('BTS-GP-0492')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteTowerPrompt('BTS-GP-0492')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewTowerTelemetry('BTS-GP-0492')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editTowerModal('BTS-GP-0492')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteTowerPrompt('BTS-GP-0492')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -504,9 +557,9 @@
                     <td class="py-2.5 px-3.5 font-mono text-slate-600">Sync: 8s ago</td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewTowerTelemetry('BTS-RO-8442')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editTowerModal('BTS-RO-8442')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteTowerPrompt('BTS-RO-8442')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewTowerTelemetry('BTS-RO-8442')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editTowerModal('BTS-RO-8442')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteTowerPrompt('BTS-RO-8442')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -535,9 +588,9 @@
                     <td class="py-2.5 px-3.5 font-mono text-slate-600">Sync: 15s ago</td>
                     <td class="py-2.5 px-3.5 text-right">
                       <div class="inline-flex items-center gap-1.5">
-                        <button type="button" onclick="viewTowerTelemetry('BTS-BL-1944')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] transition shadow-2xs">View</button>
-                        <button type="button" onclick="editTowerModal('BTS-BL-1944')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[11px] transition">Edit</button>
-                        <button type="button" onclick="deleteTowerPrompt('BTS-BL-1944')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition">Delete</button>
+                        <button type="button" onclick="viewTowerTelemetry('BTS-BL-1944')" class="scada-btn-action action-view">View</button>
+                        <button type="button" onclick="editTowerModal('BTS-BL-1944')" class="scada-btn-action action-edit">Edit</button>
+                        <button type="button" onclick="deleteTowerPrompt('BTS-BL-1944')" class="scada-btn-action action-delete">Delete</button>
                       </div>
                     </td>
                   </tr>

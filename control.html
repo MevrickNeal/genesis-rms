@@ -290,6 +290,215 @@
       transform: scale(0.98);
     }
 
+    /* Standardized SCADA Enterprise Action Buttons & Inputs */
+    .scada-btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      height: 2.375rem; /* 38px */
+      padding: 0 1rem;
+      font-size: 0.75rem; /* 12px */
+      font-weight: 700;
+      border-radius: 0.75rem;
+      background-color: #0f172a;
+      color: #ffffff;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+    .scada-btn-primary:hover {
+      background-color: #1e293b;
+    }
+    .scada-btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .scada-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+      height: 2.375rem; /* 38px */
+      padding: 0 0.875rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 0.75rem;
+      background-color: #ffffff;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .scada-btn-secondary:hover {
+      background-color: #f8fafc;
+      border-color: #cbd5e1;
+      color: #0f172a;
+    }
+    .scada-btn-secondary:active {
+      transform: scale(0.98);
+    }
+
+    .scada-btn-danger {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+      height: 2.375rem;
+      padding: 0 1rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 0.75rem;
+      background-color: #e11d48;
+      color: #ffffff;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+    .scada-btn-danger:hover {
+      background-color: #be123c;
+    }
+
+    .scada-btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      height: 1.875rem; /* 30px */
+      padding: 0 0.625rem;
+      font-size: 0.6875rem; /* 11px */
+      font-weight: 700;
+      border-radius: 0.5rem;
+      background-color: #f1f5f9;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .scada-btn-action:hover {
+      background-color: #e2e8f0;
+      color: #0f172a;
+    }
+    .scada-btn-action.action-view {
+      background-color: #f8fafc;
+      color: #334155;
+    }
+    .scada-btn-action.action-view:hover {
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+    .scada-btn-action.action-edit {
+      background-color: #eef2ff;
+      color: #4338ca;
+      border-color: #c7d2fe;
+    }
+    .scada-btn-action.action-edit:hover {
+      background-color: #e0e7ff;
+      color: #3730a3;
+    }
+    .scada-btn-action.action-delete {
+      background-color: #fff1f2;
+      color: #e11d48;
+      border-color: #fecdd3;
+    }
+    .scada-btn-action.action-delete:hover {
+      background-color: #ffe4e6;
+      color: #be123c;
+    }
+    .scada-btn-action.action-maint {
+      background-color: #fef3c7;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+    .scada-btn-action.action-maint:hover {
+      background-color: #fde68a;
+      color: #92400e;
+    }
+    .scada-btn-action.action-lockout {
+      background-color: #f8fafc;
+      color: #e11d48;
+      border-color: #fecdd3;
+    }
+    .scada-btn-action.action-lockout:hover {
+      background-color: #fff1f2;
+      color: #be123c;
+    }
+
+    .scada-btn-indigo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+      height: 2.375rem; /* 38px */
+      padding: 0 1rem;
+      font-size: 0.75rem; /* 12px */
+      font-weight: 700;
+      border-radius: 0.75rem;
+      background-color: #4f46e5;
+      color: #ffffff;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px 0 rgba(79, 70, 229, 0.2);
+      cursor: pointer;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+    .scada-btn-indigo:hover {
+      background-color: #4338ca;
+    }
+    .scada-btn-indigo:active {
+      transform: scale(0.98);
+    }
+
+    .scada-input-control {
+      height: 2.375rem; /* 38px */
+      padding: 0 0.875rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 0.75rem;
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #0f172a;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .scada-input-control:focus {
+      border-color: #0f172a;
+      background-color: #ffffff;
+    }
+
+    /* Table Column Header Sort Styles */
+    .th-sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.15s ease;
+    }
+    .th-sortable:hover {
+      color: #0f172a;
+    }
+    .th-sortable .sort-indicator {
+      display: inline-block;
+      margin-left: 0.25rem;
+      opacity: 0.4;
+      font-size: 0.65rem;
+    }
+    .th-sortable.active-sort .sort-indicator {
+      opacity: 1;
+      color: #4f46e5;
+    }
+
+    /* Generator Image Exit-Right & Enter-Right Animation */
+    .hero-engine-container {
+      overflow: hidden;
+      perspective: 1000px;
+    }
+
     /* Interactive Showroom Touch & Mouse Swipe cursor */
     #hero-showroom-stage {
       cursor: grab;
@@ -471,6 +680,44 @@
         <svg class="w-4 h-4 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         <span class="w-2.5 h-2.5 rounded-full bg-rose-600 absolute top-2 right-2 ring-2 ring-white"></span>
       </button>
+
+      <!-- Interactive SCADA Command Role Switcher & Hierarchy Selector -->
+      <div class="relative hidden xl:block">
+        <button type="button" onclick="toggleRoleDropdown()" id="header-role-btn" class="glass-pill hover:bg-white px-3 py-1.5 rounded-full flex items-center gap-2 transition shadow-2xs cursor-pointer" title="Current SCADA Command Clearance Level. Click to switch persona or view hierarchy.">
+          <span id="role-pill-dot" class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+          <span class="text-[11px] font-black text-slate-800" id="role-pill-title">L3: Lead SCADA Engr</span>
+          <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <!-- Dropdown -->
+        <div id="role-switcher-dropdown" class="absolute right-0 top-12 w-64 bg-white/95 backdrop-blur-xl rounded-2xl p-2 shadow-2xl border border-slate-200 hidden flex-col gap-1 z-50">
+          <div class="px-2.5 py-1 text-[10px] font-black text-slate-400 uppercase tracking-wider">Switch Active Persona / Role</div>
+          <button type="button" onclick="switchActiveRole(5)" class="w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-slate-100 flex items-center justify-between text-xs font-bold text-purple-900 transition">
+            <span>Level 5: Chief SCADA Director</span>
+            <span class="text-[9px] font-mono bg-purple-50 text-purple-700 px-1 rounded">ADMIN</span>
+          </button>
+          <button type="button" onclick="switchActiveRole(4)" class="w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-slate-100 flex items-center justify-between text-xs font-bold text-indigo-900 transition">
+            <span>Level 4: Regional Director</span>
+            <span class="text-[9px] font-mono bg-indigo-50 text-indigo-700 px-1 rounded">DIVISION</span>
+          </button>
+          <button type="button" onclick="switchActiveRole(3)" class="w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-slate-100 flex items-center justify-between text-xs font-bold text-emerald-900 transition" id="role-opt-3">
+            <span>Level 3: Lead SCADA Engineer</span>
+            <span class="text-[9px] font-mono bg-emerald-100 text-emerald-800 px-1 rounded">ACTIVE</span>
+          </button>
+          <button type="button" onclick="switchActiveRole(2)" class="w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-slate-100 flex items-center justify-between text-xs font-bold text-amber-900 transition">
+            <span>Level 2: Field Maintenance Tech</span>
+            <span class="text-[9px] font-mono bg-amber-50 text-amber-700 px-1 rounded">SITE LOTO</span>
+          </button>
+          <button type="button" onclick="switchActiveRole(1)" class="w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-slate-100 flex items-center justify-between text-xs font-bold text-slate-700 transition">
+            <span>Level 1: NOC Shift Operator</span>
+            <span class="text-[9px] font-mono bg-slate-100 text-slate-600 px-1 rounded">READ-ONLY</span>
+          </button>
+          <div class="h-px bg-slate-100 my-1"></div>
+          <button type="button" onclick="openHierarchyOrgModal()" class="w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-indigo-50 text-indigo-700 text-xs font-bold flex items-center gap-1.5 transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="2" y="16" width="6" height="5" rx="1"/><rect x="16" y="16" width="6" height="5" rx="1"/><path d="M12 8v4"/><path d="M5 12h14v4"/></svg>
+            <span>View SCADA Hierarchy & Permissions</span>
+          </button>
+        </div>
+      </div>
 
       <!-- Operator Profile Pill with Integrated UID & Click-to-Edit Permissions -->
       <button onclick="openProfileModal()" class="glass-pill hover:bg-white px-2.5 sm:px-3 py-1.5 rounded-full flex items-center gap-2.5 transition shadow-2xs group cursor-pointer" title="Manage Profile & SCADA Permissions">
@@ -1426,6 +1673,331 @@
       <button type="button" onclick="closeSafetyModal()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs">Cancel</button>
       <button type="button" id="safety-confirm-btn" onclick="executeSafetyConfirmedAction()" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition shadow-xs flex items-center gap-1.5">
         <span>Confirm & Dispatch Command</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- GLOBAL MODAL: Interactive Personnel Dossier & SCADA Audit Log -->
+<div id="personnel-profile-modal" class="fixed inset-0 z-[110] bg-slate-900/60 backdrop-blur-md hidden items-center justify-center p-4" onclick="if(event.target===this) closePersonnelProfile()">
+  <div class="bg-white rounded-[28px] max-w-xl w-full p-6 sm:p-7 shadow-2xl border border-white/80 flex flex-col gap-5 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div id="pers-modal-avatar" class="w-12 h-12 rounded-2xl bg-indigo-600 text-white font-black text-base flex items-center justify-center shadow-xs">
+          TI
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="text-base font-black text-slate-900" id="pers-modal-name">Engr. Tariqul Islam</h3>
+            <span class="text-[9px] font-mono font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200" id="pers-modal-uid">#DIR-DHK-01</span>
+          </div>
+          <p class="text-xs text-slate-600 font-semibold" id="pers-modal-title">Regional SCADA Operations Director (Dhaka North)</p>
+        </div>
+      </div>
+      <button onclick="closePersonnelProfile()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Official Contact & VHF Radio Channels Card -->
+    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5 text-xs">
+      <div class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Direct SCADA Dispatch Communications</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div class="flex items-center gap-2 text-slate-700">
+          <svg class="w-4 h-4 text-indigo-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <a href="#" id="pers-modal-email" class="font-bold hover:text-indigo-600 truncate">tariqul.islam@arenaiot.com</a>
+        </div>
+        <div class="flex items-center gap-2 text-slate-700">
+          <svg class="w-4 h-4 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <a href="#" id="pers-modal-phone" class="font-mono font-bold hover:text-emerald-700">+880 1711-948201</a>
+        </div>
+        <div class="flex items-center gap-2 text-slate-700">
+          <svg class="w-4 h-4 text-purple-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span id="pers-modal-office" class="truncate">Level 7, Dhaka North Command Station</span>
+        </div>
+        <div class="flex items-center gap-2 text-slate-700">
+          <svg class="w-4 h-4 text-amber-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
+          <span id="pers-modal-vhf" class="font-mono font-bold text-amber-700">VHF-Ch-04 (156.200 MHz)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Command Jurisdiction & Responsibility Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center text-xs">
+      <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+        <div class="text-[9px] uppercase font-bold text-slate-400">Jurisdiction</div>
+        <div class="text-sm font-black text-slate-900 mt-0.5 truncate" id="pers-modal-jurisdiction">Dhaka North</div>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+        <div class="text-[9px] uppercase font-bold text-slate-400">Towers Supervised</div>
+        <div class="text-sm font-black text-emerald-600 mt-0.5" id="pers-modal-towers">114 Sites</div>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+        <div class="text-[9px] uppercase font-bold text-slate-400">Total Grid MW</div>
+        <div class="text-sm font-black text-indigo-600 mt-0.5" id="pers-modal-mw">6.84 MW</div>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+        <div class="text-[9px] uppercase font-bold text-slate-400">SLA Performance</div>
+        <div class="text-sm font-black text-emerald-700 mt-0.5" id="pers-modal-sla">99.8%</div>
+      </div>
+    </div>
+
+    <!-- Chronological 30-Day SCADA Audit Activity Log -->
+    <div>
+      <div class="flex items-center justify-between mb-2">
+        <h4 class="text-xs font-black text-slate-900 uppercase tracking-wide">30-Day SCADA Audit Activity Log</h4>
+        <span class="text-[9px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">ISO-27001 AUDITED</span>
+      </div>
+      <div id="pers-modal-audit-list" class="space-y-2 text-xs">
+        <!-- Populated dynamically via JS -->
+      </div>
+    </div>
+
+    <!-- Modal Footer Actions -->
+    <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+      <div class="flex items-center gap-1.5 text-[11px] text-emerald-700 font-bold">
+        <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+        <span id="pers-modal-duty-status">Active On-Duty</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="triggerDirectVhfPulse()" class="px-3.5 py-1.5 rounded-xl bg-amber-492 hover:bg-amber-600 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-xs">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
+          <span>VHF Priority Radio</span>
+        </button>
+        <button type="button" onclick="closePersonnelProfile()" class="px-4 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GLOBAL MODAL: SCADA Command Hierarchy Org Chart & Dynamic RBAC Governance -->
+<div id="rbac-hierarchy-modal" class="fixed inset-0 z-[115] bg-slate-900/65 backdrop-blur-md hidden items-center justify-center p-4" onclick="if(event.target===this) closeHierarchyOrgModal()">
+  <div class="bg-white rounded-[28px] max-w-3xl w-full p-6 sm:p-7 shadow-2xl border border-white/80 flex flex-col gap-5 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-black">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="2" y="16" width="6" height="5" rx="1"/><rect x="16" y="16" width="6" height="5" rx="1"/><path d="M12 8v4"/><path d="M5 12h14v4"/></svg>
+        </div>
+        <div>
+          <h3 class="text-base font-black text-slate-900">SCADA Command Hierarchy & Role-Based Permissions (RBAC)</h3>
+          <p class="text-xs text-slate-600 font-medium">Enterprise operational authority, supervisory chains, and interactive clearance gates</p>
+        </div>
+      </div>
+      <button onclick="closeHierarchyOrgModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Active Persona Switcher Strip Inside Modal -->
+    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between flex-wrap gap-2 text-xs">
+      <div>
+        <span class="text-slate-492 font-medium">Active SCADA Session Role:</span>
+        <strong id="rbac-current-role-label" class="text-slate-900 ml-1.5 font-black text-sm">Level 3: Lead SCADA Engineer</strong>
+      </div>
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <span class="text-[11px] text-slate-400 font-semibold">Test Persona:</span>
+        <button onclick="switchActiveRole(1)" id="rbac-btn-l1" class="px-2.5 py-1 rounded-lg text-xs font-bold transition bg-white border border-slate-200 text-slate-700 hover:bg-slate-100">L1: Operator</button>
+        <button onclick="switchActiveRole(2)" id="rbac-btn-l2" class="px-2.5 py-1 rounded-lg text-xs font-bold transition bg-white border border-slate-200 text-slate-700 hover:bg-slate-100">L2: Technician</button>
+        <button onclick="switchActiveRole(3)" id="rbac-btn-l3" class="px-2.5 py-1 rounded-lg text-xs font-bold transition bg-slate-900 text-white shadow-2xs">L3: Engineer</button>
+        <button onclick="switchActiveRole(4)" id="rbac-btn-l4" class="px-2.5 py-1 rounded-lg text-xs font-bold transition bg-white border border-slate-200 text-slate-700 hover:bg-slate-100">L4: Director</button>
+        <button onclick="switchActiveRole(5)" id="rbac-btn-l5" class="px-2.5 py-1 rounded-lg text-xs font-bold transition bg-white border border-slate-200 text-slate-700 hover:bg-slate-100">L5: Chief Admin</button>
+      </div>
+    </div>
+
+    <!-- Visual SCADA Organizational Hierarchy Chart -->
+    <div>
+      <h4 class="text-xs font-black text-slate-900 uppercase tracking-wide mb-2.5">SCADA Command Hierarchy Org Tree (Who Reports to Whom)</h4>
+      <div class="space-y-2 text-xs">
+        
+        <!-- Level 5 Card -->
+        <div class="p-3 rounded-2xl bg-purple-50/70 border border-purple-200 flex items-start justify-between gap-3 cursor-pointer hover:bg-purple-50 transition" onclick="switchActiveRole(5)">
+          <div class="flex items-start gap-3">
+            <span class="w-7 h-7 rounded-xl bg-purple-600 text-white font-black text-xs flex items-center justify-center shrink-0">L5</span>
+            <div>
+              <div class="font-black text-purple-950 flex items-center gap-2">
+                <span>Chief SCADA Director & Grid Administrator</span>
+                <span class="text-[9px] font-mono bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-bold">TOP EXECUTIVE</span>
+              </div>
+              <p class="text-slate-600 text-[11px] mt-0.5">National apex authority. Approves multi-division budgets, franchise area commissioning, user role provisioning, and full system security policies.</p>
+              <div class="text-[10px] text-purple-700 font-bold mt-1">Supervises: 8 Regional Operations Directors · Reports to: Ministry of Telecom & Power</div>
+            </div>
+          </div>
+          <span class="text-[10px] font-mono font-bold text-purple-700 shrink-0">Full Access</span>
+        </div>
+
+        <!-- Level 4 Card -->
+        <div class="p-3 rounded-2xl bg-indigo-50/70 border border-indigo-200 flex items-start justify-between gap-3 ml-4 cursor-pointer hover:bg-indigo-50 transition" onclick="switchActiveRole(4)">
+          <div class="flex items-start gap-3">
+            <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white font-black text-xs flex items-center justify-center shrink-0">L4</span>
+            <div>
+              <div class="font-black text-indigo-950 flex items-center gap-2">
+                <span>Regional Operations Director (e.g. Engr. Tariqul Islam)</span>
+                <span class="text-[9px] font-mono bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-bold">DIVISIONAL COMMAND</span>
+              </div>
+              <p class="text-slate-600 text-[11px] mt-0.5">Division-level operational leadership. Oversees regional clusters, approves scheduled work orders, manages contractor SLAs, and coordinates grid emergencies.</p>
+              <div class="text-[10px] text-indigo-700 font-bold mt-1">Supervises: Lead SCADA Engineers · Reports to: Chief SCADA Director (L5)</div>
+            </div>
+          </div>
+          <span class="text-[10px] font-mono font-bold text-indigo-700 shrink-0">Divisional</span>
+        </div>
+
+        <!-- Level 3 Card -->
+        <div class="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex items-start justify-between gap-3 ml-8 cursor-pointer hover:bg-emerald-50 transition" onclick="switchActiveRole(3)">
+          <div class="flex items-start gap-3">
+            <span class="w-7 h-7 rounded-xl bg-emerald-600 text-white font-black text-xs flex items-center justify-center shrink-0">L3</span>
+            <div>
+              <div class="font-black text-emerald-950 flex items-center gap-2">
+                <span>Lead SCADA Engineer (e.g. Engr. Lian Ahmed #AR-9402)</span>
+                <span class="text-[9px] font-mono bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold">TECHNICAL AUTHORITY</span>
+              </div>
+              <p class="text-slate-600 text-[11px] mt-0.5">Direct technical power command. Authorized to crank/stop engines, configure DSE-7320 registers, calibrate Modbus RTU telemetry thresholds, and clear tripping alarms.</p>
+              <div class="text-[10px] text-emerald-700 font-bold mt-1">Supervises: Field Maintenance Technicians & NOC Operators · Reports to: Regional Director (L4)</div>
+            </div>
+          </div>
+          <span class="text-[10px] font-mono font-bold text-emerald-700 shrink-0">Engine Control</span>
+        </div>
+
+        <!-- Level 2 Card -->
+        <div class="p-3 rounded-2xl bg-amber-50/70 border border-amber-200 flex items-start justify-between gap-3 ml-12 cursor-pointer hover:bg-amber-50 transition" onclick="switchActiveRole(2)">
+          <div class="flex items-start gap-3">
+            <span class="w-7 h-7 rounded-xl bg-amber-600 text-white font-black text-xs flex items-center justify-center shrink-0">L2</span>
+            <div>
+              <div class="font-black text-amber-950 flex items-center gap-2">
+                <span>Field Maintenance Technician</span>
+                <span class="text-[9px] font-mono bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">SITE OPERATIONS</span>
+              </div>
+              <p class="text-slate-600 text-[11px] mt-0.5">Physical generator servicing. Executes PM-A/PM-B checklists, logs lube oil sump renewals, resets service countdown timers, and engages safety lock-out tag-out (LOTO).</p>
+              <div class="text-[10px] text-amber-700 font-bold mt-1">Supervises: Mechanical Contractors · Reports to: Lead SCADA Engineer (L3)</div>
+            </div>
+          </div>
+          <span class="text-[10px] font-mono font-bold text-amber-700 shrink-0">PM & LOTO</span>
+        </div>
+
+        <!-- Level 1 Card -->
+        <div class="p-3 rounded-2xl bg-slate-100/80 border border-slate-200 flex items-start justify-between gap-3 ml-16 cursor-pointer hover:bg-slate-100 transition" onclick="switchActiveRole(1)">
+          <div class="flex items-start gap-3">
+            <span class="w-7 h-7 rounded-xl bg-slate-700 text-white font-black text-xs flex items-center justify-center shrink-0">L1</span>
+            <div>
+              <div class="font-black text-slate-900 flex items-center gap-2">
+                <span>NOC Shift Operator</span>
+                <span class="text-[9px] font-mono bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-bold">24/7 MONITORING</span>
+              </div>
+              <p class="text-slate-600 text-[11px] mt-0.5">Continuous national monitoring. Inspects live telemetry, acknowledges sirens, dispatches initial incident alerts, and exports historical daily reports. (Strictly prohibited from remote engine manipulation or franchise edits).</p>
+              <div class="text-[10px] text-slate-600 font-bold mt-1">Supervises: Telemetry Stream · Reports to: Lead SCADA Engineer (L3)</div>
+            </div>
+          </div>
+          <span class="text-[10px] font-mono font-bold text-slate-492 shrink-0">Read-Only</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Complete Dynamic Permissions Matrix Table -->
+    <div>
+      <h4 class="text-xs font-black text-slate-900 uppercase tracking-wide mb-2.5">Dynamic Permissions & Action Governance Matrix</h4>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 text-xs">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-[10px] font-black uppercase text-slate-492">
+              <th class="py-2.5 px-3">Capability / Operation Key</th>
+              <th class="py-2.5 px-2 text-center">L1: Operator</th>
+              <th class="py-2.5 px-2 text-center">L2: Tech</th>
+              <th class="py-2.5 px-2 text-center">L3: Engineer</th>
+              <th class="py-2.5 px-2 text-center">L4: Director</th>
+              <th class="py-2.5 px-2 text-center">L5: Chief</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 font-medium text-slate-700 text-[11px]">
+            <tr class="hover:bg-slate-50/70">
+              <td class="py-2 px-3 font-bold text-slate-900">View Live 18-Register Telemetry</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+            </tr>
+            <tr class="hover:bg-slate-50/70">
+              <td class="py-2 px-3 font-bold text-slate-900">Acknowledge & Silence Alarms</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+            </tr>
+            <tr class="hover:bg-slate-50/70">
+              <td class="py-2 px-3 font-bold text-slate-900">Log Maintenance PM & Countdown Reset</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+            </tr>
+            <tr class="hover:bg-slate-50/70">
+              <td class="py-2 px-3 font-bold text-slate-900">Engage Safety Lockout (LOTO)</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+            </tr>
+            <tr class="hover:bg-slate-50/70">
+              <td class="py-2 px-3 font-bold text-slate-900">Remote Engine Start / Crank Command</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+            </tr>
+            <tr class="hover:bg-slate-50/70">
+              <td class="py-2 px-3 font-bold text-slate-900">Emergency E-Stop Safety Trip</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+            </tr>
+            <tr class="hover:bg-slate-50/70">
+              <td class="py-2 px-3 font-bold text-slate-900">Modbus Register Setpoint Calibrations</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+            </tr>
+            <tr class="hover:bg-slate-50/70">
+              <td class="py-2 px-3 font-bold text-slate-900">Cluster Creation & Routing Reassignment</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+            </tr>
+            <tr class="hover:bg-slate-50/70">
+              <td class="py-2 px-3 font-bold text-slate-900">National Area Commissioning & Decommissioning</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+            </tr>
+            <tr class="hover:bg-slate-50/70">
+              <td class="py-2 px-3 font-bold text-slate-900">User Role Governance & Security Clearance</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+      <button type="button" onclick="closeHierarchyOrgModal()" class="px-5 py-2 rounded-xl bg-slate-900 text-white font-bold text-xs transition shadow-xs">
+        Close Hierarchy Matrix
       </button>
     </div>
   </div>
@@ -3089,7 +3661,11 @@
     }
   }
 
+  let isHeroTransitioning = false;
+
   function switchHeroGenerator(idOrIndex) {
+    if (isHeroTransitioning) return;
+
     let gen;
     if (typeof idOrIndex === 'number') {
       currentHeroIndex = (idOrIndex + BANNER_GENERATORS.length) % BANNER_GENERATORS.length;
@@ -3100,55 +3676,87 @@
     }
     if (!gen) return;
 
-    // 1. Update Hero stage elements
+    const imgEl = document.getElementById('hero-engine-img');
     const badge = document.getElementById('cms-hero-badge');
     const title = document.getElementById('cms-hero-title');
     const sub = document.getElementById('cms-hero-subtitle');
     const spec1 = document.getElementById('hero-spec-1');
     const spec2 = document.getElementById('hero-spec-2');
     const spec3 = document.getElementById('hero-spec-3');
-    const imgEl = document.getElementById('hero-engine-img');
     const selEl = document.getElementById('hero-device-selector');
 
-    if (badge) badge.textContent = gen.badge;
-    if (title) title.textContent = gen.brand;
-    if (sub) {
-      sub.innerHTML = `${gen.subtitle}<span class="block text-slate-400 font-medium text-xs mt-0.5">${gen.subspec}</span>`;
-    }
-    if (spec1) spec1.innerHTML = formatSpecHtml(gen.spec1);
-    if (spec2) spec2.innerHTML = formatSpecHtml(gen.spec2);
-    if (spec3) spec3.innerHTML = formatSpecHtml(gen.spec3);
-    if (selEl) selEl.value = gen.id;
-
-    // Smooth engine image cross-fade
-    if (imgEl && gen.img) {
-      if (imgEl.getAttribute('src') !== gen.img) {
-        imgEl.style.opacity = '0.3';
-        imgEl.style.transform = 'scale(0.97)';
-        imgEl.src = gen.img;
-        setTimeout(() => {
-          imgEl.style.opacity = '1';
-          imgEl.style.transform = 'scale(1)';
-        }, 50);
+    function applyHeroData(targetGen) {
+      if (badge) badge.textContent = targetGen.badge;
+      if (title) {
+        title.textContent = targetGen.brand;
+        // Auto-adjustable text size to prevent multi-line vertical banner jitter
+        if (targetGen.brand.length > 22) {
+          title.className = "text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight leading-tight whitespace-nowrap transition-all duration-200";
+        } else if (targetGen.brand.length > 17) {
+          title.className = "text-2xl sm:text-3xl lg:text-3.5xl font-black text-slate-900 tracking-tight leading-tight whitespace-nowrap transition-all duration-200";
+        } else {
+          title.className = "text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight whitespace-nowrap transition-all duration-200";
+        }
       }
+      if (sub) {
+        sub.innerHTML = `${targetGen.subtitle}<span class="block text-slate-400 font-medium text-xs mt-0.5 truncate">${targetGen.subspec}</span>`;
+      }
+      if (spec1) spec1.innerHTML = formatSpecHtml(targetGen.spec1);
+      if (spec2) spec2.innerHTML = formatSpecHtml(targetGen.spec2);
+      if (spec3) spec3.innerHTML = formatSpecHtml(targetGen.spec3);
+      if (selEl) selEl.value = targetGen.id;
+
+      // 2. Animate RPM gauge
+      setHeroRpm(targetGen.rpm, targetGen.status);
+
+      // 3. Update Underneath 3 Live Cards
+      updateHeroLiveCards(targetGen);
+
+      // 4. Update Carousel Dots
+      updateCarouselDots(currentHeroIndex);
+
+      // 5. Update Header Breadcrumbs
+      const topStation = document.getElementById('top-station-text');
+      const topGenId = document.getElementById('top-genid-text');
+      const topArea = document.getElementById('top-area-text');
+      if (topStation) topStation.textContent = targetGen.station.replace('Tower ', '');
+      if (topGenId) topGenId.textContent = targetGen.id;
+      if (topArea) topArea.textContent = targetGen.area.split(' ')[0];
     }
 
-    // 2. Animate RPM gauge
-    setHeroRpm(gen.rpm, gen.status);
+    // Theater Mode: Previous generator exits right, then new generator enters from right (Strictly Zero Overlap)
+    if (imgEl && gen.img && imgEl.getAttribute('src') !== gen.img) {
+      isHeroTransitioning = true;
+      imgEl.style.transition = 'transform 0.32s cubic-bezier(0.4, 0, 1, 1), opacity 0.28s ease-in';
+      imgEl.style.transform = 'translateX(120%) scale(0.95)';
+      imgEl.style.opacity = '0';
 
-    // 3. Update Underneath 3 Live Cards
-    updateHeroLiveCards(gen);
+      setTimeout(() => {
+        // Swap image while off-screen to the right
+        imgEl.style.transition = 'none';
+        imgEl.src = gen.img;
+        imgEl.style.transform = 'translateX(120%) scale(0.95)';
+        imgEl.style.opacity = '0';
 
-    // 4. Update Carousel Dots
-    updateCarouselDots(currentHeroIndex);
+        applyHeroData(gen);
 
-    // 5. Update Header Breadcrumbs
-    const topStation = document.getElementById('top-station-text');
-    const topGenId = document.getElementById('top-genid-text');
-    const topArea = document.getElementById('top-area-text');
-    if (topStation) topStation.textContent = gen.station.replace('Tower ', '');
-    if (topGenId) topGenId.textContent = gen.id;
-    if (topArea) topArea.textContent = gen.area.split(' ')[0];
+        // Force reflow
+        void imgEl.offsetHeight;
+
+        requestAnimationFrame(() => {
+          imgEl.style.transition = 'transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.32s ease-out';
+          imgEl.style.transform = 'translateX(0) scale(1)';
+          imgEl.style.opacity = '1';
+
+          setTimeout(() => {
+            isHeroTransitioning = false;
+            imgEl.style.transition = '';
+          }, 400);
+        });
+      }, 340);
+    } else {
+      applyHeroData(gen);
+    }
   }
 
   function updateHeroLiveCards(gen) {
@@ -4671,6 +5279,1053 @@ function downloadTechnicalDatasheet(title) {
   showScadaToast('Datasheet Downloaded', `${title} downloaded.`);
 }
 
+
+// =========================================================================
+// 1. USER PROFILE & 300x300 AVATAR UPLOAD / PERSISTENCE ENGINE
+// =========================================================================
+let tempUserAvatarBase64_300 = null;
+
+function handleProfileAvatarUpload(input) {
+  if (!input || !input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      // High-precision 300x300 square crop on canvas
+      const canvas = document.createElement('canvas');
+      canvas.width = 300;
+      canvas.height = 300;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      const scale = Math.max(300 / img.width, 300 / img.height);
+      const sw = img.width * scale;
+      const sh = img.height * scale;
+      const ox = (300 - sw) / 2;
+      const oy = (300 - sh) / 2;
+      ctx.clearRect(0, 0, 300, 300);
+      ctx.drawImage(img, ox, oy, sw, sh);
+      const base64 = canvas.toDataURL('image/png', 0.95);
+      tempUserAvatarBase64_300 = base64;
+      
+      // Update preview in modal
+      const previewImg = document.getElementById('prof-avatar-img');
+      const previewInitials = document.getElementById('prof-avatar-initials');
+      if (previewImg) {
+        previewImg.src = base64;
+        previewImg.classList.remove('hidden');
+        previewImg.style.display = 'block';
+      }
+      if (previewInitials) {
+        previewInitials.classList.add('hidden');
+        previewInitials.style.display = 'none';
+      }
+      showScadaToast('Portrait Calibrated', 'Exact 300x300 crop ready. Click "Save Changes" to apply across console.');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// Alias for compatibility
+function handleUserAvatarUpload(input) {
+  handleProfileAvatarUpload(input);
+}
+
+function resetProfileAvatar() {
+  tempUserAvatarBase64_300 = null;
+  localStorage.removeItem('genesis_user_avatar_300');
+  
+  const ids = ['prof-avatar', 'header-avatar', 'content-avatar', 'noc-avatar'];
+  ids.forEach(prefix => {
+    const img = document.getElementById(prefix + '-img');
+    const initials = document.getElementById(prefix + '-initials');
+    if (img) { img.classList.add('hidden'); img.style.display = 'none'; img.src = ''; }
+    if (initials) { initials.classList.remove('hidden'); initials.style.display = 'flex'; }
+  });
+
+  const input = document.getElementById('prof-avatar-file-input');
+  if (input) input.value = '';
+  showScadaToast('Avatar Reset', 'Default initials badge restored.');
+}
+
+function removeUserAvatar() {
+  resetProfileAvatar();
+}
+
+function openProfileModal() {
+  const modal = document.getElementById('profile-modal');
+  if (!modal) return;
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+
+  try {
+    const saved = localStorage.getItem('genesis_scada_profile');
+    if (saved) {
+      const p = JSON.parse(saved);
+      if (p.name && document.getElementById('prof-name-input')) document.getElementById('prof-name-input').value = p.name;
+      if (p.role && document.getElementById('prof-role-input')) document.getElementById('prof-role-input').value = p.role;
+      if (p.email && document.getElementById('prof-email-input')) document.getElementById('prof-email-input').value = p.email;
+      if (p.uid && document.getElementById('prof-uid-input')) document.getElementById('prof-uid-input').value = p.uid.replace('#', '');
+      if (p.dept && document.getElementById('prof-dept-input')) document.getElementById('prof-dept-input').value = p.dept;
+    }
+    const avatar = localStorage.getItem('genesis_user_avatar_300');
+    const pImg = document.getElementById('prof-avatar-img');
+    const pInit = document.getElementById('prof-avatar-initials');
+    if (avatar && pImg && pInit) {
+      pImg.src = avatar;
+      pImg.classList.remove('hidden');
+      pImg.style.display = 'block';
+      pInit.classList.add('hidden');
+      pInit.style.display = 'none';
+    }
+  } catch(e){}
+}
+
+function closeProfileModal() {
+  const modal = document.getElementById('profile-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+}
+
+function saveProfileChanges() {
+  const name = document.getElementById('prof-name-input')?.value.trim() || 'Lian Ahmed';
+  const role = document.getElementById('prof-role-input')?.value.trim() || 'Lead SCADA Engineer';
+  const email = document.getElementById('prof-email-input')?.value.trim() || 'lian.ahmed@arenaiot.com';
+  const rawUid = document.getElementById('prof-uid-input')?.value.trim() || 'AR-9402';
+  const uid = rawUid.startsWith('#') ? rawUid : '#' + rawUid;
+  const dept = document.getElementById('prof-dept-input')?.value.trim() || 'National SCADA Operations & Telemetry Grid Management';
+
+  const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'LN';
+
+  // Update Header
+  const headerName = document.getElementById('header-op-name');
+  const headerRole = document.getElementById('header-op-role');
+  const headerUid = document.getElementById('header-op-uid');
+  const headerInitials = document.getElementById('header-avatar-initials');
+  if (headerName) headerName.textContent = name;
+  if (headerRole) headerRole.textContent = role;
+  if (headerUid) headerUid.textContent = uid;
+  if (headerInitials) headerInitials.textContent = initials;
+
+  // Update Content and NOC pages if active
+  const contentName = document.getElementById('content-op-name');
+  const contentRole = document.getElementById('content-op-role');
+  const contentUid = document.getElementById('content-op-uid');
+  const contentInitials = document.getElementById('content-avatar-initials');
+  if (contentName) contentName.textContent = name;
+  if (contentRole) contentRole.textContent = role;
+  if (contentUid) contentUid.textContent = uid;
+  if (contentInitials) contentInitials.textContent = initials;
+
+  const nocName = document.getElementById('noc-op-name');
+  const nocRole = document.getElementById('noc-op-role');
+  const nocUid = document.getElementById('noc-op-uid');
+  const nocInitials = document.getElementById('noc-avatar-initials');
+  if (nocName) nocName.textContent = name;
+  if (nocRole) nocRole.textContent = role;
+  if (nocUid) nocUid.textContent = uid;
+  if (nocInitials) nocInitials.textContent = initials;
+
+  // Apply base64 avatar if newly chosen
+  if (tempUserAvatarBase64_300) {
+    localStorage.setItem('genesis_user_avatar_300', tempUserAvatarBase64_300);
+    const avatarImgIds = ['header-avatar-img', 'content-avatar-img', 'noc-avatar-img', 'prof-avatar-img'];
+    const avatarInitIds = ['header-avatar-initials', 'content-avatar-initials', 'noc-avatar-initials', 'prof-avatar-initials'];
+    
+    avatarImgIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.src = tempUserAvatarBase64_300; el.classList.remove('hidden'); el.style.display = 'block'; }
+    });
+    avatarInitIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.classList.add('hidden'); el.style.display = 'none'; }
+    });
+  }
+
+  // Persist Profile Object in localStorage
+  const profile = { name, role, email, uid, dept, updated: new Date().toISOString() };
+  localStorage.setItem('genesis_scada_profile', JSON.stringify(profile));
+
+  closeProfileModal();
+  showScadaToast('Profile & Avatar Saved', `Operator profile for ${name} (${uid}) persisted successfully.`);
+}
+
+function initProfileAndAvatar() {
+  try {
+    const saved = localStorage.getItem('genesis_scada_profile');
+    if (saved) {
+      const p = JSON.parse(saved);
+      const name = p.name || 'Lian Ahmed';
+      const role = p.role || 'Lead SCADA Engineer';
+      const uid = p.uid || '#AR-9402';
+      const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'LN';
+
+      if (document.getElementById('header-op-name')) document.getElementById('header-op-name').textContent = name;
+      if (document.getElementById('header-op-role')) document.getElementById('header-op-role').textContent = role;
+      if (document.getElementById('header-op-uid')) document.getElementById('header-op-uid').textContent = uid;
+      if (document.getElementById('header-avatar-initials')) document.getElementById('header-avatar-initials').textContent = initials;
+
+      if (document.getElementById('content-op-name')) document.getElementById('content-op-name').textContent = name;
+      if (document.getElementById('content-op-role')) document.getElementById('content-op-role').textContent = role;
+      if (document.getElementById('content-op-uid')) document.getElementById('content-op-uid').textContent = uid;
+      if (document.getElementById('content-avatar-initials')) document.getElementById('content-avatar-initials').textContent = initials;
+
+      if (document.getElementById('noc-op-name')) document.getElementById('noc-op-name').textContent = name;
+      if (document.getElementById('noc-op-role')) document.getElementById('noc-op-role').textContent = role;
+      if (document.getElementById('noc-op-uid')) document.getElementById('noc-op-uid').textContent = uid;
+      if (document.getElementById('noc-avatar-initials')) document.getElementById('noc-avatar-initials').textContent = initials;
+    }
+
+    const avatar = localStorage.getItem('genesis_user_avatar_300');
+    if (avatar) {
+      const avatarImgIds = ['header-avatar-img', 'content-avatar-img', 'noc-avatar-img', 'prof-avatar-img'];
+      const avatarInitIds = ['header-avatar-initials', 'content-avatar-initials', 'noc-avatar-initials', 'prof-avatar-initials'];
+      avatarImgIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.src = avatar; el.classList.remove('hidden'); el.style.display = 'block'; }
+      });
+      avatarInitIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.classList.add('hidden'); el.style.display = 'none'; }
+      });
+    }
+  } catch(e){}
+}
+
+// =========================================================================
+// 2. UNIVERSAL SCADA TABLE ADVANCED SORTING ENGINE
+// =========================================================================
+const SCADA_TABLE_SORTS = {};
+
+function sortScadaTable(tableId, colIndex, dataType = 'text') {
+  const table = document.getElementById(tableId);
+  if (!table) return;
+  const tbody = table.querySelector('tbody');
+  if (!tbody) return;
+
+  const currentSort = SCADA_TABLE_SORTS[tableId] || { colIndex: -1, dir: 'desc' };
+  const newDir = (currentSort.colIndex === colIndex && currentSort.dir === 'asc') ? 'desc' : 'asc';
+  SCADA_TABLE_SORTS[tableId] = { colIndex, dir: newDir };
+
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  
+  rows.sort((rowA, rowB) => {
+    const cellA = rowA.children[colIndex];
+    const cellB = rowB.children[colIndex];
+    if (!cellA || !cellB) return 0;
+
+    let valA = cellA.innerText.trim();
+    let valB = cellB.innerText.trim();
+
+    if (dataType === 'number') {
+      // Clean numeric strings like '114 Towers', '6.84 MW', '99.8%', '320.5 hrs'
+      valA = parseFloat(valA.replace(/[^0-9.-]+/g, '')) || 0;
+      valB = parseFloat(valB.replace(/[^0-9.-]+/g, '')) || 0;
+      return newDir === 'asc' ? valA - valB : valB - valA;
+    } else {
+      valA = valA.toLowerCase();
+      valB = valB.toLowerCase();
+      if (valA < valB) return newDir === 'asc' ? -1 : 1;
+      if (valA > valB) return newDir === 'asc' ? 1 : -1;
+      return 0;
+    }
+  });
+
+  // Re-append rows in sorted order
+  rows.forEach(r => tbody.appendChild(r));
+
+  // Update Header Visual Sort Indicators
+  const thead = table.querySelector('thead');
+  if (thead) {
+    const ths = thead.querySelectorAll('th');
+    ths.forEach((th, idx) => {
+      const ind = th.querySelector('.sort-indicator');
+      if (ind) {
+        if (idx === colIndex) {
+          th.classList.add('active-sort');
+          ind.textContent = newDir === 'asc' ? '▲' : '▼';
+          ind.style.opacity = '1';
+          ind.style.color = '#4f46e5';
+        } else {
+          th.classList.remove('active-sort');
+          ind.textContent = '▲▼';
+          ind.style.opacity = '0.4';
+          ind.style.color = '';
+        }
+      }
+    });
+  }
+
+  const colName = table.querySelectorAll('thead th')[colIndex]?.innerText.replace(/[^a-zA-Z0-9 &]/g, '').trim() || 'Column';
+  showScadaToast('Table Sorted', `Sorted by ${colName} (${newDir === 'asc' ? 'Ascending' : 'Descending'}).`);
+}
+
+// =========================================================================
+// 3. PERSONNEL PROFILE DOSSIER & SCADA AUDIT ENGINE
+// =========================================================================
+const PERSONNEL_DATA = {
+  'Engr. Tariqul Islam': {
+    name: 'Engr. Tariqul Islam',
+    uid: '#DIR-DHK-01',
+    role: 'Level 4: Regional Operations Director',
+    title: 'Regional SCADA Operations Director (Dhaka North)',
+    email: 'tariqul.islam@arenaiot.com',
+    phone: '+880 1711-948201',
+    office: 'Level 7, Dhaka North Command Station',
+    vhf: 'VHF-Ch-04 (156.200 MHz, ECHO-NORTH-01)',
+    jurisdiction: 'Dhaka North Division',
+    towers: '114 Towers',
+    mw: '6.84 MW',
+    sla: '99.8%',
+    duty: 'Active On-Duty (Shift Lead)',
+    auditLog: [
+      { time: 'Today 10:45 UTC', action: 'Approved Preventive PM-A Work Order for Cluster 2 (Tower BTS-GP-0492)', type: 'APPROVAL' },
+      { time: 'Yesterday 16:20 UTC', action: 'Signed monthly SLA Performance Compliance Dossier (99.8%)', type: 'COMPLIANCE' },
+      { time: 'Nov 16, 14:15 UTC', action: 'Authorized emergency diesel replenishment for Mirpur sub-grid', type: 'DISPATCH' },
+      { time: 'Nov 14, 09:30 UTC', action: 'Supervised grid synchronization review across 114 BTS towers', type: 'GRID' }
+    ]
+  },
+  'Engr. Shamim Hossain': {
+    name: 'Engr. Shamim Hossain',
+    uid: '#DIR-DHK-02',
+    role: 'Level 4: Regional Operations Director',
+    title: 'Regional SCADA Operations Director (Dhaka South)',
+    email: 'shamim.hossain@arenaiot.com',
+    phone: '+880 1712-837192',
+    office: 'Level 5, Motijheel Central Command Station',
+    vhf: 'VHF-Ch-05 (156.250 MHz, ECHO-SOUTH-02)',
+    jurisdiction: 'Dhaka South Division',
+    towers: '94 Towers',
+    mw: '5.64 MW',
+    sla: '99.7%',
+    duty: 'Active On-Duty',
+    auditLog: [
+      { time: 'Today 11:20 UTC', action: 'Authorized routine fuel filtration maintenance on Dhanmondi cluster', type: 'APPROVAL' },
+      { time: 'Yesterday 14:00 UTC', action: 'Reviewed Modbus gateway RTU latency in Motijheel corridor', type: 'DIAGNOSTICS' },
+      { time: 'Nov 15, 12:45 UTC', action: 'Validated emergency generator auto-start transfer testing', type: 'TEST' }
+    ]
+  },
+  'Engr. Faisal Mahmud': {
+    name: 'Engr. Faisal Mahmud',
+    uid: '#DIR-CTG-01',
+    role: 'Level 4: Regional Operations Director',
+    title: 'Regional SCADA Operations Director (Chittagong Metro)',
+    email: 'faisal.mahmud@arenaiot.com',
+    phone: '+880 1713-746281',
+    office: 'Port Zone Command Station, Agrabad',
+    vhf: 'VHF-Ch-09 (156.450 MHz, SEAPORT-BASE-01)',
+    jurisdiction: 'Chittagong Metro',
+    towers: '68 Towers',
+    mw: '4.08 MW',
+    sla: '99.6%',
+    duty: 'Active On-Duty',
+    auditLog: [
+      { time: 'Today 08:30 UTC', action: 'Cleared Port Zone feeder trip alarm after secondary line restart', type: 'ALARM' },
+      { time: 'Nov 17, 18:10 UTC', action: 'Approved Cummins 6BT overhaul schedule for BTS-RO-8442', type: 'APPROVAL' }
+    ]
+  },
+  'Engr. Rafiqul Alam': {
+    name: 'Engr. Rafiqul Alam',
+    uid: '#DIR-CTG-02',
+    role: 'Level 4: Regional Operations Director',
+    title: 'Regional SCADA Operations Director (Chittagong North)',
+    email: 'rafiqul.alam@arenaiot.com',
+    phone: '+880 1714-635190',
+    office: 'Nasirabad Engineering Complex',
+    vhf: 'VHF-Ch-10 (156.492 MHz, NORTH-COAST-02)',
+    jurisdiction: 'Chittagong North & Port',
+    towers: '50 Towers',
+    mw: '3.00 MW',
+    sla: '99.5%',
+    duty: 'Active On-Duty',
+    auditLog: [
+      { time: 'Yesterday 09:15 UTC', action: 'Validated cyclone contingency fuel reserves across 50 coastal towers', type: 'SAFETY' }
+    ]
+  },
+  'Engr. Kamrul Hasan': {
+    name: 'Engr. Kamrul Hasan',
+    uid: '#DIR-SYL-01',
+    role: 'Level 4: Regional Operations Director',
+    title: 'Regional SCADA Operations Director (Sylhet Zone)',
+    email: 'kamrul.hasan@arenaiot.com',
+    phone: '+880 1715-524089',
+    office: 'Zindabazar Tech Hub, Sylhet',
+    vhf: 'VHF-Ch-12 (156.600 MHz, TEA-RIDGE-01)',
+    jurisdiction: 'Sylhet Zone',
+    towers: '58 Towers',
+    mw: '3.48 MW',
+    sla: '99.4%',
+    duty: 'Active On-Duty',
+    auditLog: [
+      { time: 'Today 09:50 UTC', action: 'Dispatched radiator flush service to Caterpillar C4.4 unit BTS-BL-1944', type: 'MAINT' },
+      { time: 'Nov 04, 2026', action: 'Logged completed coolant flush & glycol rebalance on GEN-CAT-0312', type: 'AUDIT' }
+    ]
+  },
+  'Engr. Mofazzal Hossain': {
+    name: 'Engr. Mofazzal Hossain',
+    uid: '#DIR-RAJ-01',
+    role: 'Level 4: Regional Operations Director',
+    title: 'Regional SCADA Operations Director (Rajshahi Central)',
+    email: 'mofazzal.hossain@arenaiot.com',
+    phone: '+880 1716-413978',
+    office: 'Padma Riverfront SCADA Facility',
+    vhf: 'VHF-Ch-14 (156.700 MHz, SILK-GRID-01)',
+    jurisdiction: 'Rajshahi Central',
+    towers: '38 Towers',
+    mw: '2.28 MW',
+    sla: '99.6%',
+    duty: 'Active On-Duty',
+    auditLog: [
+      { time: 'Nov 17, 11:00 UTC', action: 'Inspected high-voltage alternator isolation tests in central cluster', type: 'INSPECT' }
+    ]
+  },
+  'Engr. Anisur Rahman': {
+    name: 'Engr. Anisur Rahman',
+    uid: '#DIR-KHU-01',
+    role: 'Level 4: Regional Operations Director',
+    title: 'Regional SCADA Operations Director (Khulna Division)',
+    email: 'anisur.rahman@arenaiot.com',
+    phone: '+880 1717-302867',
+    office: 'Rupsha Industrial Grid Command',
+    vhf: 'VHF-Ch-16 (156.800 MHz, DELTA-GRID-01)',
+    jurisdiction: 'Khulna Division',
+    towers: '30 Towers',
+    mw: '1.80 MW',
+    sla: '99.3%',
+    duty: 'Active On-Duty',
+    auditLog: [
+      { time: 'Today 07:15 UTC', action: 'Approved emergency overhaul lockout on Kohler KD62 (BTS-TE-4738)', type: 'LOCKOUT' }
+    ]
+  },
+  'Engr. Jahangir Kabir': {
+    name: 'Engr. Jahangir Kabir',
+    uid: '#DIR-BAR-01',
+    role: 'Level 4: Regional Operations Director',
+    title: 'Regional SCADA Operations Director (Barisal Coast)',
+    email: 'jahangir.kabir@arenaiot.com',
+    phone: '+880 1718-291756',
+    office: 'Coastal Island SCADA Center',
+    vhf: 'VHF-Ch-18 (156.900 MHz, BARISAL-VHF-01)',
+    jurisdiction: 'Barisal Coast',
+    towers: '15 Towers',
+    mw: '0.90 MW',
+    sla: '99.1%',
+    duty: 'Active On-Duty',
+    auditLog: [
+      { time: 'Nov 16, 15:40 UTC', action: 'Verified submarine fiber gateway telemetry link integrity', type: 'COMMS' }
+    ]
+  },
+  'Engr. Nurul Huda': {
+    name: 'Engr. Nurul Huda',
+    uid: '#DIR-RAN-01',
+    role: 'Level 4: Regional Operations Director',
+    title: 'Regional SCADA Operations Director (Rangpur Belt)',
+    email: 'nurul.huda@arenaiot.com',
+    phone: '+880 1719-180645',
+    office: 'Northern Frontier Operations Hub',
+    vhf: 'VHF-Ch-20 (157.000 MHz, NORTH-BELT-01)',
+    jurisdiction: 'Rangpur Belt',
+    towers: '15 Towers',
+    mw: '0.90 MW',
+    sla: '99.2%',
+    duty: 'Active On-Duty',
+    auditLog: [
+      { time: 'Nov 15, 10:20 UTC', action: 'Signed winterization protocol for cold-crank preheaters', type: 'WINTER' }
+    ]
+  },
+  'Engr. Delowar Hossain': {
+    name: 'Engr. Delowar Hossain',
+    uid: '#DIR-MYM-01',
+    role: 'Level 4: Regional Operations Director',
+    title: 'Regional SCADA Operations Director (Mymensingh Hub)',
+    email: 'delowar.hossain@arenaiot.com',
+    phone: '+880 1720-079534',
+    office: 'Brahmaputra Telemetry Base',
+    vhf: 'VHF-Ch-22 (157.100 MHz, MYM-HUB-01)',
+    jurisdiction: 'Mymensingh Hub',
+    towers: '10 Towers',
+    mw: '0.60 MW',
+    sla: '99.5%',
+    duty: 'Active On-Duty',
+    auditLog: [
+      { time: 'Nov 14, 16:00 UTC', action: 'Completed scheduled 492-hour load bank verification test', type: 'LOADBANK' }
+    ]
+  },
+  'Engr. Lian Ahmed': {
+    name: 'Engr. Lian Ahmed',
+    uid: '#AR-9402',
+    role: 'Level 3: Lead SCADA Engineer',
+    title: 'Lead SCADA Automation Engineer · National Command',
+    email: 'lian.ahmed@arenaiot.com',
+    phone: '+880 1819-940201',
+    office: 'Central NOC Room 4B, Arena IoT HQ',
+    vhf: 'VHF-Ch-01 (156.050 MHz, PRIORITY-LEAD)',
+    jurisdiction: 'Gulshan-Mirpur Node / National',
+    towers: '24 Towers (Direct)',
+    mw: '1.44 MW',
+    sla: '99.9%',
+    duty: 'Active On-Duty (Current Session Commander)',
+    auditLog: [
+      { time: 'Today 11:15 UTC', action: 'Executed Modbus RTU telemetry synchronization on Perkins 1104A', type: 'TELEMETRY' },
+      { time: 'Today 09:30 UTC', action: 'Acknowledged High Coolant Temp Alarm on BTS-RO-8442', type: 'ALARM' },
+      { time: 'Yesterday 18:00 UTC', action: 'Calibrated DSE-7320 auto-start threshold to 195V', type: 'CONTROL' },
+      { time: 'Nov 10, 2026', action: 'Logged completed PM-A minor service (200.0 hrs) on GEN-PK-0104', type: 'MAINT' }
+    ]
+  },
+  'Engr. Naimul Islam': {
+    name: 'Engr. Naimul Islam',
+    uid: '#ENG-DHK-02',
+    role: 'Level 3: Lead SCADA Engineer',
+    title: 'Lead Field Engineer (Uttara-Tongi Corridor)',
+    email: 'naimul.islam@arenaiot.com',
+    phone: '+880 1820-839102',
+    office: 'Uttara Sector 7 Station',
+    vhf: 'VHF-Ch-02 (156.100 MHz, UTTR-LEAD-02)',
+    jurisdiction: 'Uttara-Tongi Corridor',
+    towers: '20 Towers',
+    mw: '1.20 MW',
+    sla: '99.7%',
+    duty: 'Active On-Duty',
+    auditLog: [
+      { time: 'Today 10:10 UTC', action: 'Replaced air filter restriction sensor on Tower BTS-GP-0118', type: 'MAINT' }
+    ]
+  },
+  'Engr. Hasan Chowdhury': {
+    name: 'Engr. Hasan Chowdhury',
+    uid: '#ENG-DHK-03',
+    role: 'Level 3: Lead SCADA Engineer',
+    title: 'Lead Field Engineer (Dhanmondi-Motijheel)',
+    email: 'hasan.chowdhury@arenaiot.com',
+    phone: '+880 1821-728093',
+    office: 'Dhanmondi Sub-Grid Office',
+    vhf: 'VHF-Ch-03 (156.150 MHz, DHAN-LEAD-03)',
+    jurisdiction: 'Dhanmondi-Motijheel',
+    towers: '22 Towers',
+    mw: '1.32 MW',
+    sla: '99.8%',
+    duty: 'Active On-Duty',
+    auditLog: [
+      { time: 'Yesterday 15:30 UTC', action: 'Checked 24V starter battery float voltage on BTS-BL-0720', type: 'BATTERY' }
+    ]
+  },
+  'Engr. Tanvir Ahmed': {
+    name: 'Engr. Tanvir Ahmed',
+    uid: '#ENG-CTG-01',
+    role: 'Level 3: Lead SCADA Engineer',
+    title: 'Lead Field Engineer (Agrabad Commercial Hub)',
+    email: 'tanvir.ahmed@arenaiot.com',
+    phone: '+880 1822-617984',
+    office: 'Agrabad Commercial Node',
+    vhf: 'VHF-Ch-08 (156.400 MHz, AGRA-LEAD-01)',
+    jurisdiction: 'Agrabad Commercial Hub',
+    towers: '18 Towers',
+    mw: '1.08 MW',
+    sla: '99.6%',
+    duty: 'Active On-Duty',
+    auditLog: [
+      { time: 'Today 09:00 UTC', action: 'Tested emergency fuel shutoff valve on Cummins 6BT standby set', type: 'TEST' }
+    ]
+  },
+  'Engr. Babul Miah': {
+    name: 'Engr. Babul Miah',
+    uid: '#ENG-SYL-01',
+    role: 'Level 3: Lead SCADA Engineer',
+    title: 'Lead Field Engineer (Zindabazar Tech Node)',
+    email: 'babul.miah@arenaiot.com',
+    phone: '+880 1823-506875',
+    office: 'Zindabazar Sub-Center, Sylhet',
+    vhf: 'VHF-Ch-11 (156.550 MHz, ZIND-LEAD-01)',
+    jurisdiction: 'Zindabazar Tech Node',
+    towers: '20 Towers',
+    mw: '1.20 MW',
+    sla: '99.5%',
+    duty: 'Active On-Duty',
+    auditLog: [
+      { time: 'Yesterday 11:45 UTC', action: 'Retorqued alternator mounting bracket bolts after vibration alert', type: 'MAINT' }
+    ]
+  }
+};
+
+function openPersonnelProfile(nameOrUid) {
+  let person = PERSONNEL_DATA[nameOrUid];
+  if (!person) {
+    // Search by partial name or UID
+    const keys = Object.keys(PERSONNEL_DATA);
+    for (let k of keys) {
+      if (k.includes(nameOrUid) || PERSONNEL_DATA[k].uid.includes(nameOrUid)) {
+        person = PERSONNEL_DATA[k];
+        break;
+      }
+    }
+  }
+
+  // Fallback to default Lian Ahmed if not found
+  if (!person) person = PERSONNEL_DATA['Engr. Lian Ahmed'];
+
+  const modal = document.getElementById('personnel-profile-modal');
+  if (!modal) return;
+
+  const initials = person.name.split(' ').filter(p => !p.startsWith('Engr.')).map(p => p[0]).join('').slice(0, 2).toUpperCase() || 'OP';
+  
+  const av = document.getElementById('pers-modal-avatar');
+  if (av) av.textContent = initials;
+  if (document.getElementById('pers-modal-name')) document.getElementById('pers-modal-name').textContent = person.name;
+  if (document.getElementById('pers-modal-uid')) document.getElementById('pers-modal-uid').textContent = person.uid;
+  if (document.getElementById('pers-modal-title')) document.getElementById('pers-modal-title').textContent = person.title;
+  
+  const emailEl = document.getElementById('pers-modal-email');
+  if (emailEl) { emailEl.textContent = person.email; emailEl.href = 'mailto:' + person.email; }
+  
+  const phoneEl = document.getElementById('pers-modal-phone');
+  if (phoneEl) { phoneEl.textContent = person.phone; phoneEl.href = 'tel:' + person.phone.replace(/[^0-9+]/g, ''); }
+
+  if (document.getElementById('pers-modal-office')) document.getElementById('pers-modal-office').textContent = person.office;
+  if (document.getElementById('pers-modal-vhf')) document.getElementById('pers-modal-vhf').textContent = person.vhf;
+  if (document.getElementById('pers-modal-jurisdiction')) document.getElementById('pers-modal-jurisdiction').textContent = person.jurisdiction;
+  if (document.getElementById('pers-modal-towers')) document.getElementById('pers-modal-towers').textContent = person.towers;
+  if (document.getElementById('pers-modal-mw')) document.getElementById('pers-modal-mw').textContent = person.mw;
+  if (document.getElementById('pers-modal-sla')) document.getElementById('pers-modal-sla').textContent = person.sla;
+  if (document.getElementById('pers-modal-duty-status')) document.getElementById('pers-modal-duty-status').textContent = person.duty;
+
+  const auditContainer = document.getElementById('pers-modal-audit-list');
+  if (auditContainer) {
+    auditContainer.innerHTML = person.auditLog.map(log => `
+      <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 shrink-0"></span>
+          <span class="font-medium text-slate-800 text-[11px]">${log.action}</span>
+        </div>
+        <span class="font-mono text-[10px] text-slate-492 whitespace-nowrap">${log.time}</span>
+      </div>
+    `).join('');
+  }
+
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+}
+
+function closePersonnelProfile() {
+  const modal = document.getElementById('personnel-profile-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+}
+
+function triggerDirectVhfPulse() {
+  showScadaToast('VHF Radio Hail Dispatched', 'Acoustic dispatch alert broadcasted across designated VHF emergency channel.');
+}
+
+// =========================================================================
+// 4. DYNAMIC SCADA COMMAND ROLES & PERMISSIONS (RBAC) GOVERNANCE
+// =========================================================================
+const SCADA_ROLES = {
+  1: {
+    level: 1,
+    title: 'Level 1: NOC Shift Operator',
+    badge: 'L1: Operator',
+    color: 'slate',
+    perms: ['view_telemetry', 'acknowledge_alarms', 'export_reports']
+  },
+  2: {
+    level: 2,
+    title: 'Level 2: Field Maintenance Tech',
+    badge: 'L2: Field Tech',
+    color: 'amber',
+    perms: ['view_telemetry', 'acknowledge_alarms', 'export_reports', 'log_maintenance', 'engage_loto_lockout']
+  },
+  3: {
+    level: 3,
+    title: 'Level 3: Lead SCADA Engineer',
+    badge: 'L3: Lead SCADA Engr',
+    color: 'emerald',
+    perms: ['view_telemetry', 'acknowledge_alarms', 'export_reports', 'log_maintenance', 'engage_loto_lockout', 'remote_engine_control', 'modbus_write', 'fota_firmware_push']
+  },
+  4: {
+    level: 4,
+    title: 'Level 4: Regional Director',
+    badge: 'L4: Regional Dir',
+    color: 'indigo',
+    perms: ['view_telemetry', 'acknowledge_alarms', 'export_reports', 'log_maintenance', 'engage_loto_lockout', 'remote_engine_control', 'modbus_write', 'fota_firmware_push', 'create_edit_cluster', 'approve_work_orders']
+  },
+  5: {
+    level: 5,
+    title: 'Level 5: Chief SCADA Director',
+    badge: 'L5: Chief Admin',
+    color: 'purple',
+    perms: ['view_telemetry', 'acknowledge_alarms', 'export_reports', 'log_maintenance', 'engage_loto_lockout', 'remote_engine_control', 'modbus_write', 'fota_firmware_push', 'create_edit_cluster', 'approve_work_orders', 'create_edit_area', 'cms_publish_layout', 'user_role_assignment', 'admin_override']
+  }
+};
+
+let currentScadaRole = parseInt(localStorage.getItem('genesis_active_role')) || 3;
+
+function toggleRoleDropdown() {
+  const dd = document.getElementById('role-switcher-dropdown');
+  if (!dd) return;
+  if (dd.classList.contains('hidden')) {
+    dd.classList.remove('hidden');
+    dd.style.display = 'flex';
+  } else {
+    dd.classList.add('hidden');
+    dd.style.display = 'none';
+  }
+}
+
+function switchActiveRole(level, showToast = true) {
+  if (!SCADA_ROLES[level]) return;
+  currentScadaRole = level;
+  localStorage.setItem('genesis_active_role', level.toString());
+
+  const role = SCADA_ROLES[level];
+  const roleTitleEl = document.getElementById('role-pill-title');
+  const roleDotEl = document.getElementById('role-pill-dot');
+  const rbacLabel = document.getElementById('rbac-current-role-label');
+
+  if (roleTitleEl) roleTitleEl.textContent = role.badge;
+  if (roleDotEl) {
+    roleDotEl.className = `w-2 h-2 rounded-full animate-pulse bg-${role.color}-600`;
+  }
+  if (rbacLabel) rbacLabel.textContent = role.title;
+
+  // Update modal active button state
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.getElementById('rbac-btn-l' + i);
+    if (btn) {
+      if (i === level) {
+        btn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition bg-slate-900 text-white shadow-2xs';
+      } else {
+        btn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition bg-white border border-slate-200 text-slate-700 hover:bg-slate-100';
+      }
+    }
+  }
+
+  // Close dropdown if open
+  const dd = document.getElementById('role-switcher-dropdown');
+  if (dd) { dd.classList.add('hidden'); dd.style.display = 'none'; }
+
+  if (showToast) {
+    showScadaToast('Active SCADA Role Switched', `Now operating under clearance: ${role.title}`);
+  }
+}
+
+function canExecuteAction(actionKey, actionName = 'This action') {
+  const role = SCADA_ROLES[currentScadaRole] || SCADA_ROLES[3];
+  if (role.perms.includes(actionKey) || role.perms.includes('admin_override')) {
+    return true;
+  }
+
+  // Find minimum level required
+  let reqLevel = 5;
+  for (let l = 1; l <= 5; l++) {
+    if (SCADA_ROLES[l].perms.includes(actionKey)) {
+      reqLevel = l;
+      break;
+    }
+  }
+
+  showScadaToast(
+    'ACCESS RESTRICTED (RBAC)',
+    `"${actionName}" requires Level ${reqLevel} (${SCADA_ROLES[reqLevel].badge}) or higher. Current session: ${role.badge}.`,
+    'error'
+  );
+  return false;
+}
+
+function openHierarchyOrgModal() {
+  const m = document.getElementById('rbac-hierarchy-modal');
+  if (m) { m.classList.remove('hidden'); m.style.display = 'flex'; }
+  const dd = document.getElementById('role-switcher-dropdown');
+  if (dd) { dd.classList.add('hidden'); dd.style.display = 'none'; }
+}
+
+function closeHierarchyOrgModal() {
+  const m = document.getElementById('rbac-hierarchy-modal');
+  if (m) { m.classList.add('hidden'); m.style.display = 'none'; }
+}
+
+// =========================================================================
+// 5. FRANCHISE TIER & CRUD ENGINE (AREA, CLUSTER, TOWER)
+// =========================================================================
+function switchFranchiseTier(tier) {
+  const tiers = ['area', 'cluster', 'tower'];
+  tiers.forEach(t => {
+    const panel = document.getElementById('tier-panel-' + t);
+    const btn = document.getElementById('tab-btn-' + t);
+    if (t === tier) {
+      if (panel) panel.classList.remove('hidden');
+      if (btn) btn.className = 'px-4 py-2 rounded-xl text-xs font-bold transition shadow-xs bg-white text-slate-900';
+    } else {
+      if (panel) panel.classList.add('hidden');
+      if (btn) btn.className = 'px-4 py-2 rounded-xl text-xs font-bold transition text-slate-600 hover:text-slate-900';
+    }
+  });
+}
+
+function filterAreaRows() {
+  const q = (document.getElementById('area-search-input')?.value || '').toLowerCase();
+  const rows = document.querySelectorAll('#areas-table-body tr');
+  rows.forEach(r => {
+    r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function filterClusterRows() {
+  const q = (document.getElementById('cluster-search-input')?.value || '').toLowerCase();
+  const rows = document.querySelectorAll('#clusters-table-body tr');
+  rows.forEach(r => {
+    r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function filterTowerRows() {
+  const q = (document.getElementById('tower-search-input')?.value || '').toLowerCase();
+  const rows = document.querySelectorAll('#towers-table-body tr');
+  rows.forEach(r => {
+    r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function viewAreaDetails(id) {
+  const modal = document.getElementById('franchise-view-modal');
+  const title = document.getElementById('fv-title');
+  const body = document.getElementById('fv-body');
+  if (title) title.textContent = `Area Details: ${id}`;
+  if (body) {
+    body.innerHTML = `
+      <div class="space-y-3 text-xs">
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+          <div class="font-bold text-slate-900 text-sm">${id} Operational Zone</div>
+          <div class="text-slate-600 mt-1">Supervises BTS telecom cluster nodes with active N+1 generator redundancy.</div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 font-mono">
+          <div class="p-2.5 rounded-lg bg-emerald-50 text-emerald-800 font-bold">Health: 99.8% Online</div>
+          <div class="p-2.5 rounded-lg bg-indigo-50 text-indigo-800 font-bold">Standard Modbus RTU</div>
+        </div>
+      </div>
+    `;
+  }
+  if (modal) { modal.classList.remove('hidden'); modal.style.display = 'flex'; }
+}
+
+function editAreaModal(id) {
+  if (!canExecuteAction('create_edit_area', 'Modify Area Configuration')) return;
+  const modal = document.getElementById('area-crud-modal');
+  const title = document.getElementById('area-modal-title');
+  const nameInput = document.getElementById('area-name-input');
+  const codeInput = document.getElementById('area-code-input');
+  if (title) title.textContent = `Edit Area: ${id}`;
+  if (codeInput) codeInput.value = id;
+  if (nameInput) nameInput.value = id === 'AREA-DHK-N' ? 'Dhaka North' : (id === 'AREA-CTG-M' ? 'Chittagong Metro' : id);
+  if (modal) { modal.classList.remove('hidden'); modal.style.display = 'flex'; }
+}
+
+function deleteAreaPrompt(id) {
+  if (!canExecuteAction('create_edit_area', 'Decommission Area')) return;
+  if (confirm(`Are you sure you want to decommission Area ${id}? All child clusters and towers must be reassigned.`)) {
+    const row = document.querySelector(`tr[data-area-id="${id}"]`);
+    if (row) row.remove();
+    showScadaToast('Area Decommissioned', `Area ${id} removed from national operational grid.`);
+  }
+}
+
+function openCreateAreaModal() {
+  if (!canExecuteAction('create_edit_area', 'Create New Area')) return;
+  const modal = document.getElementById('area-crud-modal');
+  const title = document.getElementById('area-modal-title');
+  const nameInput = document.getElementById('area-name-input');
+  const codeInput = document.getElementById('area-code-input');
+  if (title) title.textContent = 'Create New Operational Area';
+  if (codeInput) codeInput.value = `AREA-${Math.floor(Math.random()*900 + 100)}`;
+  if (nameInput) nameInput.value = '';
+  if (modal) { modal.classList.remove('hidden'); modal.style.display = 'flex'; }
+}
+
+function saveAreaRecord() {
+  const name = document.getElementById('area-name-input')?.value.trim();
+  const code = document.getElementById('area-code-input')?.value.trim();
+  if (!name || !code) { alert('Please enter both Area Name and Code.'); return; }
+  showScadaToast('Area Saved', `Area ${name} (${code}) recorded to national registry.`);
+  closeFranchiseModals();
+}
+
+function viewClusterDetails(id) {
+  const modal = document.getElementById('franchise-view-modal');
+  const title = document.getElementById('fv-title');
+  const body = document.getElementById('fv-body');
+  if (title) title.textContent = `Cluster Details: ${id}`;
+  if (body) {
+    body.innerHTML = `
+      <div class="space-y-3 text-xs">
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+          <div class="font-bold text-slate-900 text-sm">${id} Regional Node</div>
+          <div class="text-slate-600 mt-1">Directly polling Modbus concentrators over RS-485 serial bus.</div>
+        </div>
+        <div class="p-2.5 rounded-lg bg-slate-100 font-mono text-[11px]">Primary IP Gateway: 192.168.10.1:502</div>
+      </div>
+    `;
+  }
+  if (modal) { modal.classList.remove('hidden'); modal.style.display = 'flex'; }
+}
+
+function editClusterModal(id) {
+  if (!canExecuteAction('create_edit_cluster', 'Modify Cluster')) return;
+  const modal = document.getElementById('cluster-crud-modal');
+  const title = document.getElementById('cluster-modal-title');
+  const nameInput = document.getElementById('cluster-name-input');
+  const codeInput = document.getElementById('cluster-code-input');
+  if (title) title.textContent = `Edit Cluster: ${id}`;
+  if (codeInput) codeInput.value = id;
+  if (nameInput) nameInput.value = id === 'CLUST-DHK-01' ? 'Gulshan-Mirpur Node' : (id === 'CLUST-CTG-01' ? 'Agrabad Commercial Hub' : id);
+  if (modal) { modal.classList.remove('hidden'); modal.style.display = 'flex'; }
+}
+
+function deleteClusterPrompt(id) {
+  if (!canExecuteAction('create_edit_cluster', 'Delete Cluster')) return;
+  if (confirm(`Are you sure you want to delete Cluster ${id}?`)) {
+    const row = document.querySelector(`tr[data-cluster-id="${id}"]`);
+    if (row) row.remove();
+    showScadaToast('Cluster Removed', `Cluster ${id} deleted.`);
+  }
+}
+
+function openCreateClusterModal() {
+  if (!canExecuteAction('create_edit_cluster', 'Create New Cluster')) return;
+  const modal = document.getElementById('cluster-crud-modal');
+  const title = document.getElementById('cluster-modal-title');
+  const nameInput = document.getElementById('cluster-name-input');
+  const codeInput = document.getElementById('cluster-code-input');
+  if (title) title.textContent = 'Create New Cluster';
+  if (codeInput) codeInput.value = `CLUST-ZONE-${Math.floor(Math.random()*900 + 100)}`;
+  if (nameInput) nameInput.value = '';
+  if (modal) { modal.classList.remove('hidden'); modal.style.display = 'flex'; }
+}
+
+function saveClusterRecord() {
+  const name = document.getElementById('cluster-name-input')?.value.trim();
+  const code = document.getElementById('cluster-code-input')?.value.trim();
+  if (!name || !code) { alert('Please enter Cluster Name and ID.'); return; }
+  showScadaToast('Cluster Saved', `Cluster ${name} (${code}) created.`);
+  closeFranchiseModals();
+}
+
+function viewTowerTelemetry(id) {
+  window.location.href = `telemetry.html?station=${id}`;
+}
+
+function editTowerModal(id) {
+  if (!canExecuteAction('create_edit_cluster', 'Modify BTS Tower')) return;
+  const modal = document.getElementById('tower-crud-modal');
+  const title = document.getElementById('tower-modal-title');
+  const idInput = document.getElementById('tower-id-input');
+  const nameInput = document.getElementById('tower-name-input');
+  if (title) title.textContent = `Edit Tower: ${id}`;
+  if (idInput) idInput.value = id;
+  if (nameInput) nameInput.value = `Station ${id}`;
+  if (modal) { modal.classList.remove('hidden'); modal.style.display = 'flex'; }
+}
+
+function deleteTowerPrompt(id) {
+  if (!canExecuteAction('create_edit_cluster', 'Decommission Tower')) return;
+  if (confirm(`Are you sure you want to decommission Tower ${id}?`)) {
+    const row = document.querySelector(`tr[data-tower-id="${id}"]`);
+    if (row) row.remove();
+    showScadaToast('Tower Decommissioned', `Tower node ${id} removed.`);
+  }
+}
+
+function openCreateTowerModal() {
+  if (!canExecuteAction('create_edit_cluster', 'Create BTS Tower')) return;
+  const modal = document.getElementById('tower-crud-modal');
+  const title = document.getElementById('tower-modal-title');
+  const idInput = document.getElementById('tower-id-input');
+  const nameInput = document.getElementById('tower-name-input');
+  if (title) title.textContent = 'Create New BTS Tower';
+  if (idInput) idInput.value = `BTS-NODE-${Math.floor(Math.random()*9000 + 1000)}`;
+  if (nameInput) nameInput.value = '';
+  if (modal) { modal.classList.remove('hidden'); modal.style.display = 'flex'; }
+}
+
+function saveTowerRecord() {
+  const id = document.getElementById('tower-id-input')?.value.trim();
+  const name = document.getElementById('tower-name-input')?.value.trim();
+  if (!id || !name) { alert('Please enter Tower UID and Station Name.'); return; }
+  showScadaToast('Tower Node Saved', `Tower ${name} (${id}) added to national registry.`);
+  closeFranchiseModals();
+}
+
+function closeFranchiseModals() {
+  const ids = ['area-crud-modal', 'cluster-crud-modal', 'tower-crud-modal', 'franchise-view-modal', 'gen-manual-edit-modal'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.add('hidden'); el.style.display = 'none'; }
+  });
+}
+
+// =========================================================================
+// 6. MAINTENANCE QUEUE & SERVICE CONTROLS ENGINE
+// =========================================================================
+function filterMaintQueue() {
+  const q = (document.getElementById('maint-search-input')?.value || '').toLowerCase();
+  const rows = document.querySelectorAll('#maint-queue-tbody tr');
+  rows.forEach(r => {
+    r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function openMaintModalFor(unitId) {
+  if (!canExecuteAction('log_maintenance', 'Update Maintenance Variables')) return;
+  const sel = document.getElementById('maint-modal-unit-sel');
+  if (sel) sel.value = unitId;
+  const m = document.getElementById('maint-update-modal');
+  if (m) { m.classList.remove('hidden'); m.style.display = 'flex'; }
+}
+
+function toggleRowLockout(unitId) {
+  if (!canExecuteAction('engage_loto_lockout', 'Safety Lockout Tag-Out')) return;
+  showScadaToast('Safety Lockout Engaged', `LOTO lockout toggled on node ${unitId}. Field technician on site.`);
+}
+
+function toggleActiveLockout() {
+  if (!canExecuteAction('engage_loto_lockout', 'Safety Lockout Tag-Out')) return;
+  const lbl = document.getElementById('maint-lockout-label');
+  const badge = document.getElementById('maint-unit-badge');
+  if (lbl && lbl.textContent.includes('Engage')) {
+    lbl.textContent = 'Disengage Safety Lockout';
+    if (badge) { badge.textContent = 'LOCKOUT ACTIVE'; badge.className = 'px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 text-[10px] font-bold border border-rose-200'; }
+    showScadaToast('Lockout Engaged', 'Mechanical and electrical starting circuits locked out.', 'warn');
+  } else if (lbl) {
+    lbl.textContent = 'Engage Safety Lockout';
+    if (badge) { badge.textContent = 'NORMAL OPERATION'; badge.className = 'px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200'; }
+    showScadaToast('Lockout Released', 'Unit returned to normal supervisory status.');
+  }
+}
+
+function openMaintUpdateModal() {
+  if (!canExecuteAction('log_maintenance', 'Update Maintenance Variables')) return;
+  const m = document.getElementById('maint-update-modal');
+  if (m) { m.classList.remove('hidden'); m.style.display = 'flex'; }
+}
+
+function closeMaintModal() {
+  const m = document.getElementById('maint-update-modal');
+  if (m) { m.classList.add('hidden'); m.style.display = 'none'; }
+}
+
+function saveMaintenanceUpdate() {
+  const unit = document.getElementById('maint-modal-unit-sel')?.value || 'GEN-PK-0104';
+  const runtime = document.getElementById('maint-input-runtime')?.value || '320.5';
+  const tech = document.getElementById('maint-input-tech')?.value || 'Lian Ahmed';
+  const wo = document.getElementById('maint-input-wo')?.value || 'WO-2026-9481';
+
+  closeMaintModal();
+  showScadaToast('Service Logged & Reset', `Maintenance protocol saved for ${unit} under ${wo}. Service countdown hours reset to 250h.`);
+}
+
+
 // --- URL PARAMS HANDLER (e.g. ?station=BTS-GP-0492 or ?unit=GEN-CM-0208) ---
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
@@ -4692,6 +6347,8 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('alarms-table-body')) renderAlarmsTable();
   if (document.getElementById('hist-line-path')) renderHistoryChart();
   if (document.getElementById('dse-lcd-body')) updateDseDisplay();
+  if (typeof initProfileAndAvatar === 'function') initProfileAndAvatar();
+  if (typeof switchActiveRole === 'function') switchActiveRole(currentScadaRole, false);
 });
 </script>
 

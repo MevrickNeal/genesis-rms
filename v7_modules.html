@@ -47,10 +47,10 @@
                   </div>
                 </div>
 
-                <!-- Perkins 1104A-44TG2 / Cummins / Multi-Brand Engine Stage (Strictly Constrained to Right 50% Max Width) -->
-                <div class="absolute right-2 sm:right-6 lg:right-10 bottom-2 sm:bottom-4 w-[48%] sm:w-[50%] lg:w-[50%] max-w-[50%] h-[75%] sm:h-[84%] lg:h-[88%] z-[2] flex items-end justify-end pointer-events-auto">
-                  <div class="relative w-full h-full flex items-end justify-end group">
-                    <img id="hero-engine-img" src="perkins_pure_clean.png" alt="Industrial Generator" class="max-h-full max-w-full w-auto h-auto object-contain object-bottom-right filter drop-shadow-2xl transition-transform duration-300 hover:scale-[1.02] cursor-pointer" onclick="openEngineExplodedView()" title="Click to inspect 3D mechanical specs" />
+                <!-- Perkins 1104A-44TG2 / Cummins / Multi-Brand Engine Stage (Strictly Constrained to Right 50% Max Width with Overflow Hidden) -->
+                <div class="absolute right-2 sm:right-6 lg:right-10 bottom-2 sm:bottom-4 w-[48%] sm:w-[50%] lg:w-[50%] max-w-[50%] h-[75%] sm:h-[84%] lg:h-[88%] z-[2] flex items-end justify-end pointer-events-auto overflow-hidden">
+                  <div class="relative w-full h-full flex items-end justify-end group overflow-hidden">
+                    <img id="hero-engine-img" src="perkins_pure_clean.png" alt="Industrial Generator" class="max-h-full max-w-full w-auto h-auto object-contain object-bottom-right filter drop-shadow-2xl cursor-pointer" onclick="openEngineExplodedView()" title="Click to inspect 3D mechanical specs" />
                   </div>
                 </div>
 
@@ -88,14 +88,20 @@
                       <span id="cms-hero-badge">PRIMARY POWER NODE</span>
                     </div>
 
-                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-none mb-2" id="cms-hero-title">
-                      Perkins 1104A-44TG2
-                    </h1>
+                    <!-- Auto-Adjustable Zero-Jitter Title Container -->
+                    <div class="h-12 sm:h-14 lg:h-16 flex items-center mb-1 overflow-hidden">
+                      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight whitespace-nowrap transition-all duration-200" id="cms-hero-title">
+                        Perkins 1104A-44TG2
+                      </h1>
+                    </div>
 
-                    <p class="text-xs sm:text-sm font-semibold text-slate-600 leading-relaxed mb-4" id="cms-hero-subtitle">
-                      Industrial 4-Cylinder Turbocharged Diesel Generator
-                      <span class="block text-slate-400 font-medium text-xs mt-0.5">60 kVA Standby / 48 kW Prime @ 1500 RPM, 50 Hz</span>
-                    </p>
+                    <!-- Fixed-Height Subtitle Container -->
+                    <div class="h-10 sm:h-12 flex flex-col justify-center mb-4 overflow-hidden">
+                      <p class="text-xs sm:text-sm font-semibold text-slate-600 leading-relaxed truncate" id="cms-hero-subtitle">
+                        Industrial 4-Cylinder Turbocharged Diesel Generator
+                        <span class="block text-slate-400 font-medium text-xs mt-0.5 truncate">60 kVA Standby / 48 kW Prime @ 1500 RPM, 50 Hz</span>
+                      </p>
+                    </div>
 
                     <!-- Interactive Specification Buttons -->
                     <div class="flex flex-wrap items-center gap-2.5 mb-5" id="hero-specs-container">

@@ -1655,7 +1655,11 @@
     }
   }
 
+  let isHeroTransitioning = false;
+
   function switchHeroGenerator(idOrIndex) {
+    if (isHeroTransitioning) return;
+
     let gen;
     if (typeof idOrIndex === 'number') {
       currentHeroIndex = (idOrIndex + BANNER_GENERATORS.length) % BANNER_GENERATORS.length;
@@ -1666,55 +1670,87 @@
     }
     if (!gen) return;
 
-    // 1. Update Hero stage elements
+    const imgEl = document.getElementById('hero-engine-img');
     const badge = document.getElementById('cms-hero-badge');
     const title = document.getElementById('cms-hero-title');
     const sub = document.getElementById('cms-hero-subtitle');
     const spec1 = document.getElementById('hero-spec-1');
     const spec2 = document.getElementById('hero-spec-2');
     const spec3 = document.getElementById('hero-spec-3');
-    const imgEl = document.getElementById('hero-engine-img');
     const selEl = document.getElementById('hero-device-selector');
 
-    if (badge) badge.textContent = gen.badge;
-    if (title) title.textContent = gen.brand;
-    if (sub) {
-      sub.innerHTML = `${gen.subtitle}<span class="block text-slate-400 font-medium text-xs mt-0.5">${gen.subspec}</span>`;
-    }
-    if (spec1) spec1.innerHTML = formatSpecHtml(gen.spec1);
-    if (spec2) spec2.innerHTML = formatSpecHtml(gen.spec2);
-    if (spec3) spec3.innerHTML = formatSpecHtml(gen.spec3);
-    if (selEl) selEl.value = gen.id;
-
-    // Smooth engine image cross-fade
-    if (imgEl && gen.img) {
-      if (imgEl.getAttribute('src') !== gen.img) {
-        imgEl.style.opacity = '0.3';
-        imgEl.style.transform = 'scale(0.97)';
-        imgEl.src = gen.img;
-        setTimeout(() => {
-          imgEl.style.opacity = '1';
-          imgEl.style.transform = 'scale(1)';
-        }, 50);
+    function applyHeroData(targetGen) {
+      if (badge) badge.textContent = targetGen.badge;
+      if (title) {
+        title.textContent = targetGen.brand;
+        // Auto-adjustable text size to prevent multi-line vertical banner jitter
+        if (targetGen.brand.length > 22) {
+          title.className = "text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight leading-tight whitespace-nowrap transition-all duration-200";
+        } else if (targetGen.brand.length > 17) {
+          title.className = "text-2xl sm:text-3xl lg:text-3.5xl font-black text-slate-900 tracking-tight leading-tight whitespace-nowrap transition-all duration-200";
+        } else {
+          title.className = "text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight whitespace-nowrap transition-all duration-200";
+        }
       }
+      if (sub) {
+        sub.innerHTML = `${targetGen.subtitle}<span class="block text-slate-400 font-medium text-xs mt-0.5 truncate">${targetGen.subspec}</span>`;
+      }
+      if (spec1) spec1.innerHTML = formatSpecHtml(targetGen.spec1);
+      if (spec2) spec2.innerHTML = formatSpecHtml(targetGen.spec2);
+      if (spec3) spec3.innerHTML = formatSpecHtml(targetGen.spec3);
+      if (selEl) selEl.value = targetGen.id;
+
+      // 2. Animate RPM gauge
+      setHeroRpm(targetGen.rpm, targetGen.status);
+
+      // 3. Update Underneath 3 Live Cards
+      updateHeroLiveCards(targetGen);
+
+      // 4. Update Carousel Dots
+      updateCarouselDots(currentHeroIndex);
+
+      // 5. Update Header Breadcrumbs
+      const topStation = document.getElementById('top-station-text');
+      const topGenId = document.getElementById('top-genid-text');
+      const topArea = document.getElementById('top-area-text');
+      if (topStation) topStation.textContent = targetGen.station.replace('Tower ', '');
+      if (topGenId) topGenId.textContent = targetGen.id;
+      if (topArea) topArea.textContent = targetGen.area.split(' ')[0];
     }
 
-    // 2. Animate RPM gauge
-    setHeroRpm(gen.rpm, gen.status);
+    // Theater Mode: Previous generator exits right, then new generator enters from right (Strictly Zero Overlap)
+    if (imgEl && gen.img && imgEl.getAttribute('src') !== gen.img) {
+      isHeroTransitioning = true;
+      imgEl.style.transition = 'transform 0.32s cubic-bezier(0.4, 0, 1, 1), opacity 0.28s ease-in';
+      imgEl.style.transform = 'translateX(120%) scale(0.95)';
+      imgEl.style.opacity = '0';
 
-    // 3. Update Underneath 3 Live Cards
-    updateHeroLiveCards(gen);
+      setTimeout(() => {
+        // Swap image while off-screen to the right
+        imgEl.style.transition = 'none';
+        imgEl.src = gen.img;
+        imgEl.style.transform = 'translateX(120%) scale(0.95)';
+        imgEl.style.opacity = '0';
 
-    // 4. Update Carousel Dots
-    updateCarouselDots(currentHeroIndex);
+        applyHeroData(gen);
 
-    // 5. Update Header Breadcrumbs
-    const topStation = document.getElementById('top-station-text');
-    const topGenId = document.getElementById('top-genid-text');
-    const topArea = document.getElementById('top-area-text');
-    if (topStation) topStation.textContent = gen.station.replace('Tower ', '');
-    if (topGenId) topGenId.textContent = gen.id;
-    if (topArea) topArea.textContent = gen.area.split(' ')[0];
+        // Force reflow
+        void imgEl.offsetHeight;
+
+        requestAnimationFrame(() => {
+          imgEl.style.transition = 'transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.32s ease-out';
+          imgEl.style.transform = 'translateX(0) scale(1)';
+          imgEl.style.opacity = '1';
+
+          setTimeout(() => {
+            isHeroTransitioning = false;
+            imgEl.style.transition = '';
+          }, 400);
+        });
+      }, 340);
+    } else {
+      applyHeroData(gen);
+    }
   }
 
   function updateHeroLiveCards(gen) {
