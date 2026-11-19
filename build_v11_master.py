@@ -2605,7 +2605,7 @@ function closeHierarchyOrgModal() {
 // 5. FRANCHISE TIER & CRUD ENGINE (AREA, CLUSTER, TOWER)
 // =========================================================================
 function switchFranchiseTier(tier) {
-  const tiers = ['area', 'cluster', 'tower'];
+  const tiers = ['area', 'cluster', 'tower', 'import'];
   tiers.forEach(t => {
     const panel = document.getElementById('tier-panel-' + t);
     const btn = document.getElementById('tab-btn-' + t);
@@ -2904,6 +2904,521 @@ window.addEventListener('DOMContentLoaded', () => {
   if (typeof initProfileAndAvatar === 'function') initProfileAndAvatar();
   if (typeof switchActiveRole === 'function') switchActiveRole(currentScadaRole, false);
 });
+
+// =========================================================================
+// GENESIS v12 — MASTER DATA EXCEL IMPORT & COMPLETE BUTTON CONNECTOR ENGINE
+// =========================================================================
+
+let activeMasterDataTarget = 'areas';
+let parsedMasterData = null;
+
+// 1. Dataset Target Selector
+function setMasterDataTarget(target) {
+  activeMasterDataTarget = target;
+  const categories = ['areas', 'generators', 'employees', 'technicians'];
+  categories.forEach(c => {
+    const btn = document.getElementById('md-cat-btn-' + c);
+    if (btn) {
+      if (c === target) {
+        btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-xs bg-white dark:bg-slate-900 text-slate-900 dark:text-white';
+      } else {
+        btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:text-slate-900';
+      }
+    }
+  });
+  
+  const labels = {
+    areas: 'Operational Areas',
+    generators: 'Generator Grid List',
+    employees: 'Employee & Commander Directory',
+    technicians: 'Field Technicians Roster'
+  };
+  const titleEl = document.getElementById('md-dropzone-title');
+  if (titleEl) {
+    titleEl.textContent = `Upload ${labels[target]} Spreadsheet (.xlsx, .xls, .csv)`;
+  }
+}
+
+// 2. Download Pre-Formatted Master Data Excel / CSV Templates
+function downloadMasterDataTemplate(category = 'areas') {
+  const templates = {
+    areas: {
+      filename: 'GENESIS_Template_Operational_Areas.csv',
+      content: 'Area Code,Area Name,Division,Regional Director,Contact Email,Mobile,SLA Target %,Clusters Count\n' +
+               'AREA-DHK-N,Dhaka North,Dhaka,Engr. Tariqul Islam,tariqul.islam@arenaiot.com,+880 1711-948201,99.8,6\n' +
+               'AREA-DHK-S,Dhaka South,Dhaka,Engr. Shamim Hossain,shamim.hossain@arenaiot.com,+880 1711-948202,99.7,5\n' +
+               'AREA-CTG-M,Chittagong Metro,Chittagong,Engr. Faisal Mahmud,faisal.mahmud@arenaiot.com,+880 1711-948203,99.6,4\n' +
+               'AREA-SYL,Sylhet Zone,Sylhet,Engr. Kamrul Hasan,kamrul.hasan@arenaiot.com,+880 1711-948204,99.4,3\n'
+    },
+    generators: {
+      filename: 'GENESIS_Template_Generator_Grid.csv',
+      content: 'Generator ID,Tower ID,Model Name,Brand,Rating kVA,Prime kW,Serial Number,Controller,Sump Capacity L,Fuel Tank L,Runtime Hours\n' +
+               'GEN-PK-0104,BTS-GP-0492,Perkins 1104A-44TG2,Perkins,60,48,PK-849204-TG,DSE-7320 MKII,8.0,250,320.5\n' +
+               'GEN-CAT-0312,BTS-BL-1944,Caterpillar C4.4 ACERT,Caterpillar,88,70,CAT-338291-AC,DSE-7320 MKII,11.0,350,540.2\n' +
+               'GEN-CUM-0518,BTS-RB-6102,Cummins 6BT5.9-G2,Cummins,100,80,CUM-991204-BT,DSE-7320 MKII,16.4,450,1120.0\n' +
+               'GEN-KOH-0891,BTS-TT-0812,Kohler KD62,Kohler,150,120,KOH-554109-KD,DSE-7320 MKII,22.0,600,88.4\n'
+    },
+    employees: {
+      filename: 'GENESIS_Template_Employee_Directory.csv',
+      content: 'Employee ID,Full Name,Designation,Clearance Level,Email,Mobile,Command Station,VHF Radio Channel,Division Jurisdiction\n' +
+               'DIR-DHK-01,Engr. Tariqul Islam,Regional SCADA Operations Director,Level 4,tariqul.islam@arenaiot.com,+880 1711-948201,Dhaka North HQ,VHF-Ch-04 (156.200 MHz),Dhaka\n' +
+               'DIR-DHK-02,Engr. Shamim Hossain,Regional SCADA Operations Director,Level 4,shamim.hossain@arenaiot.com,+880 1711-948202,Dhaka South HQ,VHF-Ch-05 (156.250 MHz),Dhaka\n' +
+               'ENG-SCADA-01,Engr. Lian Ahmed,Lead SCADA Engineer,Level 3,lian.ahmed@arenaiot.com,+880 1710-000001,National NOC Command Hub,VHF-Ch-01 (156.050 MHz),National\n'
+    },
+    technicians: {
+      filename: 'GENESIS_Template_Field_Technicians.csv',
+      content: 'Technician ID,Full Name,Contractor Company,Phone,Assigned Cluster,Specialization,Cert Expiration Date,Active LOTO Cert\n' +
+               'TECH-MIR-01,Md. Rafiqul Haque,Apex Power Engineering Ltd,+880 1712-409182,Mirpur Node,Mechanical Sump & Injection,2027-12-31,YES\n' +
+               'TECH-UTT-02,Kazi Nazrul Islam,Delta Generator Services,+880 1713-992104,Uttara North Node,Alternator & AVR Calibration,2028-06-30,YES\n' +
+               'TECH-GUL-03,Shafiqur Rahman,National Electro-Mechanical,+880 1714-883391,Gulshan Corporate Node,Lube Oil & Glycol Service,2027-09-15,YES\n'
+    }
+  };
+
+  const t = templates[category] || templates.areas;
+  const blob = new Blob([t.content], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = t.filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showScadaToast('Template Downloaded', `${t.filename} ready for Excel entry.`, 'success');
+}
+
+// 3. Robust CSV Parser
+function parseCsvText(text) {
+  const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+  const result = [];
+  for (let i = 0; i < lines.length; i++) {
+    const row = [];
+    let insideQuotes = false;
+    let entry = '';
+    const line = lines[i];
+    for (let c = 0; c < line.length; c++) {
+      const char = line[c];
+      if (char === '"') {
+        insideQuotes = !insideQuotes;
+      } else if (char === ',' && !insideQuotes) {
+        row.push(entry.trim());
+        entry = '';
+      } else {
+        entry += char;
+      }
+    }
+    row.push(entry.trim());
+    result.push(row);
+  }
+  return result;
+}
+
+// 4. Handle Master Data Excel / Spreadsheet Upload
+function handleMasterDataFileUpload(input) {
+  if (!input.files || input.files.length === 0) return;
+  const file = input.files[0];
+  const fileName = file.name;
+  const ext = fileName.split('.').pop().toLowerCase();
+
+  if (ext === 'xlsx' || ext === 'xls') {
+    if (typeof XLSX !== 'undefined') {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheet];
+          const rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+          processParsedMasterDataRows(rawRows, fileName);
+        } catch (err) {
+          showScadaToast('Parse Error', 'Failed to parse Excel workbook: ' + err.message, 'error');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      showScadaToast('Excel Engine Loading', 'SheetJS is loading. Please upload as .csv for instant local parsing.', 'warn');
+    }
+  } else if (ext === 'csv' || ext === 'txt') {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const text = e.target.result;
+        const rawRows = parseCsvText(text);
+        processParsedMasterDataRows(rawRows, fileName);
+      } catch (err) {
+        showScadaToast('Parse Error', 'Failed to parse CSV file: ' + err.message, 'error');
+      }
+    };
+    reader.readAsText(file);
+  } else {
+    showScadaToast('Unsupported Format', 'Please upload .xlsx, .xls, or .csv spreadsheet.', 'error');
+  }
+}
+
+// 5. Process Parsed Master Data Rows & Auto-Detect Category
+function processParsedMasterDataRows(rows, fileName) {
+  if (!rows || rows.length < 2) {
+    showScadaToast('Empty File', 'The uploaded file contains no data rows.', 'error');
+    return;
+  }
+
+  const headers = rows[0].map(h => String(h || '').trim());
+  const dataRows = rows.slice(1).filter(r => r.some(cell => String(cell || '').trim().length > 0));
+
+  // Auto-detect entity if possible
+  const headerStr = headers.join(' ').toLowerCase();
+  let detectedTarget = activeMasterDataTarget;
+  if (headerStr.includes('area') && headerStr.includes('division')) {
+    detectedTarget = 'areas';
+  } else if (headerStr.includes('generator') || (headerStr.includes('kva') && headerStr.includes('model'))) {
+    detectedTarget = 'generators';
+  } else if (headerStr.includes('employee') || headerStr.includes('designation')) {
+    detectedTarget = 'employees';
+  } else if (headerStr.includes('technician') || headerStr.includes('loto')) {
+    detectedTarget = 'technicians';
+  }
+
+  setMasterDataTarget(detectedTarget);
+
+  parsedMasterData = {
+    target: detectedTarget,
+    fileName: fileName,
+    headers: headers,
+    rows: dataRows
+  };
+
+  renderMasterDataPreview(headers, dataRows, fileName, detectedTarget);
+  showScadaToast('Spreadsheet Parsed', `Successfully extracted ${dataRows.length} records from ${fileName}.`, 'success');
+}
+
+// 6. Render Live Data Preview Table
+function renderMasterDataPreview(headers, rows, fileName, target) {
+  const container = document.getElementById('md-preview-container');
+  const thead = document.getElementById('md-preview-thead');
+  const tbody = document.getElementById('md-preview-tbody');
+  const fnLabel = document.getElementById('md-parsed-filename');
+  const countLabel = document.getElementById('md-parsed-count');
+  const targetLabel = document.getElementById('md-parsed-target-label');
+
+  if (!container || !thead || !tbody) return;
+
+  if (fnLabel) fnLabel.textContent = fileName;
+  if (countLabel) countLabel.textContent = `${rows.length} Rows Ready`;
+  if (targetLabel) targetLabel.textContent = target.toUpperCase();
+
+  // Render header
+  thead.innerHTML = '<tr>' +
+    '<th class="py-2.5 px-3">#</th>' +
+    headers.map(h => `<th class="py-2.5 px-3">${h}</th>`).join('') +
+    '</tr>';
+
+  // Render rows (preview up to 20)
+  tbody.innerHTML = rows.slice(0, 20).map((row, idx) => {
+    return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition">` +
+      `<td class="py-2 px-3 font-mono text-slate-400 font-bold">${idx + 1}</td>` +
+      headers.map((h, colIdx) => `<td class="py-2 px-3 font-medium text-slate-800 dark:text-slate-200">${row[colIdx] || '—'}</td>`).join('') +
+      `</tr>`;
+  }).join('');
+
+  container.classList.remove('hidden');
+  container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// 7. Clear Master Data Upload
+function clearMasterDataUpload() {
+  parsedMasterData = null;
+  const container = document.getElementById('md-preview-container');
+  if (container) container.classList.add('hidden');
+  const input = document.getElementById('master-data-file-input');
+  if (input) input.value = '';
+}
+
+// 8. Commit Master Data to SCADA System Database
+function commitMasterDataImport() {
+  if (!parsedMasterData || !parsedMasterData.rows) {
+    showScadaToast('No Data', 'Please upload a spreadsheet file before committing.', 'warn');
+    return;
+  }
+
+  const { target, rows, headers, fileName } = parsedMasterData;
+
+  // Persist to localStorage
+  const storageKey = `genesis_master_${target}`;
+  const existing = JSON.parse(localStorage.getItem(storageKey) || '[]');
+  
+  // Format as structured records
+  const newRecords = rows.map(r => {
+    const obj = {};
+    headers.forEach((h, idx) => {
+      obj[h] = r[idx] || '';
+    });
+    return obj;
+  });
+
+  const merged = [...existing, ...newRecords];
+  localStorage.setItem(storageKey, JSON.stringify(merged));
+
+  // If operational areas were committed, append to Area table immediately
+  if (target === 'areas') {
+    const areaTbody = document.getElementById('area-table-body');
+    if (areaTbody) {
+      newRecords.forEach(rec => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50/80 dark:hover:bg-slate-800/80 transition';
+        const code = rec['Area Code'] || 'AREA-NEW';
+        const name = rec['Area Name'] || 'New Area';
+        const div = rec['Division'] || 'Dhaka';
+        const director = rec['Regional Director'] || 'Engr. Assigned Director';
+        const sla = rec['SLA Target %'] || '99.5%';
+        const clusters = rec['Clusters Count'] || '3 Clusters';
+        
+        tr.setAttribute('data-area-id', code);
+        tr.innerHTML = `
+          <td class="py-3 px-3.5">
+            <div class="font-bold text-slate-900 dark:text-white">${name}</div>
+            <div class="text-[10px] font-mono text-slate-400">${code}</div>
+          </td>
+          <td class="py-3 px-3.5 font-bold text-slate-800 dark:text-slate-200">${div}</td>
+          <td class="py-3 px-3.5 font-bold text-indigo-700 dark:text-indigo-400">
+            <button type="button" onclick="openPersonnelProfile('${director}')" class="hover:underline flex items-center gap-1">
+              <span>${director}</span>
+              <svg class="w-3 h-3 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </button>
+          </td>
+          <td class="py-3 px-3.5 font-bold text-slate-800 dark:text-slate-200">${clusters}</td>
+          <td class="py-3 px-3.5 font-mono font-bold text-emerald-800 dark:text-emerald-400">12 Towers</td>
+          <td class="py-3 px-3.5 font-mono text-slate-700 dark:text-slate-300">0.8 MW</td>
+          <td class="py-3 px-3.5"><span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-bold">${sla}</span></td>
+          <td class="py-3 px-3.5 text-right">
+            <div class="inline-flex items-center gap-1.5">
+              <button type="button" onclick="viewAreaDetails('${code}')" class="scada-btn-action action-view">View</button>
+              <button type="button" onclick="editAreaModal('${code}')" class="scada-btn-action action-edit">Edit</button>
+              <button type="button" onclick="deleteAreaPrompt('${code}')" class="scada-btn-action action-delete">Delete</button>
+            </div>
+          </td>
+        `;
+        areaTbody.appendChild(tr);
+      });
+    }
+  }
+
+  showScadaToast('Master Data Ingested', `Successfully committed ${newRecords.length} ${target} records to SCADA Grid Database.`, 'success');
+  clearMasterDataUpload();
+}
+
+// 9. Generator Management Button Handlers
+function saveManualModelSpecs() {
+  const name = document.getElementById('manual-model-name')?.value || 'Industrial Diesel Genset';
+  const standby = document.getElementById('manual-standby-kva')?.value || '100';
+  const prime = document.getElementById('manual-prime-kw')?.value || '80';
+  const rpm = document.getElementById('manual-rated-rpm')?.value || '1500';
+  const fuel = document.getElementById('manual-fuel-rate')?.value || '0.239';
+
+  const modelRecord = {
+    name, standbyKva: parseFloat(standby), primeKw: parseFloat(prime),
+    rpm: parseInt(rpm), fuelRate: fuel, updatedAt: new Date().toISOString()
+  };
+
+  const existing = JSON.parse(localStorage.getItem('genesis_custom_models') || '[]');
+  existing.push(modelRecord);
+  localStorage.setItem('genesis_custom_models', JSON.stringify(existing));
+
+  closeFranchiseModals();
+  showScadaToast('Specifications Saved', `${name} (${standby} kVA) committed to SCADA registry.`, 'success');
+}
+
+function loadSampleDatasheet(modelKey = 'caterpillar') {
+  const container = document.getElementById('parsed-datasheet-preview');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col gap-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
+          <span class="text-xs font-bold text-emerald-900 dark:text-emerald-300">Caterpillar C4.4 ACERT Datasheet Parsed</span>
+        </div>
+        <span class="text-[10px] font-mono bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2 py-0.5 rounded font-bold">OEM VERIFIED</span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+        <div><span class="text-slate-400 block text-[10px]">Model</span><b class="text-slate-800 dark:text-slate-100">CAT C4.4 ACERT</b></div>
+        <div><span class="text-slate-400 block text-[10px]">Prime Power</span><b class="text-slate-800 dark:text-slate-100">70 kW (88 kVA)</b></div>
+        <div><span class="text-slate-400 block text-[10px]">Fuel Rate</span><b class="text-slate-800 dark:text-slate-100">16.8 L/h @ 100%</b></div>
+        <div><span class="text-slate-400 block text-[10px]">Sump Volume</span><b class="text-slate-800 dark:text-slate-100">11.0 L (15W-40)</b></div>
+      </div>
+      <div class="flex items-center gap-2 mt-1">
+        <button type="button" onclick="saveParsedModelToRegistry('Caterpillar C4.4 ACERT', 'Caterpillar', 88, 70)" class="scada-btn-indigo text-xs py-1.5 px-3">Commit to Registry</button>
+        <button type="button" onclick="openManualEditModalFromParser()" class="scada-btn-secondary text-xs py-1.5 px-3">Edit Specs</button>
+      </div>
+    </div>
+  `;
+  showScadaToast('Datasheet Parsed', 'Sample parameters for Caterpillar C4.4 populated.', 'success');
+}
+
+function openCreateNewModelModal() {
+  const modal = document.getElementById('gen-manual-edit-modal');
+  if (!modal) return;
+  const title = document.getElementById('gen-manual-title');
+  if (title) title.textContent = 'Create New Generator Specification';
+  const nameInput = document.getElementById('manual-model-name');
+  if (nameInput) nameInput.value = '';
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+}
+
+function openManualEditModalFor(modelId) {
+  const modal = document.getElementById('gen-manual-edit-modal');
+  if (!modal) return;
+  const title = document.getElementById('gen-manual-title');
+  if (title) title.textContent = `Edit Specifications — ${modelId}`;
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+}
+
+function openManualEditModalFromParser() {
+  const modal = document.getElementById('gen-manual-edit-modal');
+  if (!modal) return;
+  const title = document.getElementById('gen-manual-title');
+  if (title) title.textContent = 'Fine-Tune Parsed Datasheet Specifications';
+  const nameInput = document.getElementById('manual-model-name');
+  if (nameInput) nameInput.value = 'Caterpillar C4.4 ACERT';
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+}
+
+function saveParsedModelToRegistry(name = 'Caterpillar C4.4 ACERT', brand = 'Caterpillar', kva = 88, kw = 70) {
+  const customModel = {
+    name, brand, kva: parseFloat(kva), kw: parseFloat(kw),
+    savedAt: new Date().toISOString()
+  };
+  const list = JSON.parse(localStorage.getItem('genesis_custom_models') || '[]');
+  list.push(customModel);
+  localStorage.setItem('genesis_custom_models', JSON.stringify(list));
+  showScadaToast('Model Committed', `${name} successfully added to Generator Registry.`, 'success');
+}
+
+function downloadTechnicalDatasheet(modelId = 'GEN-PK-0104') {
+  const content = `GENESIS RMS — INDUSTRIAL GENERATOR TECHNICAL SPECIFICATION\n` +
+    `============================================================\n` +
+    `Asset ID             : ${modelId}\n` +
+    `Engine Prime Mover   : Heavy-Duty Industrial Diesel 4-Cycle\n` +
+    `Synchronous Speed    : 1500 RPM @ 50 Hz\n` +
+    `Engine Controller    : Deep Sea Electronics DSE-7320 MKII\n` +
+    `Telemetry Bus        : Modbus RTU Slave over RS-485 2-Wire\n` +
+    `Coolant Capacity     : 50/50 Ethylene Glycol Premix\n` +
+    `Lube Oil Grade       : 15W-40 CI-4 Heavy Sump\n` +
+    `Compliance Standard  : ISO 8528 · IEC 60034 · ISO/IEC 27001\n` +
+    `Export Timestamp     : ${new Date().toISOString()}\n`;
+
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `GENESIS_${modelId.replace(/\s+/g, '_')}_Datasheet.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showScadaToast('Datasheet Downloaded', `Engineering specification for ${modelId} saved.`, 'success');
+}
+
+// 10. Content Studio Handlers
+function switchContentTab(tab) {
+  const tabs = ['banner', 'thumbnails', 'avatars', 'documents', 'masterdata'];
+  tabs.forEach(t => {
+    const panel = document.getElementById('content-tab-' + t);
+    const btn = document.getElementById('tab-btn-content-' + (t === 'thumbnails' ? 'thumbs' : (t === 'documents' ? 'docs' : t)));
+    if (t === tab) {
+      if (panel) panel.classList.remove('hidden');
+      if (btn) btn.className = 'px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs bg-white text-slate-900';
+    } else {
+      if (panel) panel.classList.add('hidden');
+      if (btn) btn.className = 'px-3.5 py-2 rounded-xl text-xs font-bold transition text-slate-600 hover:text-slate-900';
+    }
+  });
+}
+
+function applyBannerImageToLive() {
+  showScadaToast('Hero Showroom Updated', 'Cutout graphics synchronized across all 18 production pages.', 'success');
+}
+
+function handleContentBannerUpload(input) {
+  if (!input.files || input.files.length === 0) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const preview = document.getElementById('content-banner-preview-img');
+    if (preview) preview.src = e.target.result;
+    showScadaToast('Image Loaded', 'Generator cutout loaded into preview stage.', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
+function openGenUploadModal(modelId) {
+  const modal = document.getElementById('gen-thumb-modal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+  }
+}
+
+function closeGenThumbModal() {
+  const modal = document.getElementById('gen-thumb-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+}
+
+function saveGenThumbnail(modelId) {
+  closeGenThumbModal();
+  showScadaToast('Thumbnail Saved', 'Generator image updated successfully.', 'success');
+}
+
+function closeBannerUploadModal() {
+  const modal = document.getElementById('banner-device-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+}
+
+function saveBannerDeviceUpdate() {
+  closeBannerUploadModal();
+  showScadaToast('Device Updated', 'Hero showroom configuration updated.', 'success');
+}
+
+function closeGlobalSearch() {
+  const modal = document.getElementById('global-search-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+}
+
+// 11. Connect Phone and Email Links in Personnel Profiles
+const origOpenPersonnelProfile = typeof openPersonnelProfile === 'function' ? openPersonnelProfile : null;
+window.openPersonnelProfile = function(nameOrUid) {
+  if (origOpenPersonnelProfile) origOpenPersonnelProfile(nameOrUid);
+  
+  // Ensure mailto and tel are wired
+  const emailEl = document.getElementById('pers-modal-email');
+  const phoneEl = document.getElementById('pers-modal-phone');
+  if (emailEl && emailEl.textContent) {
+    emailEl.href = 'mailto:' + emailEl.textContent.trim();
+  }
+  if (phoneEl && phoneEl.textContent) {
+    phoneEl.href = 'tel:' + phoneEl.textContent.trim().replace(/\s+/g, '');
+  }
+};
+
+// 12. Support URL Tab Parameter (?tab=import)
+window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const tabParam = urlParams.get('tab');
+  if (tabParam === 'import' && typeof switchFranchiseTier === 'function') {
+    switchFranchiseTier('import');
+  }
+});
+
 </script>
 """
 

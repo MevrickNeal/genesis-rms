@@ -30,6 +30,10 @@
               <button type="button" onclick="switchContentTab('documents')" id="tab-btn-content-docs" class="px-3.5 py-2 rounded-xl text-xs font-bold transition text-slate-600 hover:text-slate-900">
                 Datasheets & Manuals
               </button>
+              <button type="button" onclick="switchContentTab('masterdata')" id="tab-btn-content-masterdata" class="px-3.5 py-2 rounded-xl text-xs font-bold transition text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h8"/><path d="M8 17h8"/><polyline points="10 9 9 9 8 9"/></svg>
+                <span>Master Data Excel Import</span>
+              </button>
             </div>
           </div>
 
@@ -244,4 +248,68 @@
             </div>
           </div>
 
-        </div>
+        
+          <!-- TAB 5: MASTER DATA EXCEL IMPORT STUDIO -->
+          <div id="content-tab-masterdata" class="content-tab-panel hidden bg-white/80 backdrop-blur-xl rounded-[28px] p-6 sm:p-7 border border-white/90 shadow-md flex flex-col gap-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-black text-slate-900">Master Data Excel & Spreadsheet Import Center</h2>
+                <p class="text-xs text-slate-600 font-medium">Provision National Grid assets in bulk: upload operational areas, generator registries, employee lists, and technician rosters.</p>
+              </div>
+              <a href="franchise-management.html?tab=import" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-xs">
+                <span>Launch Full Excel Ingestion Console</span>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-2xs flex flex-col justify-between gap-3">
+                <div>
+                  <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-xs">AREA</div>
+                  <h4 class="text-sm font-bold text-slate-900 mt-2">Operational Areas</h4>
+                  <p class="text-xs text-slate-500 mt-1">Codes, divisions, regional directors, SLA targets</p>
+                </div>
+                <button type="button" onclick="downloadMasterDataTemplate('areas')" class="scada-btn-secondary text-xs py-1.5 w-full flex items-center justify-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Download Template</span>
+                </button>
+              </div>
+
+              <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-2xs flex flex-col justify-between gap-3">
+                <div>
+                  <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs">GEN</div>
+                  <h4 class="text-sm font-bold text-slate-900 mt-2">Generator Assets</h4>
+                  <p class="text-xs text-slate-500 mt-1">492 units, kVA, prime kW, serial numbers, sump capacity</p>
+                </div>
+                <button type="button" onclick="downloadMasterDataTemplate('generators')" class="scada-btn-secondary text-xs py-1.5 w-full flex items-center justify-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Download Template</span>
+                </button>
+              </div>
+
+              <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-2xs flex flex-col justify-between gap-3">
+                <div>
+                  <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center font-bold text-xs">STAFF</div>
+                  <h4 class="text-sm font-bold text-slate-900 mt-2">Employee Directory</h4>
+                  <p class="text-xs text-slate-500 mt-1">Staff IDs, clearances (L1-L5), VHF channels, emails</p>
+                </div>
+                <button type="button" onclick="downloadMasterDataTemplate('employees')" class="scada-btn-secondary text-xs py-1.5 w-full flex items-center justify-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Download Template</span>
+                </button>
+              </div>
+
+              <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-2xs flex flex-col justify-between gap-3">
+                <div>
+                  <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold text-xs">TECH</div>
+                  <h4 class="text-sm font-bold text-slate-900 mt-2">Technicians & Contractors</h4>
+                  <p class="text-xs text-slate-500 mt-1">Contractor companies, contact phones, LOTO certs</p>
+                </div>
+                <button type="button" onclick="downloadMasterDataTemplate('technicians')" class="scada-btn-secondary text-xs py-1.5 w-full flex items-center justify-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Download Template</span>
+                </button>
+              </div>
+            </div>
+          </div>
+</div>
