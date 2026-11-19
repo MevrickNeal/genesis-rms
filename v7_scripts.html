@@ -1934,7 +1934,7 @@
   function initScadaTheme() {
     const saved = localStorage.getItem('scada_theme');
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const isDark = (saved === 'dark' || (!saved && prefersDark));
+    const isDark = (saved === 'dark' || (!saved && (document.documentElement.classList.contains('dark') || prefersDark)));
     if (isDark) {
       document.documentElement.classList.add('dark');
       document.body.classList.add('theme-dark');
@@ -2055,9 +2055,13 @@
 
     // Update Header Display
     const headerName = document.getElementById('header-op-name');
+    const headerRoleText = document.getElementById('header-op-role-text');
     const headerRole = document.getElementById('header-op-role');
+    const dropName = document.getElementById('dropdown-op-name');
     if (headerName && name) headerName.textContent = name;
-    if (headerRole && role) headerRole.textContent = role;
+    if (dropName && name) dropName.textContent = name;
+    if (headerRoleText && role) headerRoleText.textContent = role;
+    else if (headerRole && role) headerRole.textContent = role;
 
     // Save Avatar if uploaded
     if (tempUserAvatarBase64_300) {

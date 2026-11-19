@@ -775,9 +775,9 @@
     (function() {
       try {
         const savedTheme = localStorage.getItem('scada_theme');
-        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        if (savedTheme === 'dark' || (!savedTheme && (document.documentElement.classList.contains('dark') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)))) {
           document.documentElement.classList.add('dark');
-        } else {
+        } else if (savedTheme === 'light') {
           document.documentElement.classList.remove('dark');
         }
       } catch(e) {}
@@ -790,7 +790,7 @@
     <!-- ===================================================================== -->
   <!-- TOP STICKY HEADER (Glassmorphic, Hierarchy Breadcrumb, UID, CMS Toggle) -->
   <!-- ===================================================================== -->
-  <header class="sticky top-0 z-50 w-full max-w-full bg-white/75 dark:bg-slate-900/80 backdrop-blur-xl border-b border-white/80 dark:border-slate-800/80 px-3 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4 shadow-2xs overflow-hidden">
+  <header class="sticky top-0 z-50 w-full max-w-full bg-white/75 dark:bg-slate-900/80 backdrop-blur-xl border-b border-white/80 dark:border-slate-800/80 px-3 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4 shadow-2xs">
     
     <!-- LEFT: Brand & Parent Brand Identity -->
     <div class="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -869,25 +869,13 @@
 
     </div>
 
-    <!-- RIGHT: Action Controls + Role Switcher + Profile (Compact & Responsive) -->
-    <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-      
-      <!-- Master Data Excel Import Quick Launch Button -->
-      <a href="franchise-management.html?tab=import" class="glass-pill hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs font-bold px-2.5 sm:px-3 py-1.5 rounded-full transition flex items-center gap-1.5 shadow-2xs border border-emerald-300/80 dark:border-emerald-700/80 shrink-0" title="Upload Master Data Excel (Areas, Generators, Employees, Technicians)">
-        <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h8"/><path d="M8 17h8"/><polyline points="10 9 9 9 8 9"/></svg>
-        <span class="hidden sm:inline font-bold">Import Excel</span>
-      </a>
+    <!-- RIGHT: Night Shift Toggle + System Alarms Bell + Unified Profile Pill (With L3 Role Underneath) -->
+    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
 
       <!-- Night Shift SCADA Dark Mode Switcher -->
       <button type="button" onclick="toggleScadaTheme()" id="header-theme-toggle" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full glass-pill hover:bg-white dark:hover:bg-slate-800 flex items-center justify-center shrink-0 transition cursor-pointer" title="Toggle Night Shift SCADA Dark Mode">
         <svg id="theme-icon-sun" class="w-4 h-4 text-amber-492 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg id="theme-icon-moon" class="w-4 h-4 text-slate-700 dark:text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-
-      <!-- Export Report (Frosted Pill) -->
-      <button onclick="exportCurrentReport()" class="hidden md:flex glass-pill hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-bold px-3 py-1.5 rounded-full transition items-center gap-1.5 shadow-2xs shrink-0" title="Export Operational Report">
-        <svg class="w-3.5 h-3.5 text-slate-600 dark:text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span class="hidden lg:inline">Export Report</span>
       </button>
 
       <!-- Notification Bell -->
@@ -896,16 +884,42 @@
         <span class="w-2.5 h-2.5 rounded-full bg-rose-600 absolute top-1.5 right-1.5 ring-2 ring-white dark:ring-slate-900"></span>
       </button>
 
-      <!-- Interactive SCADA Command Role Switcher & Hierarchy Selector -->
-      <div class="relative hidden sm:block shrink-0">
-        <button type="button" onclick="toggleRoleDropdown()" id="header-role-btn" class="glass-pill hover:bg-white dark:hover:bg-slate-800 px-2.5 sm:px-3 py-1.5 rounded-full flex items-center gap-1.5 sm:gap-2 transition shadow-2xs cursor-pointer" title="Current SCADA Command Clearance Level. Click to switch persona or view hierarchy.">
-          <span id="role-pill-dot" class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse shrink-0"></span>
-          <span class="text-[11px] font-black text-slate-800 dark:text-slate-100 whitespace-nowrap" id="role-pill-title">L3: Lead SCADA Engr</span>
-          <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      <!-- Unified Operator Profile Pill (Integrated Role directly under Profile Name) -->
+      <div class="relative shrink-0">
+        <button type="button" onclick="toggleProfileDropdown()" id="header-profile-btn" class="glass-pill hover:bg-white dark:hover:bg-slate-800 px-2.5 sm:px-3 py-1.5 rounded-full flex items-center gap-2 sm:gap-2.5 transition shadow-2xs group cursor-pointer shrink-0" title="Manage Profile & SCADA Command Clearance">
+          <!-- Profile Avatar (Supports 300x300 Uploaded Photo or Initials) -->
+          <div id="header-avatar-box" class="w-8 h-8 rounded-full bg-slate-900 dark:bg-slate-800 text-white font-extrabold text-xs flex items-center justify-center shadow-xs ring-2 ring-white dark:ring-slate-700 overflow-hidden shrink-0">
+            <span id="header-avatar-initials">LN</span>
+            <img id="header-avatar-img" class="w-full h-full object-cover hidden" alt="Lian Ahmed" />
+          </div>
+          <div class="hidden sm:block text-left leading-tight">
+            <div class="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span id="header-op-name" class="whitespace-nowrap">Lian Ahmed</span>
+              <span id="header-op-uid" class="text-[9px] font-mono font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950 px-1.5 py-0.5 rounded border border-emerald-200/60 dark:border-emerald-800/60 hidden 2xl:inline">#AR-9402</span>
+            </div>
+            <!-- Role Under Profile Name -->
+            <div class="text-[10px] text-slate-600 dark:text-slate-400 font-semibold flex items-center gap-1.5 mt-0.5" id="header-op-role">
+              <span id="header-role-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-492 inline-block shrink-0"></span>
+              <span id="header-op-role-text" class="truncate max-w-[150px]">L3: Lead SCADA Engineer</span>
+            </div>
+          </div>
+          <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 transition shrink-0 ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <!-- Dropdown -->
-        <div id="role-switcher-dropdown" class="absolute right-0 top-12 w-64 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl p-2 shadow-2xl border border-slate-200 dark:border-slate-800 hidden flex-col gap-1 z-50">
-          <div class="px-2.5 py-1 text-[10px] font-black text-slate-400 uppercase tracking-wider">Switch Active Persona / Role</div>
+
+        <!-- Profile & Role Clearance Dropdown Menu -->
+        <div id="profile-dropdown-menu" class="absolute right-0 top-12 w-72 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl p-2.5 shadow-2xl border border-slate-200 dark:border-slate-800 hidden flex-col gap-1.5 z-50">
+          <div class="px-2 py-1.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div>
+              <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Signed in Operator</div>
+              <div class="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1">
+                <span id="dropdown-op-name">Lian Ahmed</span>
+                <span id="dropdown-op-uid" class="text-[9px] font-mono text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-1 rounded">#AR-9402</span>
+              </div>
+            </div>
+            <button type="button" onclick="openProfileModal(); toggleProfileDropdown();" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 hover:underline">Edit Profile</button>
+          </div>
+
+          <div class="px-2 pt-1 text-[10px] font-black text-slate-400 uppercase tracking-wider">Switch SCADA Clearance Level</div>
           <button type="button" onclick="switchActiveRole(5)" class="w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-between text-xs font-bold text-purple-900 dark:text-purple-300 transition">
             <span>Level 5: Chief SCADA Director</span>
             <span class="text-[9px] font-mono bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 px-1 rounded">ADMIN</span>
@@ -927,28 +941,12 @@
             <span class="text-[9px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-1 rounded">READ-ONLY</span>
           </button>
           <div class="h-px bg-slate-100 dark:bg-slate-800 my-1"></div>
-          <button type="button" onclick="openHierarchyOrgModal()" class="w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-bold flex items-center gap-1.5 transition">
+          <button type="button" onclick="openHierarchyOrgModal(); toggleProfileDropdown();" class="w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-bold flex items-center gap-1.5 transition">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="2" y="16" width="6" height="5" rx="1"/><rect x="16" y="16" width="6" height="5" rx="1"/><path d="M12 8v4"/><path d="M5 12h14v4"/></svg>
-            <span>View SCADA Hierarchy & Permissions</span>
+            <span>View Hierarchy & RBAC Matrix</span>
           </button>
         </div>
       </div>
-
-      <!-- Operator Profile Pill with Integrated UID & Click-to-Edit Permissions -->
-      <button onclick="openProfileModal()" class="glass-pill hover:bg-white dark:hover:bg-slate-800 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full flex items-center gap-2 transition shadow-2xs group cursor-pointer shrink-0" title="Manage Profile & SCADA Permissions">
-        <!-- Profile Avatar (Supports 300x300 Uploaded Photo or Initials) -->
-        <div id="header-avatar-box" class="w-8 h-8 rounded-full bg-slate-900 dark:bg-slate-800 text-white font-extrabold text-xs flex items-center justify-center shadow-xs ring-2 ring-white dark:ring-slate-700 overflow-hidden shrink-0">
-          <span id="header-avatar-initials">LN</span>
-          <img id="header-avatar-img" class="w-full h-full object-cover hidden" alt="Lian Ahmed" />
-        </div>
-        <div class="hidden lg:block text-left leading-tight">
-          <div class="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1.5">
-            <span id="header-op-name" class="whitespace-nowrap">Lian Ahmed</span>
-            <span id="header-op-uid" class="text-[9px] font-mono font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950 px-1.5 py-0.5 rounded border border-emerald-200/60 dark:border-emerald-800/60 hidden 2xl:inline">#AR-9402</span>
-          </div>
-          <div class="text-[10px] text-slate-600 dark:text-slate-400 font-semibold truncate max-w-[110px]" id="header-op-role">Lead SCADA Engineer</div>
-        </div>
-      </button>
 
     </div>
   </header>
@@ -4155,7 +4153,7 @@
   function initScadaTheme() {
     const saved = localStorage.getItem('scada_theme');
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const isDark = (saved === 'dark' || (!saved && prefersDark));
+    const isDark = (saved === 'dark' || (!saved && (document.documentElement.classList.contains('dark') || prefersDark)));
     if (isDark) {
       document.documentElement.classList.add('dark');
       document.body.classList.add('theme-dark');
@@ -4276,9 +4274,13 @@
 
     // Update Header Display
     const headerName = document.getElementById('header-op-name');
+    const headerRoleText = document.getElementById('header-op-role-text');
     const headerRole = document.getElementById('header-op-role');
+    const dropName = document.getElementById('dropdown-op-name');
     if (headerName && name) headerName.textContent = name;
-    if (headerRole && role) headerRole.textContent = role;
+    if (dropName && name) dropName.textContent = name;
+    if (headerRoleText && role) headerRoleText.textContent = role;
+    else if (headerRole && role) headerRole.textContent = role;
 
     // Save Avatar if uploaded
     if (tempUserAvatarBase64_300) {
@@ -5616,12 +5618,18 @@ function saveProfileChanges() {
   // Update Header
   const headerName = document.getElementById('header-op-name');
   const headerRole = document.getElementById('header-op-role');
+  const headerRoleText = document.getElementById('header-op-role-text');
   const headerUid = document.getElementById('header-op-uid');
   const headerInitials = document.getElementById('header-avatar-initials');
   if (headerName) headerName.textContent = name;
-  if (headerRole) headerRole.textContent = role;
+  if (headerRoleText) headerRoleText.textContent = role;
+  else if (headerRole) headerRole.textContent = role;
   if (headerUid) headerUid.textContent = uid;
   if (headerInitials) headerInitials.textContent = initials;
+  const dropName = document.getElementById('dropdown-op-name');
+  const dropUid = document.getElementById('dropdown-op-uid');
+  if (dropName) dropName.textContent = name;
+  if (dropUid) dropUid.textContent = uid;
 
   // Update Content and NOC pages if active
   const contentName = document.getElementById('content-op-name');
@@ -5677,9 +5685,12 @@ function initProfileAndAvatar() {
       const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'LN';
 
       if (document.getElementById('header-op-name')) document.getElementById('header-op-name').textContent = name;
-      if (document.getElementById('header-op-role')) document.getElementById('header-op-role').textContent = role;
+      if (document.getElementById('header-op-role-text')) document.getElementById('header-op-role-text').textContent = role;
+      else if (document.getElementById('header-op-role')) document.getElementById('header-op-role').textContent = role;
       if (document.getElementById('header-op-uid')) document.getElementById('header-op-uid').textContent = uid;
       if (document.getElementById('header-avatar-initials')) document.getElementById('header-avatar-initials').textContent = initials;
+      if (document.getElementById('dropdown-op-name')) document.getElementById('dropdown-op-name').textContent = name;
+      if (document.getElementById('dropdown-op-uid')) document.getElementById('dropdown-op-uid').textContent = uid;
 
       if (document.getElementById('content-op-name')) document.getElementById('content-op-name').textContent = name;
       if (document.getElementById('content-op-role')) document.getElementById('content-op-role').textContent = role;
@@ -6175,10 +6186,10 @@ const SCADA_ROLES = {
 
 let currentScadaRole = parseInt(localStorage.getItem('genesis_active_role')) || 3;
 
-function toggleRoleDropdown() {
-  const dd = document.getElementById('role-switcher-dropdown');
+function toggleProfileDropdown() {
+  const dd = document.getElementById('profile-dropdown-menu') || document.getElementById('role-switcher-dropdown');
   if (!dd) return;
-  if (dd.classList.contains('hidden')) {
+  if (dd.classList.contains('hidden') || dd.style.display === 'none') {
     dd.classList.remove('hidden');
     dd.style.display = 'flex';
   } else {
@@ -6186,6 +6197,22 @@ function toggleRoleDropdown() {
     dd.style.display = 'none';
   }
 }
+
+function toggleRoleDropdown() {
+  toggleProfileDropdown();
+}
+
+// Global click listener to close profile/role dropdowns on click outside
+document.addEventListener('click', function(e) {
+  const profileContainer = document.getElementById('header-profile-btn');
+  const profileMenu = document.getElementById('profile-dropdown-menu');
+  if (profileMenu && !profileMenu.classList.contains('hidden') && profileContainer) {
+    if (!profileContainer.contains(e.target) && !profileMenu.contains(e.target)) {
+      profileMenu.classList.add('hidden');
+      profileMenu.style.display = 'none';
+    }
+  }
+});
 
 function switchActiveRole(level, showToast = true) {
   if (!SCADA_ROLES[level]) return;
@@ -6203,6 +6230,18 @@ function switchActiveRole(level, showToast = true) {
   }
   if (rbacLabel) rbacLabel.textContent = role.title;
 
+  // Update header profile pill subtext and dot (role placed directly under profile name)
+  const headerRoleText = document.getElementById('header-op-role-text');
+  const headerRoleDot = document.getElementById('header-role-dot');
+  if (headerRoleText) {
+    const cleanTitle = role.title.includes(': ') ? role.title.split(': ')[1] : role.title;
+    headerRoleText.textContent = `${role.badge}: ${cleanTitle}`;
+  }
+  if (headerRoleDot) {
+    const dotColors = { 1: 'bg-slate-492', 2: 'bg-amber-492', 3: 'bg-emerald-492', 4: 'bg-indigo-492', 5: 'bg-purple-492' };
+    headerRoleDot.className = `w-1.5 h-1.5 rounded-full inline-block shrink-0 ${dotColors[level] || 'bg-emerald-492'}`;
+  }
+
   // Update modal active button state
   for (let i = 1; i <= 5; i++) {
     const btn = document.getElementById('rbac-btn-l' + i);
@@ -6218,6 +6257,8 @@ function switchActiveRole(level, showToast = true) {
   // Close dropdown if open
   const dd = document.getElementById('role-switcher-dropdown');
   if (dd) { dd.classList.add('hidden'); dd.style.display = 'none'; }
+  const pd = document.getElementById('profile-dropdown-menu');
+  if (pd) { pd.classList.add('hidden'); pd.style.display = 'none'; }
 
   if (showToast) {
     showScadaToast('Active SCADA Role Switched', `Now operating under clearance: ${role.title}`);

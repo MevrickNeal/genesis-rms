@@ -771,9 +771,9 @@
     (function() {
       try {
         const savedTheme = localStorage.getItem('scada_theme');
-        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        if (savedTheme === 'dark' || (!savedTheme && (document.documentElement.classList.contains('dark') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)))) {
           document.documentElement.classList.add('dark');
-        } else {
+        } else if (savedTheme === 'light') {
           document.documentElement.classList.remove('dark');
         }
       } catch(e) {}

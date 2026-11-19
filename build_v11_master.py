@@ -1958,12 +1958,18 @@ function saveProfileChanges() {
   // Update Header
   const headerName = document.getElementById('header-op-name');
   const headerRole = document.getElementById('header-op-role');
+  const headerRoleText = document.getElementById('header-op-role-text');
   const headerUid = document.getElementById('header-op-uid');
   const headerInitials = document.getElementById('header-avatar-initials');
   if (headerName) headerName.textContent = name;
-  if (headerRole) headerRole.textContent = role;
+  if (headerRoleText) headerRoleText.textContent = role;
+  else if (headerRole) headerRole.textContent = role;
   if (headerUid) headerUid.textContent = uid;
   if (headerInitials) headerInitials.textContent = initials;
+  const dropName = document.getElementById('dropdown-op-name');
+  const dropUid = document.getElementById('dropdown-op-uid');
+  if (dropName) dropName.textContent = name;
+  if (dropUid) dropUid.textContent = uid;
 
   // Update Content and NOC pages if active
   const contentName = document.getElementById('content-op-name');
@@ -2019,9 +2025,12 @@ function initProfileAndAvatar() {
       const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'LN';
 
       if (document.getElementById('header-op-name')) document.getElementById('header-op-name').textContent = name;
-      if (document.getElementById('header-op-role')) document.getElementById('header-op-role').textContent = role;
+      if (document.getElementById('header-op-role-text')) document.getElementById('header-op-role-text').textContent = role;
+      else if (document.getElementById('header-op-role')) document.getElementById('header-op-role').textContent = role;
       if (document.getElementById('header-op-uid')) document.getElementById('header-op-uid').textContent = uid;
       if (document.getElementById('header-avatar-initials')) document.getElementById('header-avatar-initials').textContent = initials;
+      if (document.getElementById('dropdown-op-name')) document.getElementById('dropdown-op-name').textContent = name;
+      if (document.getElementById('dropdown-op-uid')) document.getElementById('dropdown-op-uid').textContent = uid;
 
       if (document.getElementById('content-op-name')) document.getElementById('content-op-name').textContent = name;
       if (document.getElementById('content-op-role')) document.getElementById('content-op-role').textContent = role;
@@ -2517,10 +2526,10 @@ const SCADA_ROLES = {
 
 let currentScadaRole = parseInt(localStorage.getItem('genesis_active_role')) || 3;
 
-function toggleRoleDropdown() {
-  const dd = document.getElementById('role-switcher-dropdown');
+function toggleProfileDropdown() {
+  const dd = document.getElementById('profile-dropdown-menu') || document.getElementById('role-switcher-dropdown');
   if (!dd) return;
-  if (dd.classList.contains('hidden')) {
+  if (dd.classList.contains('hidden') || dd.style.display === 'none') {
     dd.classList.remove('hidden');
     dd.style.display = 'flex';
   } else {
@@ -2528,6 +2537,22 @@ function toggleRoleDropdown() {
     dd.style.display = 'none';
   }
 }
+
+function toggleRoleDropdown() {
+  toggleProfileDropdown();
+}
+
+// Global click listener to close profile/role dropdowns on click outside
+document.addEventListener('click', function(e) {
+  const profileContainer = document.getElementById('header-profile-btn');
+  const profileMenu = document.getElementById('profile-dropdown-menu');
+  if (profileMenu && !profileMenu.classList.contains('hidden') && profileContainer) {
+    if (!profileContainer.contains(e.target) && !profileMenu.contains(e.target)) {
+      profileMenu.classList.add('hidden');
+      profileMenu.style.display = 'none';
+    }
+  }
+});
 
 function switchActiveRole(level, showToast = true) {
   if (!SCADA_ROLES[level]) return;
@@ -2545,6 +2570,18 @@ function switchActiveRole(level, showToast = true) {
   }
   if (rbacLabel) rbacLabel.textContent = role.title;
 
+  // Update header profile pill subtext and dot (role placed directly under profile name)
+  const headerRoleText = document.getElementById('header-op-role-text');
+  const headerRoleDot = document.getElementById('header-role-dot');
+  if (headerRoleText) {
+    const cleanTitle = role.title.includes(': ') ? role.title.split(': ')[1] : role.title;
+    headerRoleText.textContent = `${role.badge}: ${cleanTitle}`;
+  }
+  if (headerRoleDot) {
+    const dotColors = { 1: 'bg-slate-500', 2: 'bg-amber-500', 3: 'bg-emerald-500', 4: 'bg-indigo-500', 5: 'bg-purple-500' };
+    headerRoleDot.className = `w-1.5 h-1.5 rounded-full inline-block shrink-0 ${dotColors[level] || 'bg-emerald-500'}`;
+  }
+
   // Update modal active button state
   for (let i = 1; i <= 5; i++) {
     const btn = document.getElementById('rbac-btn-l' + i);
@@ -2560,6 +2597,8 @@ function switchActiveRole(level, showToast = true) {
   // Close dropdown if open
   const dd = document.getElementById('role-switcher-dropdown');
   if (dd) { dd.classList.add('hidden'); dd.style.display = 'none'; }
+  const pd = document.getElementById('profile-dropdown-menu');
+  if (pd) { pd.classList.add('hidden'); pd.style.display = 'none'; }
 
   if (showToast) {
     showScadaToast('Active SCADA Role Switched', `Now operating under clearance: ${role.title}`);
