@@ -72,7 +72,7 @@ def universal_sanitize(text):
     
     # Zero emojis check / close button
     text = text.replace(
-        'class="text-slate-400 hover:text-slate-600">✕</button>',
+        'class="text-slate-400 hover:text-slate-600"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>',
         'class="text-slate-400 hover:text-slate-600"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'
     )
     return text
@@ -1062,83 +1062,83 @@ global_modals_html = """
           <tbody class="divide-y divide-slate-100 font-medium text-slate-700 text-[11px]">
             <tr class="hover:bg-slate-50/70">
               <td class="py-2 px-3 font-bold text-slate-900">View Live 18-Register Telemetry</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
             </tr>
             <tr class="hover:bg-slate-50/70">
               <td class="py-2 px-3 font-bold text-slate-900">Acknowledge & Silence Alarms</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
             </tr>
             <tr class="hover:bg-slate-50/70">
               <td class="py-2 px-3 font-bold text-slate-900">Log Maintenance PM & Countdown Reset</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
             </tr>
             <tr class="hover:bg-slate-50/70">
               <td class="py-2 px-3 font-bold text-slate-900">Engage Safety Lockout (LOTO)</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
             </tr>
             <tr class="hover:bg-slate-50/70">
               <td class="py-2 px-3 font-bold text-slate-900">Remote Engine Start / Crank Command</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
             </tr>
             <tr class="hover:bg-slate-50/70">
               <td class="py-2 px-3 font-bold text-slate-900">Emergency E-Stop Safety Trip</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
             </tr>
             <tr class="hover:bg-slate-50/70">
               <td class="py-2 px-3 font-bold text-slate-900">Modbus Register Setpoint Calibrations</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
             </tr>
             <tr class="hover:bg-slate-50/70">
               <td class="py-2 px-3 font-bold text-slate-900">Cluster Creation & Routing Reassignment</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
             </tr>
             <tr class="hover:bg-slate-50/70">
               <td class="py-2 px-3 font-bold text-slate-900">National Area Commissioning & Decommissioning</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
             </tr>
             <tr class="hover:bg-slate-50/70">
               <td class="py-2 px-3 font-bold text-slate-900">User Role Governance & Security Clearance</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-rose-400 font-mono">✕</td>
-              <td class="py-2 px-2 text-center text-emerald-600 font-black">✓</td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-rose-400 font-mono"><svg class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+              <td class="py-2 px-2 text-center text-emerald-600 font-black"><svg class="w-3.5 h-3.5 text-emerald-600 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></td>
             </tr>
           </tbody>
         </table>
@@ -1179,7 +1179,7 @@ function showScadaToast(title, message, type = 'success') {
       <div class="font-black text-slate-100 text-xs">${title}</div>
       <div class="text-[11px] text-slate-300 mt-0.5 leading-snug">${message}</div>
     </div>
-    <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white text-xs">✕</button>
+    <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   `;
   container.appendChild(toast);
   requestAnimationFrame(() => {
@@ -3565,11 +3565,7 @@ comm_html = assemble_page(
 cms_html = assemble_page(
     title="CMS Page Builder & Module Priority",
     active_page="cms",
-    main_content_html=f"""
-    <div id="screen-cms" class="flex flex-col gap-6">
-      {v7_cms_raw}
-    </div>
-    """
+    main_content_html=v7_cms_raw
 )
 
 # 14. NOC Operations (noc.html)
