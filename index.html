@@ -26,6 +26,7 @@
 
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -512,65 +513,198 @@
       cursor: grabbing;
     }
 
-    /* SCADA Night Shift Dark Mode Theme */
-    body.theme-dark {
+    /* ========================================================================= */
+    /* SCADA NIGHT SHIFT DARK MODE THEME & GLASSMORPISM SPEC (CodeFronts glz-23) */
+    /* ========================================================================= */
+    html.dark, html.dark body, body.theme-dark {
       background: #090d16 !important;
       background-image: 
-        radial-gradient(at 10% 10%, rgba(30, 41, 59, 0.4) 0px, transparent 50%),
-        radial-gradient(at 90% 10%, rgba(15, 23, 42, 0.6) 0px, transparent 50%),
-        radial-gradient(at 50% 90%, rgba(2, 6, 23, 0.8) 0px, transparent 50%) !important;
+        radial-gradient(at 10% 10%, rgba(30, 41, 59, 0.45) 0px, transparent 50%),
+        radial-gradient(at 90% 10%, rgba(15, 23, 42, 0.65) 0px, transparent 50%),
+        radial-gradient(at 50% 90%, rgba(2, 6, 23, 0.85) 0px, transparent 50%) !important;
       color: #f1f5f9 !important;
     }
-    body.theme-dark .bg-white\/80,
-    body.theme-dark .bg-white\/90,
-    body.theme-dark .bg-white\/95,
-    body.theme-dark .bg-white {
-      background-color: rgba(15, 23, 42, 0.88) !important;
+
+    /* Ambient Backdrop */
+    .scada-ambient-backdrop {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(226, 232, 240, 0.4) 0%, transparent 60%);
+    }
+    html.dark .scada-ambient-backdrop,
+    body.theme-dark .scada-ambient-backdrop {
+      background: radial-gradient(circle at 50% 0%, rgba(30, 41, 59, 0.3) 0%, transparent 60%);
+    }
+
+    /* Sticky Header & Nav Bar (Eliminates White Nav Bar Bug) */
+    html.dark header, body.theme-dark header,
+    html.dark .bg-white\/75, body.theme-dark .bg-white\/75,
+    html.dark .bg-white\/80, body.theme-dark .bg-white\/80,
+    html.dark .bg-white\/90, body.theme-dark .bg-white\/90,
+    html.dark .bg-white\/95, body.theme-dark .bg-white\/95,
+    html.dark .bg-white, body.theme-dark .bg-white {
+      background-color: rgba(14, 18, 30, 0.90) !important;
       border-color: rgba(51, 65, 85, 0.6) !important;
       color: #f8fafc !important;
     }
-    body.theme-dark .text-slate-900 {
+
+    /* Glass Pills & Badges */
+    html.dark .glass-pill, body.theme-dark .glass-pill {
+      background: rgba(22, 28, 46, 0.78) !important;
+      border-color: rgba(71, 85, 105, 0.6) !important;
       color: #f8fafc !important;
     }
-    body.theme-dark .text-slate-800 {
-      color: #f1f5f9 !important;
+    html.dark .glass-panel, body.theme-dark .glass-panel {
+      background: rgba(16, 20, 34, 0.85) !important;
+      border-color: rgba(51, 65, 85, 0.6) !important;
+      color: #f8fafc !important;
     }
-    body.theme-dark .text-slate-700 {
-      color: #cbd5e1 !important;
+
+    /* Left Floating Rail */
+    html.dark .left-rail, body.theme-dark .left-rail {
+      background: rgba(14, 18, 30, 0.92) !important;
+      border-color: rgba(51, 65, 85, 0.6) !important;
     }
-    body.theme-dark .text-slate-600 {
+    html.dark .rail-btn, body.theme-dark .rail-btn {
       color: #94a3b8 !important;
     }
-    body.theme-dark .bg-slate-50,
-    body.theme-dark .bg-slate-100 {
-      background-color: rgba(30, 41, 59, 0.6) !important;
-      border-color: rgba(51, 65, 85, 0.5) !important;
-    }
-    body.theme-dark .glass-pill {
-      background: rgba(15, 23, 42, 0.75) !important;
-      border-color: rgba(51, 65, 85, 0.6) !important;
-      color: #f8fafc !important;
-    }
-    body.theme-dark .left-rail {
-      background: rgba(15, 23, 42, 0.92) !important;
-      border-color: rgba(51, 65, 85, 0.6) !important;
-    }
-    body.theme-dark .rail-btn {
-      color: #94a3b8 !important;
-    }
-    body.theme-dark .rail-btn:hover {
+    html.dark .rail-btn:hover, body.theme-dark .rail-btn:hover {
       background: rgba(30, 41, 59, 0.8) !important;
       color: #f8fafc !important;
     }
-    body.theme-dark .border-slate-100,
-    body.theme-dark .border-slate-200 {
+
+    /* Tables & Grids */
+    html.dark th, body.theme-dark th {
+      background: rgba(22, 28, 46, 0.9) !important;
+      color: #94a3b8 !important;
+      border-bottom-color: rgba(51, 65, 85, 0.6) !important;
+    }
+    html.dark td, body.theme-dark td {
+      border-bottom-color: rgba(51, 65, 85, 0.4) !important;
+      color: #cbd5e1 !important;
+    }
+    html.dark tr:hover td, body.theme-dark tr:hover td {
+      background-color: rgba(30, 41, 59, 0.4) !important;
+    }
+
+    /* Form Inputs, Selects & Textareas */
+    html.dark input:not([type="checkbox"]):not([type="radio"]), 
+    body.theme-dark input:not([type="checkbox"]):not([type="radio"]),
+    html.dark select, body.theme-dark select,
+    html.dark textarea, body.theme-dark textarea {
+      background-color: rgba(22, 28, 46, 0.85) !important;
+      border-color: rgba(71, 85, 105, 0.6) !important;
+      color: #f8fafc !important;
+    }
+    html.dark input::placeholder, body.theme-dark input::placeholder,
+    html.dark textarea::placeholder, body.theme-dark textarea::placeholder {
+      color: #64748b !important;
+    }
+
+    /* Modals & Overlays */
+    html.dark .modal-card, body.theme-dark .modal-card,
+    html.dark .modal-content, body.theme-dark .modal-content,
+    html.dark #profile-modal .bg-white, body.theme-dark #profile-modal .bg-white,
+    html.dark #gen-upload-modal .bg-white, body.theme-dark #gen-upload-modal .bg-white,
+    html.dark #cms-login-modal .bg-white, body.theme-dark #cms-login-modal .bg-white,
+    html.dark #inspect-modal .bg-white, body.theme-dark #inspect-modal .bg-white,
+    html.dark #banner-upload-modal .bg-white, body.theme-dark #banner-upload-modal .bg-white {
+      background: rgba(14, 18, 30, 0.96) !important;
+      border-color: rgba(51, 65, 85, 0.7) !important;
+      color: #f8fafc !important;
+    }
+
+    /* Text & Border Color Inversions */
+    html.dark .text-slate-900, body.theme-dark .text-slate-900 {
+      color: #f8fafc !important;
+    }
+    html.dark .text-slate-800, body.theme-dark .text-slate-800 {
+      color: #f1f5f9 !important;
+    }
+    html.dark .text-slate-700, body.theme-dark .text-slate-700 {
+      color: #cbd5e1 !important;
+    }
+    html.dark .text-slate-600, body.theme-dark .text-slate-600 {
+      color: #94a3b8 !important;
+    }
+    html.dark .text-slate-492, body.theme-dark .text-slate-492 {
+      color: #64748b !important;
+    }
+    html.dark .bg-slate-50, body.theme-dark .bg-slate-50,
+    html.dark .bg-slate-100, body.theme-dark .bg-slate-100 {
+      background-color: rgba(30, 41, 59, 0.6) !important;
       border-color: rgba(51, 65, 85, 0.5) !important;
     }
-    body.theme-dark .hero-stage-bg {
+    html.dark .border-slate-100, body.theme-dark .border-slate-100,
+    html.dark .border-slate-200, body.theme-dark .border-slate-200,
+    html.dark .border-slate-300, body.theme-dark .border-slate-300 {
+      border-color: rgba(51, 65, 85, 0.5) !important;
+    }
+    html.dark .hero-stage-bg, body.theme-dark .hero-stage-bg {
       background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
       border-color: rgba(51, 65, 85, 0.5) !important;
     }
+
+    /* Glassmorphism Generator Cards (Downloads\dark-mode-glassmorphism-card-tailwind.html spec) */
+    .card-wrap {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      filter: drop-shadow(0 10px 24px rgba(15, 23, 42, 0.08));
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s ease;
+      cursor: pointer;
+    }
+    .card-wrap:hover {
+      transform: translateY(-4px);
+      filter: drop-shadow(0 16px 32px rgba(15, 23, 42, 0.16));
+    }
+    .card-svg-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .card-path-bg {
+      fill: rgba(255, 255, 255, 0.85);
+      transition: fill 0.3s ease, stroke 0.3s ease;
+    }
+    .card-inner-content {
+      position: relative;
+      z-index: 10;
+      padding: 16px 18px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    html.dark .card-wrap, body.theme-dark .card-wrap {
+      filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.65));
+    }
+    html.dark .card-wrap:hover, body.theme-dark .card-wrap:hover {
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.85));
+    }
+    html.dark .card-path-bg, body.theme-dark .card-path-bg {
+      fill: rgba(16, 20, 34, 0.82) !important;
+    }
+
   </style>
+  <script>
+    (function() {
+      try {
+        const savedTheme = localStorage.getItem('scada_theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch(e) {}
+    })();
+  </script>
 
 </head>
 <body class="theme-light selection:bg-slate-900 selection:text-[#9ede4c]">
@@ -3892,32 +4026,49 @@
     const startIndex = (currentPage - 1) * PAGE_SIZE;
     const paginated = filtered.slice(startIndex, startIndex + PAGE_SIZE);
 
-    if (document.getElementById('pagination-summary')) document.getElementById('pagination-summary').innerText = `Showing ${filtered.length > 0 ? startIndex + 1 : 0}-${Math.min(startIndex + PAGE_SIZE, filtered.length)} of ${filtered.length} units`;
-    if (document.getElementById('pagination-page-nums')) document.getElementById('pagination-page-nums').innerText = `${currentPage} / ${totalPages}`;
+    if (document.getElementById('pagination-summary')) {
+      document.getElementById('pagination-summary').innerText = `Showing ${filtered.length > 0 ? startIndex + 1 : 0}-${Math.min(startIndex + PAGE_SIZE, filtered.length)} of ${filtered.length} units`;
+    }
+    if (document.getElementById('pagination-page-nums')) {
+      document.getElementById('pagination-page-nums').innerText = `${currentPage} / ${totalPages}`;
+    }
+
+    const isDark = document.documentElement.classList.contains('dark') || document.body.classList.contains('theme-dark');
+    const pathFill = isDark ? 'rgba(16, 20, 34, 0.82)' : 'rgba(255, 255, 255, 0.85)';
 
     container.innerHTML = paginated.map(g => {
       let strokeColor = '#10b981';
-      let badgeBg = 'bg-emerald-100 text-emerald-800';
+      let badgeBg = isDark 
+        ? 'bg-emerald-950/70 text-emerald-300 border border-emerald-800/60' 
+        : 'bg-emerald-100 text-emerald-800 border border-emerald-200/80';
       let badgeText = 'Online (Good Health)';
 
       if (g.status === 'WARNING') {
         strokeColor = '#eab308';
-        badgeBg = 'bg-amber-100 text-amber-900';
+        badgeBg = isDark 
+          ? 'bg-amber-950/70 text-amber-300 border border-amber-800/60' 
+          : 'bg-amber-100 text-amber-900 border border-amber-200/80';
         badgeText = g.alert;
       } else if (g.status === 'CRITICAL') {
         strokeColor = '#ef4444';
-        badgeBg = 'bg-rose-100 text-rose-800 animate-pulse';
+        badgeBg = isDark 
+          ? 'bg-rose-950/70 text-rose-300 border border-rose-800/60 animate-pulse' 
+          : 'bg-rose-100 text-rose-800 border border-rose-200/80 animate-pulse';
         badgeText = g.alert;
       } else if (g.status === 'STANDBY') {
-        strokeColor = '#94a3b8';
-        badgeBg = 'bg-slate-200 text-slate-700';
+        strokeColor = isDark ? '#64748b' : '#94a3b8';
+        badgeBg = isDark 
+          ? 'bg-slate-800/70 text-slate-300 border border-slate-700/60' 
+          : 'bg-slate-200 text-slate-700 border border-slate-300/80';
         badgeText = 'Standby (Mains Grid Normal)';
       }
 
+      const opInitials = g.operator.includes('Grameen') ? 'GP' : g.operator.includes('Robi') ? 'RB' : g.operator.includes('Bangla') ? 'BL' : 'TT';
+
       return `
-        <div class="card-wrap" onclick="inspectUnit('${g.id}')">
+        <div class="card-wrap group" onclick="inspectUnit('${g.id}')">
           <svg class="card-svg-bg" viewBox="0 0 340 250" fill="none" preserveAspectRatio="none">
-            <path d="M 32 0 
+            <path class="card-path-bg" d="M 32 0 
                      L 205 0 
                      C 224 0, 234 14, 242 28 
                      C 248 42, 256 56, 270 56 
@@ -3929,50 +4080,52 @@
                      C 14 250, 0 236, 0 218 
                      L 0 32 
                      C 0 14, 14 0, 32 0 Z" 
-                  fill="#ffffff" 
+                  fill="${pathFill}" 
                   stroke="${strokeColor}" 
                   stroke-width="1.8" />
           </svg>
 
           <div class="card-inner-content">
+            <!-- Top Row: Operator Badge, UID, Gen ID & Action Shelf -->
             <div class="flex items-start justify-between">
               <div class="flex items-center gap-2.5">
                 ${g.image ? `
-                <img src="${g.image}" alt="${g.id}" class="w-10 h-10 rounded-xl object-cover border border-slate-200/90 shadow-2xs shrink-0 cursor-pointer hover:opacity-80 transition" onclick="event.stopPropagation(); openGenUploadModal('${g.id}')" title="Click to update 100x100 picture" />
+                <img src="${g.image}" alt="${g.id}" class="w-10 h-10 rounded-full object-cover border border-slate-200/90 dark:border-slate-700 shadow-2xs shrink-0 cursor-pointer hover:opacity-80 transition" onclick="event.stopPropagation(); openGenUploadModal('${g.id}')" title="Click to update 100x100 picture" />
               ` : `
-                <div class="w-10 h-10 rounded-full bg-slate-900 text-white font-black text-xs flex items-center justify-center shrink-0 cursor-pointer hover:bg-slate-800 transition" onclick="event.stopPropagation(); openGenUploadModal('${g.id}')" title="Click to upload 100x100 picture">
-                  ${g.operator.includes('Grameen') ? 'GP' : g.operator.includes('Robi') ? 'RB' : g.operator.includes('Bangla') ? 'BL' : 'TT'}
+                <div class="w-10 h-10 rounded-full bg-slate-900 dark:bg-slate-800 text-white font-black text-xs flex items-center justify-center shrink-0 border border-white/20 shadow-2xs cursor-pointer hover:bg-slate-800 transition" onclick="event.stopPropagation(); openGenUploadModal('${g.id}')" title="Click to upload 100x100 picture">
+                  ${opInitials}
                 </div>
               `}
                 <div>
-                  <div class="text-[10px] font-mono text-slate-400 font-bold">UID: ${g.uid}</div>
-                  <div class="text-xs font-black text-slate-900 leading-tight">${g.id}</div>
+                  <div class="text-[10px] font-mono text-slate-400 dark:text-slate-400 font-bold">UID: ${g.uid}</div>
+                  <div class="text-xs font-black text-slate-900 dark:text-white leading-tight">${g.id}</div>
                 </div>
               </div>
 
               <!-- Top-Right Shelf Dual Circular Buttons -->
               <div class="flex items-center gap-1.5 -mr-1">
-                <button onclick="event.stopPropagation(); showScreen('alarms');" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200/90 flex items-center justify-center transition" title="Alarms">
-                  <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <button onclick="event.stopPropagation(); showScreen('alarms');" class="w-9 h-9 rounded-full bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center transition shadow-2xs group/btn cursor-pointer" title="Alarms">
+                  <svg class="w-3.5 h-3.5 text-slate-600 dark:text-slate-300 group-hover/btn:text-rose-492 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                 </button>
-                <button onclick="event.stopPropagation(); inspectUnit('${g.id}');" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200/90 flex items-center justify-center transition" title="Inspect">
-                  <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                <button onclick="event.stopPropagation(); inspectUnit('${g.id}');" class="w-9 h-9 rounded-full bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center transition shadow-2xs group/btn cursor-pointer" title="Inspect">
+                  <svg class="w-3.5 h-3.5 text-slate-600 dark:text-slate-300 group-hover/btn:text-emerald-492 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
                 </button>
               </div>
             </div>
 
+            <!-- Middle Engine Specs & Alert Pill -->
             <div class="my-auto pt-2">
-              <div class="text-xs font-bold text-slate-900">${g.model}</div>
-              <div class="text-[11px] text-slate-600 truncate">${g.station} • ${g.operator}</div>
-              <div class="mt-1.5 inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold ${badgeBg} truncate max-w-full">
+              <div class="text-xs font-bold text-slate-900 dark:text-slate-100">${g.model}</div>
+              <div class="text-[11px] text-slate-600 dark:text-slate-400 truncate">${g.station} • ${g.operator}</div>
+              <div class="mt-1.5 inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold ${badgeBg} truncate max-w-full shadow-2xs">
                 ${badgeText}
               </div>
             </div>
 
-            <!-- Bottom Machine Activation Switch + 4 Metrics -->
-            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-center font-mono">
+            <!-- Bottom Machine Activation Switch + 3 Metrics -->
+            <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-center font-mono">
               <div class="text-left" onclick="event.stopPropagation();">
-                <span class="text-[9px] uppercase font-bold text-slate-400 block font-sans">Power</span>
+                <span class="text-[9px] uppercase font-bold text-slate-400 dark:text-slate-400 block font-sans">Power</span>
                 <label class="switch-toggle" title="Machine Power Cut-Off / Activation">
                   <input type="checkbox" ${g.status !== 'STANDBY' ? 'checked' : ''} onchange="toggleMachineState('${g.id}', this.checked)">
                   <span class="switch-slider"></span>
@@ -3980,16 +4133,16 @@
               </div>
 
               <div>
-                <span class="text-[9px] uppercase font-bold text-slate-400 block font-sans">Load</span>
-                <strong class="text-xs font-extrabold text-slate-900">${g.kw} <span class="text-[9px] font-normal text-slate-400">kW</span></strong>
+                <span class="text-[9px] uppercase font-bold text-slate-400 dark:text-slate-400 block font-sans">Load</span>
+                <strong class="text-xs font-extrabold text-slate-900 dark:text-slate-100">${g.kw} <span class="text-[9px] font-normal text-slate-400 dark:text-slate-492 font-sans">kW</span></strong>
               </div>
               <div>
-                <span class="text-[9px] uppercase font-bold text-slate-400 block font-sans">Speed</span>
-                <strong class="text-xs font-bold text-slate-900">${g.rpm} <span class="text-[9px] font-normal text-slate-400">RPM</span></strong>
+                <span class="text-[9px] uppercase font-bold text-slate-400 dark:text-slate-400 block font-sans">Speed</span>
+                <strong class="text-xs font-bold text-slate-900 dark:text-slate-100">${g.rpm} <span class="text-[9px] font-normal text-slate-400 dark:text-slate-492 font-sans">RPM</span></strong>
               </div>
               <div>
-                <span class="text-[9px] uppercase font-bold text-slate-400 block font-sans">Fuel</span>
-                <strong class="text-xs font-bold ${g.fuel < 20 ? 'text-rose-600' : 'text-slate-900'}">${g.fuel}%</strong>
+                <span class="text-[9px] uppercase font-bold text-slate-400 dark:text-slate-400 block font-sans">Fuel</span>
+                <strong class="text-xs font-bold ${g.fuel < 20 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-slate-100'}">${g.fuel}%</strong>
               </div>
             </div>
           </div>
@@ -5053,9 +5206,13 @@
 
   // --- SCADA NIGHT SHIFT DARK MODE THEME CONTROLLER ---
   function toggleScadaTheme() {
-    const isDark = document.body.classList.toggle('theme-dark');
+    const isDark = document.documentElement.classList.toggle('dark');
+    document.body.classList.toggle('theme-dark', isDark);
     localStorage.setItem('scada_theme', isDark ? 'dark' : 'light');
     updateThemeIcon(isDark);
+    if (typeof renderCards === 'function') {
+      renderCards();
+    }
     if (typeof showScadaToast === 'function') {
       showScadaToast('SCADA Console Theme Changed', isDark ? 'Night Shift SCADA High-Contrast Theme active' : 'Daylight Standard SCADA Theme active');
     }
@@ -5078,10 +5235,13 @@
   function initScadaTheme() {
     const saved = localStorage.getItem('scada_theme');
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (saved === 'dark' || (!saved && prefersDark)) {
+    const isDark = (saved === 'dark' || (!saved && prefersDark));
+    if (isDark) {
+      document.documentElement.classList.add('dark');
       document.body.classList.add('theme-dark');
       updateThemeIcon(true);
     } else {
+      document.documentElement.classList.remove('dark');
       document.body.classList.remove('theme-dark');
       updateThemeIcon(false);
     }

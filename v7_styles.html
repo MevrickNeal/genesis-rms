@@ -22,6 +22,7 @@
 
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -508,64 +509,197 @@
       cursor: grabbing;
     }
 
-    /* SCADA Night Shift Dark Mode Theme */
-    body.theme-dark {
+    /* ========================================================================= */
+    /* SCADA NIGHT SHIFT DARK MODE THEME & GLASSMORPISM SPEC (CodeFronts glz-23) */
+    /* ========================================================================= */
+    html.dark, html.dark body, body.theme-dark {
       background: #090d16 !important;
       background-image: 
-        radial-gradient(at 10% 10%, rgba(30, 41, 59, 0.4) 0px, transparent 50%),
-        radial-gradient(at 90% 10%, rgba(15, 23, 42, 0.6) 0px, transparent 50%),
-        radial-gradient(at 50% 90%, rgba(2, 6, 23, 0.8) 0px, transparent 50%) !important;
+        radial-gradient(at 10% 10%, rgba(30, 41, 59, 0.45) 0px, transparent 50%),
+        radial-gradient(at 90% 10%, rgba(15, 23, 42, 0.65) 0px, transparent 50%),
+        radial-gradient(at 50% 90%, rgba(2, 6, 23, 0.85) 0px, transparent 50%) !important;
       color: #f1f5f9 !important;
     }
-    body.theme-dark .bg-white\/80,
-    body.theme-dark .bg-white\/90,
-    body.theme-dark .bg-white\/95,
-    body.theme-dark .bg-white {
-      background-color: rgba(15, 23, 42, 0.88) !important;
+
+    /* Ambient Backdrop */
+    .scada-ambient-backdrop {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(226, 232, 240, 0.4) 0%, transparent 60%);
+    }
+    html.dark .scada-ambient-backdrop,
+    body.theme-dark .scada-ambient-backdrop {
+      background: radial-gradient(circle at 50% 0%, rgba(30, 41, 59, 0.3) 0%, transparent 60%);
+    }
+
+    /* Sticky Header & Nav Bar (Eliminates White Nav Bar Bug) */
+    html.dark header, body.theme-dark header,
+    html.dark .bg-white\/75, body.theme-dark .bg-white\/75,
+    html.dark .bg-white\/80, body.theme-dark .bg-white\/80,
+    html.dark .bg-white\/90, body.theme-dark .bg-white\/90,
+    html.dark .bg-white\/95, body.theme-dark .bg-white\/95,
+    html.dark .bg-white, body.theme-dark .bg-white {
+      background-color: rgba(14, 18, 30, 0.90) !important;
       border-color: rgba(51, 65, 85, 0.6) !important;
       color: #f8fafc !important;
     }
-    body.theme-dark .text-slate-900 {
+
+    /* Glass Pills & Badges */
+    html.dark .glass-pill, body.theme-dark .glass-pill {
+      background: rgba(22, 28, 46, 0.78) !important;
+      border-color: rgba(71, 85, 105, 0.6) !important;
       color: #f8fafc !important;
     }
-    body.theme-dark .text-slate-800 {
-      color: #f1f5f9 !important;
+    html.dark .glass-panel, body.theme-dark .glass-panel {
+      background: rgba(16, 20, 34, 0.85) !important;
+      border-color: rgba(51, 65, 85, 0.6) !important;
+      color: #f8fafc !important;
     }
-    body.theme-dark .text-slate-700 {
-      color: #cbd5e1 !important;
+
+    /* Left Floating Rail */
+    html.dark .left-rail, body.theme-dark .left-rail {
+      background: rgba(14, 18, 30, 0.92) !important;
+      border-color: rgba(51, 65, 85, 0.6) !important;
     }
-    body.theme-dark .text-slate-600 {
+    html.dark .rail-btn, body.theme-dark .rail-btn {
       color: #94a3b8 !important;
     }
-    body.theme-dark .bg-slate-50,
-    body.theme-dark .bg-slate-100 {
-      background-color: rgba(30, 41, 59, 0.6) !important;
-      border-color: rgba(51, 65, 85, 0.5) !important;
-    }
-    body.theme-dark .glass-pill {
-      background: rgba(15, 23, 42, 0.75) !important;
-      border-color: rgba(51, 65, 85, 0.6) !important;
-      color: #f8fafc !important;
-    }
-    body.theme-dark .left-rail {
-      background: rgba(15, 23, 42, 0.92) !important;
-      border-color: rgba(51, 65, 85, 0.6) !important;
-    }
-    body.theme-dark .rail-btn {
-      color: #94a3b8 !important;
-    }
-    body.theme-dark .rail-btn:hover {
+    html.dark .rail-btn:hover, body.theme-dark .rail-btn:hover {
       background: rgba(30, 41, 59, 0.8) !important;
       color: #f8fafc !important;
     }
-    body.theme-dark .border-slate-100,
-    body.theme-dark .border-slate-200 {
+
+    /* Tables & Grids */
+    html.dark th, body.theme-dark th {
+      background: rgba(22, 28, 46, 0.9) !important;
+      color: #94a3b8 !important;
+      border-bottom-color: rgba(51, 65, 85, 0.6) !important;
+    }
+    html.dark td, body.theme-dark td {
+      border-bottom-color: rgba(51, 65, 85, 0.4) !important;
+      color: #cbd5e1 !important;
+    }
+    html.dark tr:hover td, body.theme-dark tr:hover td {
+      background-color: rgba(30, 41, 59, 0.4) !important;
+    }
+
+    /* Form Inputs, Selects & Textareas */
+    html.dark input:not([type="checkbox"]):not([type="radio"]), 
+    body.theme-dark input:not([type="checkbox"]):not([type="radio"]),
+    html.dark select, body.theme-dark select,
+    html.dark textarea, body.theme-dark textarea {
+      background-color: rgba(22, 28, 46, 0.85) !important;
+      border-color: rgba(71, 85, 105, 0.6) !important;
+      color: #f8fafc !important;
+    }
+    html.dark input::placeholder, body.theme-dark input::placeholder,
+    html.dark textarea::placeholder, body.theme-dark textarea::placeholder {
+      color: #64748b !important;
+    }
+
+    /* Modals & Overlays */
+    html.dark .modal-card, body.theme-dark .modal-card,
+    html.dark .modal-content, body.theme-dark .modal-content,
+    html.dark #profile-modal .bg-white, body.theme-dark #profile-modal .bg-white,
+    html.dark #gen-upload-modal .bg-white, body.theme-dark #gen-upload-modal .bg-white,
+    html.dark #cms-login-modal .bg-white, body.theme-dark #cms-login-modal .bg-white,
+    html.dark #inspect-modal .bg-white, body.theme-dark #inspect-modal .bg-white,
+    html.dark #banner-upload-modal .bg-white, body.theme-dark #banner-upload-modal .bg-white {
+      background: rgba(14, 18, 30, 0.96) !important;
+      border-color: rgba(51, 65, 85, 0.7) !important;
+      color: #f8fafc !important;
+    }
+
+    /* Text & Border Color Inversions */
+    html.dark .text-slate-900, body.theme-dark .text-slate-900 {
+      color: #f8fafc !important;
+    }
+    html.dark .text-slate-800, body.theme-dark .text-slate-800 {
+      color: #f1f5f9 !important;
+    }
+    html.dark .text-slate-700, body.theme-dark .text-slate-700 {
+      color: #cbd5e1 !important;
+    }
+    html.dark .text-slate-600, body.theme-dark .text-slate-600 {
+      color: #94a3b8 !important;
+    }
+    html.dark .text-slate-500, body.theme-dark .text-slate-500 {
+      color: #64748b !important;
+    }
+    html.dark .bg-slate-50, body.theme-dark .bg-slate-50,
+    html.dark .bg-slate-100, body.theme-dark .bg-slate-100 {
+      background-color: rgba(30, 41, 59, 0.6) !important;
       border-color: rgba(51, 65, 85, 0.5) !important;
     }
-    body.theme-dark .hero-stage-bg {
+    html.dark .border-slate-100, body.theme-dark .border-slate-100,
+    html.dark .border-slate-200, body.theme-dark .border-slate-200,
+    html.dark .border-slate-300, body.theme-dark .border-slate-300 {
+      border-color: rgba(51, 65, 85, 0.5) !important;
+    }
+    html.dark .hero-stage-bg, body.theme-dark .hero-stage-bg {
       background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
       border-color: rgba(51, 65, 85, 0.5) !important;
     }
+
+    /* Glassmorphism Generator Cards (Downloads\dark-mode-glassmorphism-card-tailwind.html spec) */
+    .card-wrap {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      filter: drop-shadow(0 10px 24px rgba(15, 23, 42, 0.08));
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s ease;
+      cursor: pointer;
+    }
+    .card-wrap:hover {
+      transform: translateY(-4px);
+      filter: drop-shadow(0 16px 32px rgba(15, 23, 42, 0.16));
+    }
+    .card-svg-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .card-path-bg {
+      fill: rgba(255, 255, 255, 0.85);
+      transition: fill 0.3s ease, stroke 0.3s ease;
+    }
+    .card-inner-content {
+      position: relative;
+      z-index: 10;
+      padding: 16px 18px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    html.dark .card-wrap, body.theme-dark .card-wrap {
+      filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.65));
+    }
+    html.dark .card-wrap:hover, body.theme-dark .card-wrap:hover {
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.85));
+    }
+    html.dark .card-path-bg, body.theme-dark .card-path-bg {
+      fill: rgba(16, 20, 34, 0.82) !important;
+    }
+
   </style>
+  <script>
+    (function() {
+      try {
+        const savedTheme = localStorage.getItem('scada_theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch(e) {}
+    })();
+  </script>
 </head>
 <body class="selection:bg-slate-900 selection:text-[#9ede4c]">
