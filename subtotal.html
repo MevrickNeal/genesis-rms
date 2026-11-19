@@ -1413,7 +1413,15 @@
     { id: 'alarms', name: 'Alarms & Event Log Center', desc: 'Active fault notifications and cryptographic priority queue', priority: 7, visible: true }
   ];
 
-  let cmsModules = JSON.parse(localStorage.getItem('genesis_cms_modules')) || DEFAULT_CMS_MODULES;
+  let savedCms = null;
+  try {
+    const raw = localStorage.getItem('genesis_cms_modules');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) savedCms = parsed;
+    }
+  } catch (e) {}
+  let cmsModules = savedCms || JSON.parse(JSON.stringify(DEFAULT_CMS_MODULES));
 
   let currentScreen = 'overview';
   let currentFilter = 'all';
@@ -1725,76 +1733,83 @@
     const g = GENERATORS.find(u => u.id === id);
     if (!g) return;
 
+    const setTxt = (elemId, val) => {
+      const el = document.getElementById(elemId);
+      if (el) el.innerText = val;
+    };
+    const setWidth = (elemId, w) => {
+      const el = document.getElementById(elemId);
+      if (el) el.style.width = w;
+    };
+
     // Top Navigation Breadcrumb Sync
-    const tg = document.getElementById('top-genid-text');
-    if (tg) tg.innerText = g.id;
-    const ta = document.getElementById('top-area-text');
-    if (ta) ta.innerText = g.district;
-    const tc = document.getElementById('top-cluster-text');
-    if (tc) tc.innerText = `${g.district} Node`;
-    const ts = document.getElementById('top-station-text');
-    if (ts) ts.innerText = g.station.replace('Tower ', '');
+    setTxt('top-genid-text', g.id);
+    setTxt('top-area-text', g.district);
+    setTxt('top-cluster-text', `${g.district} Node`);
+    setTxt('top-station-text', g.station.replace('Tower ', ''));
 
     // Metadata Ribbon Sync
-    document.getElementById('p18-station').innerText = g.station;
-    document.getElementById('p18-operator').innerText = g.operator;
-    document.getElementById('p18-area').innerText = g.area;
-    document.getElementById('p18-model').innerText = g.model;
-    document.getElementById('p18-uid').innerText = g.uid;
-    document.getElementById('p18-capacity').innerText = g.capacity.split(' @')[0];
+    setTxt('p18-station', g.station);
+    setTxt('p18-operator', g.operator);
+    setTxt('p18-area', g.area);
+    setTxt('p18-model', g.model);
+    setTxt('p18-uid', g.uid);
+    setTxt('p18-capacity', g.capacity.split(' @')[0]);
 
     // Status Badge & Machine Switch Sync
     const badge = document.getElementById('p18-badge-status');
     const toggle = document.getElementById('current-unit-active-toggle');
     const toggleLabel = document.getElementById('current-unit-state-label');
 
-    if (g.status === 'CRITICAL') {
-      badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 animate-pulse';
-      badge.innerText = 'CRITICAL FAULT';
-    } else if (g.status === 'WARNING') {
-      badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800';
-      badge.innerText = 'WARNING';
-    } else if (g.status === 'STANDBY') {
-      badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-700';
-      badge.innerText = 'STANDBY';
-    } else {
-      badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800';
-      badge.innerText = 'ONLINE';
+    if (badge) {
+      if (g.status === 'CRITICAL') {
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 animate-pulse';
+        badge.innerText = 'CRITICAL FAULT';
+      } else if (g.status === 'WARNING') {
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800';
+        badge.innerText = 'WARNING';
+      } else if (g.status === 'STANDBY') {
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-700';
+        badge.innerText = 'STANDBY';
+      } else {
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800';
+        badge.innerText = 'ONLINE';
+      }
     }
 
     if (toggle) toggle.checked = g.status !== 'STANDBY';
     if (toggleLabel) toggleLabel.innerText = g.status !== 'STANDBY' ? 'Machine: Active' : 'Machine: Inactive';
 
     // Populate Card 1: 3-Phase AC Voltages
-    document.getElementById('val-p1').innerText = `${g.p1_v1n} V`;
-    document.getElementById('val-p2').innerText = `${g.p2_v2n} V`;
-    document.getElementById('val-p3').innerText = `${g.p3_v3n} V`;
-    document.getElementById('val-p4').innerText = `${g.p4_v12} V`;
-    document.getElementById('val-p5').innerText = `${g.p5_v23} V`;
-    document.getElementById('val-p6').innerText = `${g.p6_v31} V`;
+    setTxt('val-p1', `${g.p1_v1n} V`);
+    setTxt('val-p2', `${g.p2_v2n} V`);
+    setTxt('val-p3', `${g.p3_v3n} V`);
+    setTxt('val-p4', `${g.p4_v12} V`);
+    setTxt('val-p5', `${g.p5_v23} V`);
+    setTxt('val-p6', `${g.p6_v31} V`);
 
     // Populate Card 2: Current & Power
-    document.getElementById('val-p7').innerText = `${g.p7_i1} A`;
-    document.getElementById('val-p8').innerText = `${g.p8_i2} A`;
-    document.getElementById('val-p9').innerText = `${g.p9_i3} A`;
-    document.getElementById('val-p10').innerText = `${g.p10_freq} Hz`;
-    document.getElementById('val-p11').innerText = `${g.p11_kw} kW`;
-    document.getElementById('val-p12').innerText = `${g.p12_kva} kVA`;
-    document.getElementById('val-p13').innerText = `${g.p13_kvar} kVAR`;
-    document.getElementById('val-p14').innerText = `${g.p14_pf} Lag`;
+    setTxt('val-p7', `${g.p7_i1} A`);
+    setTxt('val-p8', `${g.p8_i2} A`);
+    setTxt('val-p9', `${g.p9_i3} A`);
+    setTxt('val-p10', `${g.p10_freq} Hz`);
+    setTxt('val-p11', `${g.p11_kw} kW`);
+    setTxt('val-p12', `${g.p12_kva} kVA`);
+    setTxt('val-p13', `${g.p13_kvar} kVAR`);
+    setTxt('val-p14', `${g.p14_pf} Lag`);
 
     // Populate Card 3: Engine Mechanical
-    document.getElementById('val-p15').innerText = `${g.p15_rpm} RPM`;
-    document.getElementById('val-p16').innerText = `${g.p16_temp} °C`;
-    document.getElementById('val-p17').innerText = `${g.p17_oil} bar`;
-    document.getElementById('bar-p15').style.width = `${Math.min(100, (g.p15_rpm / 1500) * 100)}%`;
-    document.getElementById('bar-p16').style.width = `${Math.min(100, (g.p16_temp / 120) * 100)}%`;
-    document.getElementById('bar-p17').style.width = `${Math.min(100, (g.p17_oil / 6) * 100)}%`;
+    setTxt('val-p15', `${g.p15_rpm} RPM`);
+    setTxt('val-p16', `${g.p16_temp} °C`);
+    setTxt('val-p17', `${g.p17_oil} bar`);
+    setWidth('bar-p15', `${Math.min(100, (g.p15_rpm / 1500) * 100)}%`);
+    setWidth('bar-p16', `${Math.min(100, (g.p16_temp / 120) * 100)}%`);
+    setWidth('bar-p17', `${Math.min(100, (g.p17_oil / 6) * 100)}%`);
 
     // Populate Card 4: Fuel & Reserves (Gauge Arc & 2x2 Grid)
-    document.getElementById('val-fuel-pct').innerText = `${g.fuel}%`;
-    document.getElementById('val-fuel-liters').innerText = `${g.p18_fuel_liters} L`;
-    document.getElementById('val-runtime').innerText = `${g.runtime} hrs`;
+    setTxt('val-fuel-pct', `${g.fuel}%`);
+    setTxt('val-fuel-liters', `${g.p18_fuel_liters} L`);
+    setTxt('val-runtime', `${g.runtime} hrs`);
 
     // Dynamic Fuel Gauge Arc Update
     const fuelArc = document.getElementById('gauge-fuel-arc');
@@ -2911,9 +2926,9 @@
     if (sub) {
       sub.innerHTML = `${gen.subtitle}<span class="block text-slate-400 font-medium text-xs mt-0.5">${gen.subspec}</span>`;
     }
-    if (spec1) spec1.textContent = gen.spec1;
-    if (spec2) spec2.textContent = gen.spec2;
-    if (spec3) spec3.textContent = gen.spec3;
+    if (spec1) spec1.innerHTML = formatSpecHtml(gen.spec1);
+    if (spec2) spec2.innerHTML = formatSpecHtml(gen.spec2);
+    if (spec3) spec3.innerHTML = formatSpecHtml(gen.spec3);
     if (selEl) selEl.value = gen.id;
 
     // Smooth engine image cross-fade
@@ -3020,6 +3035,210 @@
         switchHeroGenerator(currentHeroIndex);
       }
     }, 8000);
+  }
+
+  // --- HERO SPECIFICATION FORMATTING & INTERACTIVE INSPECTION ---
+  function formatSpecHtml(specStr) {
+    if (!specStr) return '';
+    const parts = specStr.split(' ');
+    if (parts.length >= 2) {
+      return `<strong class="text-slate-900 font-extrabold">${parts[0]} ${parts[1]}</strong> ${parts.slice(2).join(' ')}`;
+    }
+    return `<strong class="text-slate-900 font-extrabold">${specStr}</strong>`;
+  }
+
+  function inspectActiveHeroSpec(specKey) {
+    const gen = BANNER_GENERATORS[currentHeroIndex] || BANNER_GENERATORS[0];
+    let title = 'Mechanical Specification';
+    let detail = '';
+    if (specKey === 'spec1') {
+      title = `${gen.brand} - Standby Rating`;
+      detail = `Rating: ${gen.spec1} | Displacement: ${gen.displacement || 'N/A'} | Aspiration: ${gen.aspiration || 'N/A'}`;
+    } else if (specKey === 'spec2') {
+      title = `${gen.brand} - Prime Continuous`;
+      detail = `Prime Capacity: ${gen.spec2} | Fuel Burn: ${gen.fuelBurn || 'N/A'} | Max Efficiency: ${(gen.efficiency * 1000).toFixed(0)} g/kWh`;
+    } else if (specKey === 'spec3') {
+      title = `${gen.brand} - Engine Architecture`;
+      detail = `Configuration: ${gen.spec3} | Oil Sump: ${gen.oilCapacity || 'N/A'} | Radiator Coolant: ${gen.coolantCapacity || 'N/A'}`;
+    }
+    if (typeof showScadaToast === 'function') {
+      showScadaToast(title, detail);
+    } else {
+      console.log(title, detail);
+    }
+  }
+
+  // --- HERO SHOWROOM TOUCH & MOUSE DRAG SWIPE ENGINE ---
+  function initHeroSwipe() {
+    const stage = document.getElementById('hero-showroom-stage');
+    if (!stage) return;
+
+    let startX = 0;
+    let startY = 0;
+    let isDown = false;
+
+    // Mobile/tablet touch swipe gestures
+    stage.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length === 1) {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    stage.addEventListener('touchend', (e) => {
+      if (e.changedTouches && e.changedTouches.length === 1) {
+        const diffX = e.changedTouches[0].clientX - startX;
+        const diffY = e.changedTouches[0].clientY - startY;
+        if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+          if (diffX < 0) {
+            nextHeroSlide();
+          } else {
+            prevHeroSlide();
+          }
+        }
+      }
+    }, { passive: true });
+
+    // Desktop mouse drag gestures
+    stage.addEventListener('mousedown', (e) => {
+      if (e.target.closest('button, select, a, input, [onclick]')) return;
+      isDown = true;
+      startX = e.clientX;
+      stage.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      if (!isDown) return;
+      isDown = false;
+      stage.style.cursor = '';
+      const diffX = e.clientX - startX;
+      if (Math.abs(diffX) > 50) {
+        if (diffX < 0) {
+          nextHeroSlide();
+        } else {
+          prevHeroSlide();
+        }
+      }
+    });
+  }
+
+  // --- SCADA NIGHT SHIFT DARK MODE THEME CONTROLLER ---
+  function toggleScadaTheme() {
+    const isDark = document.body.classList.toggle('theme-dark');
+    localStorage.setItem('scada_theme', isDark ? 'dark' : 'light');
+    updateThemeIcon(isDark);
+    if (typeof showScadaToast === 'function') {
+      showScadaToast('SCADA Console Theme Changed', isDark ? 'Night Shift SCADA High-Contrast Theme active' : 'Daylight Standard SCADA Theme active');
+    }
+  }
+
+  function updateThemeIcon(isDark) {
+    const sun = document.getElementById('theme-icon-sun');
+    const moon = document.getElementById('theme-icon-moon');
+    if (sun && moon) {
+      if (isDark) {
+        sun.classList.remove('hidden');
+        moon.classList.add('hidden');
+      } else {
+        sun.classList.add('hidden');
+        moon.classList.remove('hidden');
+      }
+    }
+  }
+
+  function initScadaTheme() {
+    const saved = localStorage.getItem('scada_theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (saved === 'dark' || (!saved && prefersDark)) {
+      document.body.classList.add('theme-dark');
+      updateThemeIcon(true);
+    } else {
+      document.body.classList.remove('theme-dark');
+      updateThemeIcon(false);
+    }
+  }
+
+  // --- GLOBAL QUICK-FIND OMNIBAR (Ctrl+K) CONTROLLER ---
+  function openGlobalSearch() {
+    const modal = document.getElementById('global-search-modal');
+    const input = document.getElementById('global-search-input');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      if (input) {
+        input.value = '';
+        input.focus();
+        performGlobalSearch('');
+      }
+    }
+  }
+
+  function closeGlobalSearch() {
+    const modal = document.getElementById('global-search-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function performGlobalSearch(query) {
+    const resultsEl = document.getElementById('global-search-results');
+    if (!resultsEl) return;
+    const q = (query || '').trim().toLowerCase();
+
+    const matches = (typeof GENERATORS !== 'undefined' ? GENERATORS : []).filter(g => {
+      if (!q) return true;
+      return g.id.toLowerCase().includes(q) ||
+             g.station.toLowerCase().includes(q) ||
+             g.area.toLowerCase().includes(q) ||
+             g.operator.toLowerCase().includes(q) ||
+             (g.brand && g.brand.toLowerCase().includes(q));
+    }).slice(0, 8);
+
+    if (matches.length === 0) {
+      resultsEl.innerHTML = `<div class="p-6 text-center text-slate-400 font-medium">No generator units or sites matching "${query}"</div>`;
+      return;
+    }
+
+    resultsEl.innerHTML = matches.map(g => {
+      const statusCol = g.status === 'RUNNING' ? 'text-emerald-600 bg-emerald-50 border-emerald-200' :
+                        g.status === 'WARNING' ? 'text-amber-600 bg-amber-50 border-amber-200' :
+                        g.status === 'CRITICAL' ? 'text-rose-600 bg-rose-50 border-rose-200' : 'text-slate-600 bg-slate-50 border-slate-200';
+      return `
+        <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-indigo-50/70 border border-transparent hover:border-indigo-100 transition cursor-pointer group" onclick="closeGlobalSearch(); inspectUnit('${g.id}')">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-slate-100 group-hover:bg-indigo-600 group-hover:text-white flex items-center justify-center font-mono font-bold text-slate-600 transition">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+            </div>
+            <div>
+              <div class="font-black text-slate-900 group-hover:text-indigo-950 flex items-center gap-2">
+                <span>${g.station}</span>
+                <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${statusCol} border">${g.status}</span>
+              </div>
+              <div class="text-[11px] text-slate-400 font-medium">${g.id} · ${g.brand || 'Perkins'} · ${g.area}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="telemetry.html?unit=${g.id}" onclick="event.stopPropagation(); closeGlobalSearch(); inspectUnit('${g.id}')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-indigo-300 text-slate-700 text-[10px] font-bold shadow-2xs">Telemetry</a>
+            <a href="map.html" onclick="event.stopPropagation(); closeGlobalSearch();" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-indigo-300 text-slate-700 text-[10px] font-bold shadow-2xs">Map</a>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function initGlobalSearch() {
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        const modal = document.getElementById('global-search-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+          closeGlobalSearch();
+        } else {
+          openGlobalSearch();
+        }
+      }
+    });
   }
 
   // =========================================================================
@@ -3719,26 +3938,83 @@ function updateDseDisplay() {
   if (document.getElementById('ctrl-state-oil')) document.getElementById('ctrl-state-oil').textContent = `${dseRunning ? d.oil.toFixed(2) : '0.00'} bar`;
 }
 
+// --- HAZARDOUS SCADA ACTION SAFETY INTERLOCK SYSTEM ---
+let pendingSafetyCallback = null;
+
+function requestSafetyAction(title, desc, callback) {
+  const modal = document.getElementById('safety-interlock-modal');
+  if (!modal) {
+    if (confirm(`${title}
+
+${desc}`)) callback();
+    return;
+  }
+  const titleEl = document.getElementById('safety-modal-title');
+  const descEl = document.getElementById('safety-modal-desc');
+  const chk = document.getElementById('safety-chk-clearance');
+  const pin = document.getElementById('safety-pin-input');
+
+  if (titleEl) titleEl.textContent = title;
+  if (descEl) descEl.textContent = desc;
+  if (chk) chk.checked = false;
+  if (pin) pin.value = '#AR-9402';
+
+  pendingSafetyCallback = callback;
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeSafetyModal() {
+  const modal = document.getElementById('safety-interlock-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+  pendingSafetyCallback = null;
+}
+
+function executeSafetyConfirmedAction() {
+  const chk = document.getElementById('safety-chk-clearance');
+  const pin = document.getElementById('safety-pin-input');
+  if (chk && !chk.checked) {
+    showScadaToast('Safety Clearance Required', 'You must verify mechanical safety clearance before proceeding.', 'warn');
+    return;
+  }
+  if (pin && pin.value.trim() !== '#AR-9402') {
+    showScadaToast('Authorization Denied', 'Invalid SCADA Security Clearance PIN / UID.', 'error');
+    return;
+  }
+  const cb = pendingSafetyCallback;
+  closeSafetyModal();
+  if (cb) cb();
+}
+
 function startGenerator() {
   if (dseRunning) {
     showScadaToast('Engine Already Running', `${dseUnit} is running at 1500 RPM`, 'warn');
     return;
   }
-  showScadaToast('Cranking Sequence Initiated', `Engaging starter motor on ${dseUnit}...`);
-  logControlAudit('COMMAND CRANK', `Initiated remote starter sequence for ${dseUnit}`);
+  requestSafetyAction(
+    'Authorize Remote Engine Crank Sequence',
+    `You are dispatching an industrial start command to ${dseUnit}. Ensure generator contactor path is clear and no field technicians are working on mechanical belts.`,
+    () => {
+      showScadaToast('Cranking Sequence Initiated', `Engaging starter motor on ${dseUnit}...`);
+      logControlAudit('COMMAND CRANK', `Initiated remote starter sequence for ${dseUnit}`);
 
-  setTimeout(() => {
-    dseRunning = true;
-    const d = DSE_DATA[dseUnit] || DSE_DATA['GEN-PK-0104'];
-    d.rpm = 1500;
-    d.kw = 18.6;
-    d.oil = 4.20;
-    d.v1 = 230.4;
-    d.hz = 50.02;
-    updateDseDisplay();
-    showScadaToast('Engine Running (Rated)', `${dseUnit} reached 1500 RPM @ 50.02 Hz`);
-    logControlAudit('CRANK SUCCESS', `${dseUnit} Modbus confirms Running state (1500 RPM)`);
-  }, 1200);
+      setTimeout(() => {
+        dseRunning = true;
+        const d = DSE_DATA[dseUnit] || DSE_DATA['GEN-PK-0104'];
+        d.rpm = 1500;
+        d.kw = 18.6;
+        d.oil = 4.20;
+        d.v1 = 230.4;
+        d.hz = 50.02;
+        updateDseDisplay();
+        showScadaToast('Engine Running (Rated)', `${dseUnit} reached 1500 RPM @ 50.02 Hz`);
+        logControlAudit('CRANK SUCCESS', `${dseUnit} Modbus confirms Running state (1500 RPM)`);
+      }, 1200);
+    }
+  );
 }
 
 function stopGenerator() {
@@ -3790,16 +4066,20 @@ function muteAudibleAlarm() {
 }
 
 function triggerEmergencyStop() {
-  if (confirm('CRITICAL SAFETY OVERRIDE: Are you sure you want to trigger EMERGENCY STOP (E-STOP)? This will immediately trip the fuel solenoid.')) {
-    dseRunning = false;
-    const d = DSE_DATA[dseUnit] || DSE_DATA['GEN-PK-0104'];
-    d.rpm = 0;
-    d.kw = 0.0;
-    d.oil = 0.0;
-    updateDseDisplay();
-    showScadaToast('EMERGENCY STOP TRIPPED', `Fuel solenoid cut off on ${dseUnit}!`, 'error');
-    logControlAudit('EMERGENCY E-STOP', `TRIPPED E-STOP BY OPERATOR #AR-9402`);
-  }
+  requestSafetyAction(
+    'CRITICAL SAFETY OVERRIDE: TRIP EMERGENCY STOP (E-STOP)',
+    `Immediate fuel solenoid cutoff and generator shutdown on ${dseUnit}. This action engages an emergency lockout and logs an ISO/IEC 27001 audit event.`,
+    () => {
+      dseRunning = false;
+      const d = DSE_DATA[dseUnit] || DSE_DATA['GEN-PK-0104'];
+      d.rpm = 0;
+      d.kw = 0.0;
+      d.oil = 0.0;
+      updateDseDisplay();
+      showScadaToast('EMERGENCY STOP TRIPPED', `Fuel solenoid cut off on ${dseUnit}!`, 'error');
+      logControlAudit('EMERGENCY E-STOP', `TRIPPED E-STOP BY OPERATOR #AR-9402`);
+    }
+  );
 }
 
 function logControlAudit(cmd, msg) {

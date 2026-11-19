@@ -966,26 +966,81 @@ function updateDseDisplay() {
   if (document.getElementById('ctrl-state-oil')) document.getElementById('ctrl-state-oil').textContent = `${dseRunning ? d.oil.toFixed(2) : '0.00'} bar`;
 }
 
+// --- HAZARDOUS SCADA ACTION SAFETY INTERLOCK SYSTEM ---
+let pendingSafetyCallback = null;
+
+function requestSafetyAction(title, desc, callback) {
+  const modal = document.getElementById('safety-interlock-modal');
+  if (!modal) {
+    if (confirm(`${title}\n\n${desc}`)) callback();
+    return;
+  }
+  const titleEl = document.getElementById('safety-modal-title');
+  const descEl = document.getElementById('safety-modal-desc');
+  const chk = document.getElementById('safety-chk-clearance');
+  const pin = document.getElementById('safety-pin-input');
+
+  if (titleEl) titleEl.textContent = title;
+  if (descEl) descEl.textContent = desc;
+  if (chk) chk.checked = false;
+  if (pin) pin.value = '#AR-9402';
+
+  pendingSafetyCallback = callback;
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeSafetyModal() {
+  const modal = document.getElementById('safety-interlock-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+  pendingSafetyCallback = null;
+}
+
+function executeSafetyConfirmedAction() {
+  const chk = document.getElementById('safety-chk-clearance');
+  const pin = document.getElementById('safety-pin-input');
+  if (chk && !chk.checked) {
+    showScadaToast('Safety Clearance Required', 'You must verify mechanical safety clearance before proceeding.', 'warn');
+    return;
+  }
+  if (pin && pin.value.trim() !== '#AR-9402') {
+    showScadaToast('Authorization Denied', 'Invalid SCADA Security Clearance PIN / UID.', 'error');
+    return;
+  }
+  const cb = pendingSafetyCallback;
+  closeSafetyModal();
+  if (cb) cb();
+}
+
 function startGenerator() {
   if (dseRunning) {
     showScadaToast('Engine Already Running', `${dseUnit} is running at 1500 RPM`, 'warn');
     return;
   }
-  showScadaToast('Cranking Sequence Initiated', `Engaging starter motor on ${dseUnit}...`);
-  logControlAudit('COMMAND CRANK', `Initiated remote starter sequence for ${dseUnit}`);
+  requestSafetyAction(
+    'Authorize Remote Engine Crank Sequence',
+    `You are dispatching an industrial start command to ${dseUnit}. Ensure generator contactor path is clear and no field technicians are working on mechanical belts.`,
+    () => {
+      showScadaToast('Cranking Sequence Initiated', `Engaging starter motor on ${dseUnit}...`);
+      logControlAudit('COMMAND CRANK', `Initiated remote starter sequence for ${dseUnit}`);
 
-  setTimeout(() => {
-    dseRunning = true;
-    const d = DSE_DATA[dseUnit] || DSE_DATA['GEN-PK-0104'];
-    d.rpm = 1500;
-    d.kw = 18.6;
-    d.oil = 4.20;
-    d.v1 = 230.4;
-    d.hz = 50.02;
-    updateDseDisplay();
-    showScadaToast('Engine Running (Rated)', `${dseUnit} reached 1500 RPM @ 50.02 Hz`);
-    logControlAudit('CRANK SUCCESS', `${dseUnit} Modbus confirms Running state (1500 RPM)`);
-  }, 1200);
+      setTimeout(() => {
+        dseRunning = true;
+        const d = DSE_DATA[dseUnit] || DSE_DATA['GEN-PK-0104'];
+        d.rpm = 1500;
+        d.kw = 18.6;
+        d.oil = 4.20;
+        d.v1 = 230.4;
+        d.hz = 50.02;
+        updateDseDisplay();
+        showScadaToast('Engine Running (Rated)', `${dseUnit} reached 1500 RPM @ 50.02 Hz`);
+        logControlAudit('CRANK SUCCESS', `${dseUnit} Modbus confirms Running state (1500 RPM)`);
+      }, 1200);
+    }
+  );
 }
 
 function stopGenerator() {
@@ -1037,16 +1092,20 @@ function muteAudibleAlarm() {
 }
 
 function triggerEmergencyStop() {
-  if (confirm('CRITICAL SAFETY OVERRIDE: Are you sure you want to trigger EMERGENCY STOP (E-STOP)? This will immediately trip the fuel solenoid.')) {
-    dseRunning = false;
-    const d = DSE_DATA[dseUnit] || DSE_DATA['GEN-PK-0104'];
-    d.rpm = 0;
-    d.kw = 0.0;
-    d.oil = 0.0;
-    updateDseDisplay();
-    showScadaToast('EMERGENCY STOP TRIPPED', `Fuel solenoid cut off on ${dseUnit}!`, 'error');
-    logControlAudit('EMERGENCY E-STOP', `TRIPPED E-STOP BY OPERATOR #AR-9402`);
-  }
+  requestSafetyAction(
+    'CRITICAL SAFETY OVERRIDE: TRIP EMERGENCY STOP (E-STOP)',
+    `Immediate fuel solenoid cutoff and generator shutdown on ${dseUnit}. This action engages an emergency lockout and logs an ISO/IEC 27001 audit event.`,
+    () => {
+      dseRunning = false;
+      const d = DSE_DATA[dseUnit] || DSE_DATA['GEN-PK-0104'];
+      d.rpm = 0;
+      d.kw = 0.0;
+      d.oil = 0.0;
+      updateDseDisplay();
+      showScadaToast('EMERGENCY STOP TRIPPED', `Fuel solenoid cut off on ${dseUnit}!`, 'error');
+      logControlAudit('EMERGENCY E-STOP', `TRIPPED E-STOP BY OPERATOR #AR-9402`);
+    }
+  );
 }
 
 function logControlAudit(cmd, msg) {
