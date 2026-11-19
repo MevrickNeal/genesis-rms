@@ -1,57 +1,495 @@
 <!-- ===================================================================== -->
-<!-- SCADA SYSTEM SETTINGS & TELEMETRY PREFERENCES MODULE                  -->
+<!-- SCADA SYSTEM SETTINGS & MASTER DATA INPUT MODULE                      -->
 <!-- ===================================================================== -->
 <div id="screen-settings" class="flex flex-col gap-6">
 
   <!-- Header Bar -->
-  <div class="bg-white/80 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+  <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800/80 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
     <div>
       <div class="flex items-center gap-2">
-        <h2 class="text-xl font-black text-slate-900">System Settings & SCADA Telemetry Preferences</h2>
-        <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-200">CONFIGURATION ENGINE</span>
+        <h2 class="text-xl font-black text-slate-900 dark:text-white">System Settings & Master Data Input Hub</h2>
+        <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold border border-indigo-200 dark:border-indigo-800">ENTERPRISE RMS ENGINE</span>
       </div>
-      <p class="text-xs text-slate-600 mt-1 font-medium">Configure network telemetry acquisition, Modbus RS-485 timings, acoustic alarm thresholds, and local display parameters</p>
+      <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">Configure master administrative data, Modbus RS-485 and MQTT gateway pipelines, tripping safety thresholds, and preventive maintenance rules</p>
     </div>
 
-    <!-- Action Buttons -->
+    <!-- Global Top Action Controls -->
     <div class="flex items-center gap-2.5">
-      <button onclick="resetScadaSettings()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+      <button type="button" onclick="resetScadaSettings()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition">
         Reset Defaults
       </button>
-      <button onclick="saveScadaSettings()" class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5">
-        <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        <span>Save Configuration</span>
+      <button type="button" onclick="saveScadaSettings()" class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-600 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+        <svg class="w-4 h-4 text-emerald-400 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Save All Settings</span>
       </button>
     </div>
   </div>
 
-  <!-- Settings Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-    
-    <!-- Left Column: Acquisition & Communication Timers -->
-    <div class="bg-white/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md flex flex-col gap-4">
-      <h3 class="text-sm font-black text-slate-900 border-b border-slate-100 pb-2">Acquisition & Modbus Parameters</h3>
-      
-      <!-- Polling Frequency -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
-        <div>
-          <label class="font-bold text-slate-900 block">Telemetry Sweep Frequency</label>
-          <span class="text-[11px] text-slate-600">Continuous Modbus RS-485 polling cycle</span>
+  <!-- Settings Horizontal Navigation Tab Strip -->
+  <div class="flex items-center gap-2 overflow-x-auto pb-1 select-none border-b border-slate-200/80 dark:border-slate-800/80">
+    <button type="button" onclick="switchSettingsTab('master')" id="set-tab-btn-master" class="set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-black transition flex items-center gap-2 bg-slate-900 text-white shadow-2xs">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span>Master Data Input</span>
+    </button>
+    <button type="button" onclick="switchSettingsTab('gateway')" id="set-tab-btn-gateway" class="set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-2">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
+      <span>SCADA & Edge Gateway</span>
+    </button>
+    <button type="button" onclick="switchSettingsTab('thresholds')" id="set-tab-btn-thresholds" class="set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-2">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>Alarm Thresholds & Siren</span>
+    </button>
+    <button type="button" onclick="switchSettingsTab('maint')" id="set-tab-btn-maint" class="set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-2">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+      <span>Maintenance Standards</span>
+    </button>
+    <button type="button" onclick="switchSettingsTab('backup')" id="set-tab-btn-backup" class="set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-2">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span>Snapshot & Audit Log</span>
+    </button>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- TAB 1: MASTER DATA INPUT (Areas, Towers, Generators, Personnel, Excel) -->
+  <!-- =================================================================== -->
+  <div id="set-panel-master" class="flex flex-col gap-6">
+
+    <!-- Sub Navigation Pill Bar for Master Entities -->
+    <div class="flex items-center gap-2 flex-wrap text-xs font-bold">
+      <span class="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Entity Section:</span>
+      <button type="button" onclick="switchMasterSubSection('area')" id="msub-btn-area" class="msub-btn px-3 py-1.5 rounded-xl bg-slate-900 text-white shadow-xs">Areas & Divisions</button>
+      <button type="button" onclick="switchMasterSubSection('tower')" id="msub-btn-tower" class="msub-btn px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200">BTS Communication Towers</button>
+      <button type="button" onclick="switchMasterSubSection('gen')" id="msub-btn-gen" class="msub-btn px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200">Generator Models</button>
+      <button type="button" onclick="switchMasterSubSection('personnel')" id="msub-btn-personnel" class="msub-btn px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200">Personnel & Directors</button>
+      <button type="button" onclick="switchMasterSubSection('excel')" id="msub-btn-excel" class="msub-btn px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100">Excel / CSV Batch Ingestion</button>
+    </div>
+
+    <!-- 1A. Area Master Input Form & Table -->
+    <div id="msub-panel-area" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Input Card -->
+      <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <h3 class="text-sm font-black text-slate-900 dark:text-white">Add Operational Area</h3>
+          <span class="text-[9px] font-mono bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-1.5 py-0.5 rounded font-bold">LEVEL 1 GEOGRAPHY</span>
         </div>
-        <select id="cfg-poll-freq" class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 font-bold text-slate-800 text-xs outline-none focus:border-slate-900">
+        <form onsubmit="event.preventDefault(); saveMasterAreaFromSettings();" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Area Name</label>
+            <input type="text" id="m-area-name" required placeholder="e.g. Gazipur Industrial Zone" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none focus:border-slate-900" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Administrative Division</label>
+            <select id="m-area-division" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none">
+              <option value="Dhaka">Dhaka Division</option>
+              <option value="Chittagong">Chittagong Division</option>
+              <option value="Sylhet">Sylhet Division</option>
+              <option value="Rajshahi">Rajshahi Division</option>
+              <option value="Khulna">Khulna Division</option>
+              <option value="Barisal">Barisal Division</option>
+              <option value="Rangpur">Rangpur Division</option>
+              <option value="Mymensingh">Mymensingh Division</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Regional Director</label>
+            <input type="text" id="m-area-director" required placeholder="e.g. Engr. Tariqul Islam" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none focus:border-slate-900" />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Assigned Clusters</label>
+              <input type="number" id="m-area-clusters" value="4" min="1" max="20" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">SLA Target (%)</label>
+              <input type="number" id="m-area-sla" value="99.8" step="0.1" min="95" max="100" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+          </div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-600 text-white font-bold transition shadow-xs mt-2 flex items-center justify-center gap-1.5 cursor-pointer">
+            <svg class="w-4 h-4 text-emerald-400 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Register Master Area</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Area Table View -->
+      <div class="lg:col-span-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-black text-slate-900 dark:text-white">Registered Operational Areas</h3>
+            <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400" id="m-area-count-badge">8 Divisions</span>
+          </div>
+          <button type="button" onclick="exportAreasMasterData()" class="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Export Areas</span>
+          </button>
+        </div>
+        <div class="overflow-x-auto max-h-[360px] overflow-y-auto">
+          <table class="w-full text-left text-xs" id="m-areas-table">
+            <thead>
+              <tr class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                <th class="pb-2.5">Area & Code</th>
+                <th class="pb-2.5">Division</th>
+                <th class="pb-2.5">Regional Director</th>
+                <th class="pb-2.5">Clusters</th>
+                <th class="pb-2.5">SLA</th>
+                <th class="pb-2.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="m-areas-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1B. BTS Communication Tower Master Input Form & Table -->
+    <div id="msub-panel-tower" class="grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
+      <!-- Input Card -->
+      <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <h3 class="text-sm font-black text-slate-900 dark:text-white">Register BTS Tower Node</h3>
+          <span class="text-[9px] font-mono bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded font-bold">POWER STATION</span>
+        </div>
+        <form onsubmit="event.preventDefault(); saveMasterTowerFromSettings();" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">BTS Tower UID Code</label>
+            <input type="text" id="m-tower-uid" required placeholder="e.g. BTS-GP-0493" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-900 dark:text-white outline-none focus:border-slate-900" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Host Telecom Operator</label>
+            <select id="m-tower-operator" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none">
+              <option value="Grameenphone">Grameenphone (GP)</option>
+              <option value="Robi Axiata">Robi Axiata (RB)</option>
+              <option value="Banglalink">Banglalink (BL)</option>
+              <option value="Teletalk">Teletalk (TT)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Assigned Operational Area</label>
+            <select id="m-tower-area" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none">
+              <option value="Dhaka North">Dhaka North</option>
+              <option value="Dhaka South">Dhaka South</option>
+              <option value="Chittagong Metro">Chittagong Metro</option>
+              <option value="Sylhet Zone">Sylhet Zone</option>
+              <option value="Rajshahi Central">Rajshahi Central</option>
+              <option value="Khulna Division">Khulna Division</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Grid Rating (kW)</label>
+              <input type="number" id="m-tower-kw" value="60" min="10" max="480" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Generator ID</label>
+              <input type="text" id="m-tower-genid" required placeholder="GEN-PK-0105" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+          </div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-600 text-white font-bold transition shadow-xs mt-2 flex items-center justify-center gap-1.5 cursor-pointer">
+            <svg class="w-4 h-4 text-emerald-400 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Save BTS Power Station</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Tower Table View -->
+      <div class="lg:col-span-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-black text-slate-900 dark:text-white">Active Communication Towers</h3>
+            <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400" id="m-tower-count-badge">492 Stations</span>
+          </div>
+          <button type="button" onclick="exportTowersMasterData()" class="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Export Stations</span>
+          </button>
+        </div>
+        <div class="overflow-x-auto max-h-[360px] overflow-y-auto">
+          <table class="w-full text-left text-xs" id="m-towers-table">
+            <thead>
+              <tr class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                <th class="pb-2.5">Tower Node</th>
+                <th class="pb-2.5">Telecom Operator</th>
+                <th class="pb-2.5">Assigned Area</th>
+                <th class="pb-2.5">Grid (kW)</th>
+                <th class="pb-2.5">Generator Unit</th>
+                <th class="pb-2.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="m-towers-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1C. Generator Model Catalog Input Form & Table -->
+    <div id="msub-panel-gen" class="grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
+      <!-- Input Card -->
+      <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <h3 class="text-sm font-black text-slate-900 dark:text-white">Add Generator Model</h3>
+          <span class="text-[9px] font-mono bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 px-1.5 py-0.5 rounded font-bold">EQUIPMENT CATALOG</span>
+        </div>
+        <form onsubmit="event.preventDefault(); saveMasterGenModelFromSettings();" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Manufacturer Brand & Series</label>
+            <input type="text" id="m-gen-brand" required placeholder="e.g. Caterpillar C4.4 ACERT" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none focus:border-slate-900" />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Standby (kVA)</label>
+              <input type="number" id="m-gen-kva" value="88" min="20" max="2500" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Prime (kW)</label>
+              <input type="number" id="m-gen-kw" value="70" min="15" max="2000" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Rated Speed (RPM)</label>
+              <select id="m-gen-rpm" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none">
+                <option value="1500" selected>1500 RPM (50 Hz)</option>
+                <option value="1800">1800 RPM (60 Hz)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Cylinder Count</label>
+              <input type="text" id="m-gen-cyl" value="4 Cylinders" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Integrated SCADA Controller</label>
+            <select id="m-gen-controller" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none">
+              <option value="DSE-7320 MKII" selected>Deep Sea Electronics DSE-7320 MKII (RS-485)</option>
+              <option value="DSE-8610 MKII">Deep Sea Electronics DSE-8610 MKII (Paralleling)</option>
+              <option value="Cat EMCP 4.2">Caterpillar EMCP 4.2 (Modbus RTU / CAN)</option>
+              <option value="Cummins PCC 3300">Cummins PowerCommand 3300 (Modbus TCP)</option>
+              <option value="ComAp InteliLite 4">ComAp InteliLite 4 (AirGate & RS-485)</option>
+            </select>
+          </div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-purple-600 dark:hover:bg-purple-600 text-white font-bold transition shadow-xs mt-2 flex items-center justify-center gap-1.5 cursor-pointer">
+            <svg class="w-4 h-4 text-emerald-400 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Save to Model Catalog</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Generator Table View -->
+      <div class="lg:col-span-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-black text-slate-900 dark:text-white">Generator Catalog Models</h3>
+            <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400" id="m-gen-count-badge">5 Nominal Models</span>
+          </div>
+          <button type="button" onclick="exportGenModelsMasterData()" class="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Export Catalog</span>
+          </button>
+        </div>
+        <div class="overflow-x-auto max-h-[360px] overflow-y-auto">
+          <table class="w-full text-left text-xs" id="m-gens-table">
+            <thead>
+              <tr class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                <th class="pb-2.5">Model & Brand</th>
+                <th class="pb-2.5">Rating (kVA / kW)</th>
+                <th class="pb-2.5">Speed / Cyl</th>
+                <th class="pb-2.5">Controller Engine</th>
+                <th class="pb-2.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="m-gens-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1D. Personnel Roster & RBAC Input Form & Table -->
+    <div id="msub-panel-personnel" class="grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
+      <!-- Input Card -->
+      <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <h3 class="text-sm font-black text-slate-900 dark:text-white">Add SCADA Personnel</h3>
+          <span class="text-[9px] font-mono bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded font-bold">OPERATOR IDENTITY</span>
+        </div>
+        <form onsubmit="event.preventDefault(); saveMasterPersonnelFromSettings();" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+            <input type="text" id="m-pers-name" required placeholder="e.g. Engr. Tanvir Ahmed" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none focus:border-slate-900" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Designation & Role</label>
+            <input type="text" id="m-pers-title" required placeholder="e.g. Senior SCADA Telemetry Specialist" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Clearance Level</label>
+              <select id="m-pers-level" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none">
+                <option value="5">Level 5: Chief Admin</option>
+                <option value="4">Level 4: Regional Director</option>
+                <option value="3" selected>Level 3: Lead Engineer</option>
+                <option value="2">Level 2: Field Technician</option>
+                <option value="1">Level 1: NOC Operator</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Security UID</label>
+              <input type="text" id="m-pers-uid" required placeholder="AR-9408" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Corporate Email</label>
+            <input type="email" id="m-pers-email" required placeholder="tanvir.ahmed@arenaiot.com" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Emergency Mobile</label>
+            <input type="tel" id="m-pers-phone" value="+880 1711-948209" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-900 dark:text-white outline-none" />
+          </div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-600 text-white font-bold transition shadow-xs mt-2 flex items-center justify-center gap-1.5 cursor-pointer">
+            <svg class="w-4 h-4 text-emerald-400 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Add Personnel to Roster</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Personnel Table View -->
+      <div class="lg:col-span-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-black text-slate-900 dark:text-white">Active Operational Roster</h3>
+            <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400" id="m-pers-count-badge">8 Members</span>
+          </div>
+          <button type="button" onclick="exportPersonnelMasterData()" class="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Export Roster</span>
+          </button>
+        </div>
+        <div class="overflow-x-auto max-h-[360px] overflow-y-auto">
+          <table class="w-full text-left text-xs" id="m-personnel-table">
+            <thead>
+              <tr class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                <th class="pb-2.5">Personnel Name & UID</th>
+                <th class="pb-2.5">Designation</th>
+                <th class="pb-2.5">Clearance Level</th>
+                <th class="pb-2.5">Corporate Email</th>
+                <th class="pb-2.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="m-personnel-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1E. Excel / CSV Spreadsheet Bulk Ingestion Box -->
+    <div id="msub-panel-excel" class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-7 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-6 hidden">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div>
+          <h3 class="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+            <span>Master Data Spreadsheet Ingestion Engine</span>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800">XLSX / CSV AUTO-PARSER</span>
+          </h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">Upload master Excel spreadsheets for bulk ingestion of Areas, Generators, BTS Tower Nodes, and Field Personnel</p>
+        </div>
+        <!-- Template Download Buttons -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <button type="button" onclick="downloadMasterTemplate('areas')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs">
+            <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Areas Template.csv</span>
+          </button>
+          <button type="button" onclick="downloadMasterTemplate('generators')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs">
+            <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Generators Template.csv</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Drag and Drop Box -->
+      <div id="settings-drag-drop-zone" class="border-2 border-dashed border-emerald-300 dark:border-emerald-700/80 rounded-2xl p-8 bg-emerald-50/40 dark:bg-emerald-950/20 text-center flex flex-col items-center justify-center gap-3 transition cursor-pointer hover:bg-emerald-50/70" onclick="document.getElementById('settings-excel-file-input').click()">
+        <div class="w-14 h-14 rounded-2xl bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-300 flex items-center justify-center shadow-xs">
+          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="12" y2="12"/><line x1="15" y1="15" x2="12" y2="12"/></svg>
+        </div>
+        <div>
+          <div class="text-sm font-bold text-slate-900 dark:text-white" id="settings-excel-filename-disp">Click or drag & drop Master Excel / CSV file here</div>
+          <div class="text-xs text-slate-600 dark:text-slate-400 mt-1">Supports standard .xlsx, .xls, and UTF-8 encoded .csv master inventories</div>
+        </div>
+        <div class="flex items-center gap-2 mt-1">
+          <button type="button" onclick="event.stopPropagation(); document.getElementById('settings-excel-file-input').click()" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-xs cursor-pointer">
+            Browse Spreadsheet
+          </button>
+          <input type="file" id="settings-excel-file-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleSettingsMasterFileUpload(this)" />
+        </div>
+      </div>
+
+      <!-- Live Parse Preview & Ingestion Console -->
+      <div id="settings-excel-preview-box" class="hidden flex-col gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+            <strong class="text-slate-900 dark:text-white font-black" id="settings-excel-summary-title">Spreadsheet Parsed Successfully</strong>
+          </div>
+          <span class="font-mono text-[11px] font-bold text-emerald-700 dark:text-emerald-400" id="settings-excel-rows-count">0 Rows Ready</span>
+        </div>
+        <div class="overflow-x-auto max-h-[220px] overflow-y-auto">
+          <table class="w-full text-left text-[11px]" id="settings-excel-preview-table">
+            <thead>
+              <tr class="text-[9px] font-mono text-slate-400 uppercase border-b border-slate-200 dark:border-slate-700" id="settings-excel-preview-thead"></tr>
+            </thead>
+            <tbody id="settings-excel-preview-tbody" class="divide-y divide-slate-200/60 dark:divide-slate-700/60"></tbody>
+          </table>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+          <button type="button" onclick="discardSettingsMasterFile()" class="px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-300">Discard</button>
+          <button type="button" onclick="commitSettingsMasterIngestion()" class="px-5 py-1.5 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white font-bold hover:bg-slate-800 flex items-center gap-1.5 shadow-xs cursor-pointer">
+            <svg class="w-3.5 h-3.5 text-emerald-400 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Commit to Master Database</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- TAB 2: SCADA & EDGE GATEWAY (Modbus RS-485, TCP, MQTT Broker, Ping) -->
+  <!-- =================================================================== -->
+  <div id="set-panel-gateway" class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs hidden">
+    <!-- Left: Modbus RS-485 & Gateway -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <h3 class="text-sm font-black text-slate-900 dark:text-white">Modbus RTU / RS-485 Concentrator</h3>
+        <span class="text-[9px] font-mono bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded font-bold">SERIAL LAYER</span>
+      </div>
+
+      <!-- Sweep Frequency -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">Telemetry Sweep Frequency</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Continuous Modbus RS-485 polling cycle</span>
+        </div>
+        <select id="cfg-poll-freq" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 font-bold text-slate-800 dark:text-slate-200 text-xs outline-none">
           <option value="1000">1,000 ms (Fast Polling)</option>
           <option value="3000" selected>3,000 ms (Standard)</option>
           <option value="5000">5,000 ms (Eco Network)</option>
+          <option value="10000">10,000 ms (Slow WAN)</option>
         </select>
       </div>
 
-      <!-- Modbus Baud Rate -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+      <!-- Baud Rate -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
         <div>
-          <label class="font-bold text-slate-900 block">Default Modbus Baud Rate</label>
-          <span class="text-[11px] text-slate-600">Serial communication baud on RS-485 bus</span>
+          <label class="font-bold text-slate-900 dark:text-white block">Serial Baud Rate</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">RS-485 physical bus transfer rate</span>
         </div>
-        <select id="cfg-baud-rate" class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 font-bold text-slate-800 text-xs outline-none focus:border-slate-900">
+        <select id="cfg-baud-rate" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 font-bold text-slate-800 dark:text-slate-200 text-xs outline-none">
           <option value="9600" selected>9600 bps (DSE Default)</option>
           <option value="19200">19200 bps (High Speed)</option>
           <option value="38400">38400 bps (Fiber RTU)</option>
@@ -59,39 +497,129 @@
       </div>
 
       <!-- Concentrator IP -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
         <div>
-          <label class="font-bold text-slate-900 block">Primary IP Gateway Concentrator</label>
-          <span class="text-[11px] text-slate-600">Modbus TCP/IP to RS-485 bridge</span>
+          <label class="font-bold text-slate-900 dark:text-white block">Modbus TCP/IP Gateway Host</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">IP-to-RS485 bridge endpoint</span>
         </div>
-        <input type="text" id="cfg-ip-gateway" value="192.168.10.1:502" class="w-40 px-3 py-1.5 rounded-xl bg-white border border-slate-200 font-mono font-bold text-slate-800 text-xs outline-none focus:border-slate-900" />
+        <input type="text" id="cfg-ip-gateway" value="192.168.10.1:502" class="w-44 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-800 dark:text-slate-200 text-xs outline-none" />
       </div>
 
-      <!-- Smooth UI Animations Toggle -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
-        <div>
-          <label class="font-bold text-slate-900 block">Smooth Gauge Animations</label>
-          <span class="text-[11px] text-slate-600">Hardware-accelerated CSS needle sweeps</span>
+      <!-- Parity & Stop Bits -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+          <label class="font-bold text-slate-900 dark:text-white block mb-1">Serial Parity</label>
+          <select id="cfg-parity" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 font-bold text-slate-800 dark:text-slate-200 text-xs outline-none">
+            <option value="none" selected>None (8N1)</option>
+            <option value="even">Even (8E1)</option>
+            <option value="odd">Odd (8O1)</option>
+          </select>
         </div>
-        <label class="relative inline-flex items-center cursor-pointer">
-          <input type="checkbox" id="cfg-anim-toggle" checked class="sr-only peer" />
-          <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
-        </label>
+        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+          <label class="font-bold text-slate-900 dark:text-white block mb-1">Modbus Slave ID</label>
+          <input type="number" id="cfg-slave-id" value="1" min="1" max="247" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 font-mono font-bold text-slate-800 dark:text-slate-200 text-xs outline-none" />
+        </div>
       </div>
     </div>
 
-    <!-- Right Column: Safety & Acoustic Thresholds -->
-    <div class="bg-white/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md flex flex-col gap-4">
-      <h3 class="text-sm font-black text-slate-900 border-b border-slate-100 pb-2">Safety Limits & Acoustic Siren</h3>
+    <!-- Right: MQTT Broker & Diagnostic Ping -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <h3 class="text-sm font-black text-slate-900 dark:text-white">MQTT Cloud Ingestion Pipeline</h3>
+        <span class="text-[9px] font-mono bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-1.5 py-0.5 rounded font-bold">TLS BROKER</span>
+      </div>
+
+      <!-- Broker Host -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">Broker URI & TLS Port</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Enterprise HiveMQ / Mosquitto TLS</span>
+        </div>
+        <input type="text" id="cfg-mqtt-broker" value="mqtts://broker.arenaiot.com:8883" class="w-56 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-800 dark:text-slate-200 text-xs outline-none" />
+      </div>
+
+      <!-- Base Topic -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">Base Telemetry Topic</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">MQTT publish pattern</span>
+        </div>
+        <input type="text" id="cfg-mqtt-topic" value="arenaiot/rms/telemetry/{gen_id}" class="w-56 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-800 dark:text-slate-200 text-xs outline-none" />
+      </div>
+
+      <!-- Diagnostic Ping Action Card -->
+      <div class="p-4 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 flex flex-col gap-2.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-indigo-950 dark:text-indigo-200">Edge Gateway Ping Diagnostic</span>
+          <button type="button" onclick="pingGatewayDiagnostic()" id="btn-ping-gateway" class="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <span>Run Ping Test</span>
+          </button>
+        </div>
+        <div id="gateway-ping-log" class="font-mono text-[10px] p-2.5 rounded-xl bg-slate-900 text-emerald-400 max-h-24 overflow-y-auto leading-relaxed">
+          [SCADA GATEWAY OK] Listening on 192.168.10.1:502. 492 nodes reachable via Modbus RTU / RS-485.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- TAB 3: ALARM THRESHOLDS & ACOUSTIC SIREN                            -->
+  <!-- =================================================================== -->
+  <div id="set-panel-thresholds" class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs hidden">
+    <!-- Sliders Column -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <h3 class="text-sm font-black text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">Safety Limits & Automatic Shutdowns</h3>
+
+      <!-- High Coolant Temp Threshold -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <label class="font-bold text-slate-900 dark:text-white block">High Coolant Temperature Trip</label>
+            <span class="text-[11px] text-slate-600 dark:text-slate-400">Engine thermal overload shutdown limit</span>
+          </div>
+          <span class="font-mono font-bold text-xs text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950 px-2 py-0.5 rounded border border-rose-200 dark:border-rose-800" id="cfg-temp-disp">98 °C</span>
+        </div>
+        <input type="range" id="cfg-temp-slider" min="85" max="110" value="98" oninput="document.getElementById('cfg-temp-disp').textContent = this.value + ' °C'" class="w-full accent-rose-600 cursor-pointer" />
+      </div>
+
+      <!-- Low Oil Pressure Threshold -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <label class="font-bold text-slate-900 dark:text-white block">Low Lube Oil Pressure Trip</label>
+            <span class="text-[11px] text-slate-600 dark:text-slate-400">Hydro-dynamic mechanical protection threshold</span>
+          </div>
+          <span class="font-mono font-bold text-xs text-amber-800 dark:text-amber-400 bg-amber-50 dark:bg-amber-950 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800" id="cfg-oil-disp">1.20 bar</span>
+        </div>
+        <input type="range" id="cfg-oil-slider" min="0.8" max="2.0" step="0.05" value="1.20" oninput="document.getElementById('cfg-oil-disp').textContent = parseFloat(this.value).toFixed(2) + ' bar'" class="w-full accent-amber-600 cursor-pointer" />
+      </div>
+
+      <!-- Low Fuel Warning Threshold -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <label class="font-bold text-slate-900 dark:text-white block">Low Fuel Reserve Alarm</label>
+            <span class="text-[11px] text-slate-600 dark:text-slate-400">Refueling logistics notification trigger</span>
+          </div>
+          <span class="font-mono font-bold text-xs text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800" id="cfg-fuel-disp">25 %</span>
+        </div>
+        <input type="range" id="cfg-fuel-slider" min="10" max="50" value="25" oninput="document.getElementById('cfg-fuel-disp').textContent = this.value + ' %'" class="w-full accent-indigo-600 cursor-pointer" />
+      </div>
+    </div>
+
+    <!-- Siren & Notification Channels -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <h3 class="text-sm font-black text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">Acoustic Audio & Automated Notification Matrix</h3>
 
       <!-- Acoustic Siren Toggle -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
         <div>
-          <label class="font-bold text-slate-900 block">Acoustic Audio Alarm</label>
-          <span class="text-[11px] text-slate-600">Play acoustic warning signal upon Critical Outage trigger</span>
+          <label class="font-bold text-slate-900 dark:text-white block">Acoustic Audio Siren</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Audible pulse on Critical Trip or Emergency Stop</span>
         </div>
         <div class="flex items-center gap-2">
-          <button type="button" onclick="playTestSiren()" class="px-2.5 py-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-[10px] font-bold transition">Test Beep</button>
+          <button type="button" onclick="playTestSiren()" class="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-[10px] font-bold transition">Test Beep</button>
           <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" id="cfg-audio-alarm" checked class="sr-only peer" />
             <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
@@ -99,44 +627,170 @@
         </div>
       </div>
 
-      <!-- High Coolant Temp Threshold -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2">
-        <div class="flex items-center justify-between">
-          <div>
-            <label class="font-bold text-slate-900 block">High Coolant Temperature Trip</label>
-            <span class="text-[11px] text-slate-600">Engine thermal overload shutdown limit</span>
-          </div>
-          <span class="font-mono font-bold text-xs text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200" id="cfg-temp-disp">98 °C</span>
+      <!-- Incident Dispatch Channels -->
+      <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2.5">
+        <span class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Automated Dispatch Channels</span>
+        <label class="flex items-center justify-between cursor-pointer">
+          <span class="font-bold text-slate-800 dark:text-slate-200">SMS Direct to Lead Engineer (#AR-9402)</span>
+          <input type="checkbox" id="cfg-ch-sms" checked class="w-4 h-4 text-emerald-600 rounded" />
+        </label>
+        <label class="flex items-center justify-between cursor-pointer">
+          <span class="font-bold text-slate-800 dark:text-slate-200">Email Escalation to Regional Directors</span>
+          <input type="checkbox" id="cfg-ch-email" checked class="w-4 h-4 text-emerald-600 rounded" />
+        </label>
+        <label class="flex items-center justify-between cursor-pointer">
+          <span class="font-bold text-slate-800 dark:text-slate-200">SCADA Webhook Alert Relay</span>
+          <input type="checkbox" id="cfg-ch-webhook" class="w-4 h-4 text-emerald-600 rounded" />
+        </label>
+        <div class="pt-1">
+          <input type="url" id="cfg-webhook-url" value="https://api.arenaiot.com/v1/alerts/webhook" class="w-full px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[11px] text-slate-800 dark:text-slate-200 outline-none" placeholder="Webhook URL" />
         </div>
-        <input type="range" id="cfg-temp-slider" min="85" max="110" value="98" oninput="document.getElementById('cfg-temp-disp').textContent = this.value + ' °C'" class="w-full accent-rose-600 cursor-pointer" />
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- TAB 4: PREVENTIVE MAINTENANCE INTERVALS                            -->
+  <!-- =================================================================== -->
+  <div id="set-panel-maint" class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs hidden">
+    <!-- Routine Intervals -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <h3 class="text-sm font-black text-slate-900 dark:text-white">Standard Service Cycles</h3>
+        <span class="text-[9px] font-mono bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded font-bold">HOURS CADENCE</span>
       </div>
 
-      <!-- Low Oil Pressure Threshold -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2">
-        <div class="flex items-center justify-between">
-          <div>
-            <label class="font-bold text-slate-900 block">Low Lube Oil Pressure Trip</label>
-            <span class="text-[11px] text-slate-600">Engine hydro-dynamic protection threshold</span>
-          </div>
-          <span class="font-mono font-bold text-xs text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200" id="cfg-oil-disp">1.20 bar</span>
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">PM-A Minor Service</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Lube oil sump change and primary oil filter renewal</span>
         </div>
-        <input type="range" id="cfg-oil-slider" min="0.8" max="2.0" step="0.05" value="1.20" oninput="document.getElementById('cfg-oil-disp').textContent = parseFloat(this.value).toFixed(2) + ' bar'" class="w-full accent-amber-600 cursor-pointer" />
+        <div class="flex items-center gap-1 font-mono font-bold text-slate-800 dark:text-slate-200">
+          <input type="number" id="cfg-pma-hours" value="250" class="w-20 px-2 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center text-xs outline-none" />
+          <span>hrs</span>
+        </div>
       </div>
 
-      <!-- Low Fuel Warning Threshold -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2">
-        <div class="flex items-center justify-between">
-          <div>
-            <label class="font-bold text-slate-900 block">Low Fuel Reserve Alarm</label>
-            <span class="text-[11px] text-slate-600">Refueling dispatch notification trigger</span>
-          </div>
-          <span class="font-mono font-bold text-xs text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200" id="cfg-fuel-disp">25 %</span>
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">PM-B Intermediate Service</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Fuel filters, water separator, and air cleaner replacement</span>
         </div>
-        <input type="range" id="cfg-fuel-slider" min="10" max="50" value="25" oninput="document.getElementById('cfg-fuel-disp').textContent = this.value + ' %'" class="w-full accent-indigo-600 cursor-pointer" />
+        <div class="flex items-center gap-1 font-mono font-bold text-slate-800 dark:text-slate-200">
+          <input type="number" id="cfg-pmb-hours" value="480" class="w-20 px-2 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center text-xs outline-none" />
+          <span>hrs</span>
+        </div>
       </div>
 
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">PM-C Major Overhaul</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Injector calibration, valve lash, and coolant system renewal</span>
+        </div>
+        <div class="flex items-center gap-1 font-mono font-bold text-slate-800 dark:text-slate-200">
+          <input type="number" id="cfg-pmc-hours" value="2000" class="w-20 px-2 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center text-xs outline-none" />
+          <span>hrs</span>
+        </div>
+      </div>
     </div>
 
+    <!-- Sump Degradation & Safety Rules -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <h3 class="text-sm font-black text-slate-900 dark:text-white">Lube Oil Degradation & LOTO Compliance</h3>
+        <span class="text-[9px] font-mono bg-rose-50 dark:bg-rose-950 text-rose-700 dark:text-rose-300 px-1.5 py-0.5 rounded font-bold">SAFETY INTERLOCK</span>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">Sump Health Decay Coefficient</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Calculated oil oxidation rate per 50 operating hours</span>
+        </div>
+        <div class="flex items-center gap-1 font-mono font-bold text-slate-800 dark:text-slate-200">
+          <input type="number" id="cfg-oil-decay" value="3.2" step="0.1" class="w-16 px-2 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center text-xs outline-none" />
+          <span>%</span>
+        </div>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">Lockout Tag-Out (LOTO) Enforcement</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Prohibit remote start commands when technician is on site</span>
+        </div>
+        <input type="checkbox" id="cfg-loto-enforce" checked class="w-4 h-4 text-emerald-600 rounded" />
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">Automatic Work Order Creation</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Generate ticket when service countdown &lt; 24h</span>
+        </div>
+        <input type="checkbox" id="cfg-auto-wo" checked class="w-4 h-4 text-emerald-600 rounded" />
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- TAB 5: SNAPSHOT BACKUP & AUDIT TRAIL LOG                            -->
+  <!-- =================================================================== -->
+  <div id="set-panel-backup" class="flex flex-col gap-6 hidden">
+    <!-- Backup & Restore Strip -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-white/90 dark:border-slate-800 shadow-sm flex flex-col gap-2">
+        <div class="font-black text-slate-900 dark:text-white text-xs">Export System Snapshot</div>
+        <p class="text-[11px] text-slate-600 dark:text-slate-400">Download complete master database, thresholds, and operational configuration as JSON.</p>
+        <button type="button" onclick="exportSystemSnapshot()" class="mt-auto px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-600 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Download Snapshot (.json)</span>
+        </button>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-white/90 dark:border-slate-800 shadow-sm flex flex-col gap-2">
+        <div class="font-black text-slate-900 dark:text-white text-xs">Restore System Snapshot</div>
+        <p class="text-[11px] text-slate-600 dark:text-slate-400">Restore master inventory and configuration from a previously exported JSON backup file.</p>
+        <button type="button" onclick="document.getElementById('snapshot-file-input').click()" class="mt-auto px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Select JSON File</span>
+        </button>
+        <input type="file" id="snapshot-file-input" accept=".json" class="hidden" onchange="importSystemSnapshot(this)" />
+      </div>
+
+      <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-white/90 dark:border-slate-800 shadow-sm flex flex-col gap-2">
+        <div class="font-black text-slate-900 dark:text-white text-xs">Factory Baseline Reset</div>
+        <p class="text-[11px] text-slate-600 dark:text-slate-400">Purge local overrides and restore nominal engineering baselines for all 492 nodes.</p>
+        <button type="button" onclick="resetScadaSettings()" class="mt-auto px-4 py-2 rounded-xl bg-rose-50 dark:bg-rose-950 hover:bg-rose-100 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          <span>Factory Reset System</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live SCADA Audit Trail Table -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <div class="flex items-center gap-2">
+          <h3 class="text-sm font-black text-slate-900 dark:text-white">SCADA System Configuration Audit Trail</h3>
+          <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400">IMMUTABLE LOG</span>
+        </div>
+        <button type="button" onclick="clearAuditLog()" class="text-xs font-bold text-slate-400 hover:text-slate-600 cursor-pointer">Clear Recent</button>
+      </div>
+      <div class="overflow-x-auto max-h-[300px] overflow-y-auto">
+        <table class="w-full text-left text-xs" id="scada-audit-table">
+          <thead>
+            <tr class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 dark:border-slate-800">
+              <th class="pb-2.5">Timestamp</th>
+              <th class="pb-2.5">Operator Identity</th>
+              <th class="pb-2.5">Clearance</th>
+              <th class="pb-2.5">Subsystem Action</th>
+              <th class="pb-2.5 text-right">Status</th>
+            </tr>
+          </thead>
+          <tbody id="scada-audit-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium font-mono text-[11px]">
+            <!-- Rendered via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
 </div>

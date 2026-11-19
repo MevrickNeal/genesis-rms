@@ -2466,11 +2466,11 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         <div class="flex items-center gap-2 text-slate-700">
           <svg class="w-4 h-4 text-indigo-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          <a href="#" id="pers-modal-email" class="font-bold hover:text-indigo-600 truncate">tariqul.islam@arenaiot.com</a>
+          <a href="mailto:tariqul.islam@arenaiot.com" id="pers-modal-email" class="font-bold hover:text-indigo-600 truncate">tariqul.islam@arenaiot.com</a>
         </div>
         <div class="flex items-center gap-2 text-slate-700">
           <svg class="w-4 h-4 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <a href="#" id="pers-modal-phone" class="font-mono font-bold hover:text-emerald-700">+880 1711-948201</a>
+          <a href="tel:+8801711948201" id="pers-modal-phone" class="font-mono font-bold hover:text-emerald-700">+880 1711-948201</a>
         </div>
         <div class="flex items-center gap-2 text-slate-700">
           <svg class="w-4 h-4 text-purple-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -2981,19 +2981,46 @@
   // SCREEN NAVIGATION
   const SCREENS = ['overview', 'live', 'map', 'alarms', 'control', 'comm', 'noc', 'settings', 'cms'];
 
+  const SCREEN_PAGE_MAP = {
+    'overview': 'overview.html',
+    'live': 'telemetry.html',
+    'telemetry': 'telemetry.html',
+    'map': 'map.html',
+    'alarms': 'alarms.html',
+    'control': 'control.html',
+    'comm': 'comm.html',
+    'noc': 'noc.html',
+    'settings': 'settings.html',
+    'cms': 'cms.html',
+    'subtotal': 'subtotal.html',
+    'history': 'history.html',
+    'maintenance': 'maintenance.html',
+    'franchise': 'franchise-management.html',
+    'generator': 'generator-management.html',
+    'generators': 'generator-management.html'
+  };
+
   function showScreen(screenId) {
-    if (screenId === 'map') {
-      showScreen('overview');
-      const mapBtn = document.getElementById('nav-btn-map');
-      if (mapBtn) {
-        document.querySelectorAll('.rail-btn').forEach(b => b.classList.remove('rail-btn-active'));
-        mapBtn.classList.add('rail-btn-active');
-      }
-      setTimeout(() => {
-        scrollToModule('map');
-        if (mapInstance) mapInstance.invalidateSize();
-      }, 100);
+    const targetPage = SCREEN_PAGE_MAP[screenId] || (screenId + '.html');
+    const targetEl = document.getElementById(`screen-${screenId}`);
+    const currentFile = window.location.pathname.split('/').pop() || 'overview.html';
+
+    // If target container is not present on this standalone page, navigate to its dedicated page!
+    if (!targetEl && currentFile !== targetPage) {
+      window.location.href = targetPage;
       return;
+    }
+
+    if (screenId === 'map') {
+      const mapWrapper = document.getElementById('wrapper-map');
+      if (mapWrapper) {
+        scrollToModule('map');
+        if (typeof mapInstance !== 'undefined' && mapInstance) mapInstance.invalidateSize();
+        return;
+      } else if (currentFile !== 'map.html') {
+        window.location.href = 'map.html';
+        return;
+      }
     }
 
     currentScreen = screenId;
@@ -5069,7 +5096,7 @@
   // -------------------------------------------------------------------------
   // A. USER PROFILE AVATAR (300x300 FORMAT)
   // -------------------------------------------------------------------------
-  let tempUserAvatarBase64_300 = null;
+  var tempUserAvatarBase64_300 = window.tempUserAvatarBase64_300 || null;
 
   function handleUserAvatarUpload(input) {
     if (input.files && input.files[0]) {
@@ -5935,29 +5962,808 @@ function exportHistoryCsv() {
   showScadaToast('Historical CSV Exported', '6-month daily rollup records downloaded.');
 }
 
-// --- SETTINGS ENGINE ---
+// --- SETTINGS ENGINE & MASTER DATA INPUT HUB ---
+
+// 1. Navigation Tab Switching
+function switchSettingsTab(tabKey) {
+  const tabs = ['master', 'gateway', 'thresholds', 'maint', 'backup'];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`set-tab-btn-${t}`);
+    const panel = document.getElementById(`set-panel-${t}`);
+    if (btn) {
+      if (t === tabKey) {
+        btn.className = 'set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-black transition flex items-center gap-2 bg-slate-900 text-white shadow-2xs cursor-pointer';
+      } else {
+        btn.className = 'set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-2 cursor-pointer';
+      }
+    }
+    if (panel) {
+      if (t === tabKey) {
+        panel.classList.remove('hidden');
+        if (t === 'gateway' || t === 'thresholds' || t === 'maint') {
+          panel.style.display = 'grid';
+        } else {
+          panel.style.display = 'flex';
+        }
+      } else {
+        panel.classList.add('hidden');
+        panel.style.display = 'none';
+      }
+    }
+  });
+}
+
+// 2. Master Data Sub-Section Switching
+function switchMasterSubSection(subKey) {
+  const subs = ['area', 'tower', 'gen', 'personnel', 'excel'];
+  subs.forEach(s => {
+    const btn = document.getElementById(`msub-btn-${s}`);
+    const panel = document.getElementById(`msub-panel-${s}`);
+    if (btn) {
+      if (s === subKey) {
+        btn.className = s === 'excel'
+          ? 'msub-btn px-3 py-1.5 rounded-xl bg-emerald-700 text-white font-black shadow-xs cursor-pointer'
+          : 'msub-btn px-3 py-1.5 rounded-xl bg-slate-900 text-white shadow-xs font-black cursor-pointer';
+      } else {
+        btn.className = s === 'excel'
+          ? 'msub-btn px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 cursor-pointer'
+          : 'msub-btn px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 cursor-pointer';
+      }
+    }
+    if (panel) {
+      if (s === subKey) {
+        panel.classList.remove('hidden');
+        if (s === 'excel') {
+          panel.style.display = 'flex';
+        } else {
+          panel.style.display = 'grid';
+        }
+      } else {
+        panel.classList.add('hidden');
+        panel.style.display = 'none';
+      }
+    }
+  });
+}
+
+// 3. Default Master Datasets
+const DEFAULT_SETTINGS_AREAS = [
+  { code: 'AREA-DHK-N', name: 'Dhaka North', division: 'Dhaka', director: 'Engr. Tariqul Islam', clusters: 6, sla: '99.8%' },
+  { code: 'AREA-DHK-S', name: 'Dhaka South', division: 'Dhaka', director: 'Engr. Shamim Hossain', clusters: 5, sla: '99.7%' },
+  { code: 'AREA-CTG-M', name: 'Chittagong Metro', division: 'Chittagong', director: 'Engr. Faisal Mahmud', clusters: 4, sla: '99.6%' },
+  { code: 'AREA-CTG-N', name: 'Chittagong North & Port', division: 'Chittagong', director: 'Engr. Rafiqul Alam', clusters: 3, sla: '99.5%' },
+  { code: 'AREA-SYL', name: 'Sylhet Zone', division: 'Sylhet', director: 'Engr. Kamrul Hasan', clusters: 3, sla: '99.4%' },
+  { code: 'AREA-RAJ', name: 'Rajshahi Central', division: 'Rajshahi', director: 'Engr. Mofazzal Hossain', clusters: 2, sla: '99.6%' },
+  { code: 'AREA-KHU', name: 'Khulna Division', division: 'Khulna', director: 'Engr. Anisur Rahman', clusters: 2, sla: '99.3%' },
+  { code: 'AREA-BAR', name: 'Barisal Riverine Division', division: 'Barisal', director: 'Engr. Zahidul Haque', clusters: 2, sla: '99.2%' }
+];
+
+const DEFAULT_SETTINGS_TOWERS = [
+  { uid: 'BTS-GP-0492', operator: 'Grameenphone', area: 'Dhaka North', kw: 60, genId: 'GEN-PK-0104' },
+  { uid: 'BTS-RO-3240', operator: 'Robi Axiata', area: 'Dhaka North', kw: 48, genId: 'GEN-PK-0002' },
+  { uid: 'BTS-BA-9105', operator: 'Banglalink', area: 'Dhaka South', kw: 70, genId: 'GEN-PK-0003' },
+  { uid: 'BTS-TE-5249', operator: 'Teletalk', area: 'Dhaka South', kw: 36, genId: 'GEN-PK-0004' },
+  { uid: 'BTS-GP-3645', operator: 'Grameenphone', area: 'Chittagong Metro', kw: 60, genId: 'GEN-PK-0005' },
+  { uid: 'BTS-RO-2667', operator: 'Robi Axiata', area: 'Chittagong Metro', kw: 88, genId: 'GEN-PK-0006' },
+  { uid: 'BTS-BA-3918', operator: 'Banglalink', area: 'Sylhet Zone', kw: 70, genId: 'GEN-PK-0007' },
+  { uid: 'BTS-TE-5948', operator: 'Teletalk', area: 'Rajshahi Central', kw: 36, genId: 'GEN-PK-0008' }
+];
+
+const DEFAULT_SETTINGS_GENS = [
+  { brand: 'Perkins 1104A-44TG2', kva: 60, kw: 48, rpm: 1500, cyl: '4 Cylinders', controller: 'DSE-7320 MKII' },
+  { brand: 'Caterpillar C4.4 ACERT', kva: 88, kw: 70, rpm: 1500, cyl: '4 Cylinders', controller: 'Cat EMCP 4.2' },
+  { brand: 'Cummins 6BT5.9-G2', kva: 110, kw: 88, rpm: 1500, cyl: '6 Cylinders', controller: 'Cummins PCC 3300' },
+  { brand: 'Kohler KD-62V12', kva: 150, kw: 120, rpm: 1500, cyl: '6 Cylinders', controller: 'DSE-8610 MKII' },
+  { brand: 'Doosan DP086TA', kva: 200, kw: 160, rpm: 1500, cyl: '6 Cylinders', controller: 'ComAp InteliLite 4' }
+];
+
+const DEFAULT_SETTINGS_PERS = [
+  { name: 'Engr. Tariqul Islam', title: 'Regional Director (Dhaka North)', level: 4, uid: 'AR-9401', email: 'tariqul.islam@arenaiot.com', phone: '+880 1711-002931' },
+  { name: 'Engr. Shamim Hossain', title: 'Regional Director (Dhaka South)', level: 4, uid: 'AR-9403', email: 'shamim.hossain@arenaiot.com', phone: '+880 1711-002932' },
+  { name: 'Engr. Faisal Mahmud', title: 'Regional Director (Chittagong Metro)', level: 4, uid: 'AR-9404', email: 'faisal.mahmud@arenaiot.com', phone: '+880 1711-002933' },
+  { name: 'Engr. Kamrul Hasan', title: 'Regional Director (Sylhet Zone)', level: 4, uid: 'AR-9405', email: 'kamrul.hasan@arenaiot.com', phone: '+880 1711-002934' },
+  { name: 'Lian Ahmed', title: 'Lead SCADA Engineer (National NOC)', level: 3, uid: 'AR-9402', email: 'lian.ahmed@arenaiot.com', phone: '+880 1711-002930' },
+  { name: 'Engr. Hasan Chowdhury', title: 'Lead Field Engineer (Dhanmondi)', level: 3, uid: 'AR-9406', email: 'hasan.chowdhury@arenaiot.com', phone: '+880 1821-728093' },
+  { name: 'Engr. Tanvir Ahmed', title: 'Lead Field Engineer (Agrabad)', level: 3, uid: 'AR-9407', email: 'tanvir.ahmed@arenaiot.com', phone: '+880 1822-617984' },
+  { name: 'Engr. Babul Miah', title: 'Lead Field Engineer (Zindabazar)', level: 3, uid: 'AR-9408', email: 'babul.miah@arenaiot.com', phone: '+880 1823-556120' }
+];
+
+function getMasterAreas() {
+  const raw = localStorage.getItem('genesis_master_areas');
+  return raw ? JSON.parse(raw) : DEFAULT_SETTINGS_AREAS;
+}
+
+function getMasterTowers() {
+  const raw = localStorage.getItem('genesis_master_towers');
+  return raw ? JSON.parse(raw) : DEFAULT_SETTINGS_TOWERS;
+}
+
+function getMasterGenModels() {
+  const raw = localStorage.getItem('genesis_master_gen_models');
+  return raw ? JSON.parse(raw) : DEFAULT_SETTINGS_GENS;
+}
+
+function getMasterPersonnel() {
+  const raw = localStorage.getItem('genesis_master_personnel');
+  return raw ? JSON.parse(raw) : DEFAULT_SETTINGS_PERS;
+}
+
+// 4. Area CRUD
+function renderMasterAreasTable() {
+  const tbody = document.getElementById('m-areas-tbody');
+  const badge = document.getElementById('m-area-count-badge');
+  if (!tbody) return;
+  const list = getMasterAreas();
+  if (badge) badge.textContent = `${list.length} Divisions / Areas`;
+  tbody.innerHTML = list.map((a, idx) => `
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+      <td class="py-2.5">
+        <strong class="text-slate-900 dark:text-white block">${a.name}</strong>
+        <span class="font-mono text-[10px] text-slate-400 font-bold">${a.code || 'AREA-DHK-' + (idx+1)}</span>
+      </td>
+      <td class="py-2.5 text-slate-700 dark:text-slate-300 font-bold">${a.division || 'Dhaka'}</td>
+      <td class="py-2.5 text-slate-800 dark:text-slate-200">${a.director}</td>
+      <td class="py-2.5 font-bold text-slate-700 dark:text-slate-300">${a.clusters} Clusters</td>
+      <td class="py-2.5 font-mono text-emerald-600 dark:text-emerald-400 font-bold">${a.sla}</td>
+      <td class="py-2.5 text-right">
+        <button type="button" onclick="deleteMasterArea(${idx})" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition cursor-pointer">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function saveMasterAreaFromSettings() {
+  const name = document.getElementById('m-area-name')?.value.trim();
+  const division = document.getElementById('m-area-division')?.value;
+  const director = document.getElementById('m-area-director')?.value.trim();
+  const clusters = parseInt(document.getElementById('m-area-clusters')?.value || '4');
+  const sla = (document.getElementById('m-area-sla')?.value || '99.8') + '%';
+  if (!name || !director) return;
+  
+  const list = getMasterAreas();
+  const code = 'AREA-' + name.slice(0,3).toUpperCase() + '-' + Math.floor(Math.random() * 80 + 10);
+  list.unshift({ code, name, division, director, clusters, sla });
+  localStorage.setItem('genesis_master_areas', JSON.stringify(list));
+  renderMasterAreasTable();
+  logScadaAuditEvent(`Registered Master Operational Area: ${name} (${code})`, 'SUCCESS');
+  showScadaToast('Area Registered', `${name} added to SCADA geographical index.`);
+  if (document.getElementById('m-area-name')) document.getElementById('m-area-name').value = '';
+  if (document.getElementById('m-area-director')) document.getElementById('m-area-director').value = '';
+}
+
+function deleteMasterArea(idx) {
+  const list = getMasterAreas();
+  const item = list[idx];
+  if (!confirm(`Are you sure you want to delete Area ${item ? item.name : ''}?`)) return;
+  list.splice(idx, 1);
+  localStorage.setItem('genesis_master_areas', JSON.stringify(list));
+  renderMasterAreasTable();
+  logScadaAuditEvent(`Decommissioned Master Area: ${item ? item.name : 'Unknown'}`, 'SUCCESS');
+  showScadaToast('Area Deleted', 'Operational area removed from SCADA catalog.');
+}
+
+function exportAreasMasterData() {
+  const list = getMasterAreas();
+  let csv = 'Area_Code,Area_Name,Division,Regional_Director,Assigned_Clusters,SLA_Target\n';
+  list.forEach(a => {
+    csv += `"${a.code}","${a.name}","${a.division}","${a.director}",${a.clusters},"${a.sla}"\n`;
+  });
+  downloadCsvBlob(csv, 'genesis_master_areas.csv');
+  showScadaToast('CSV Export Complete', 'Operational areas catalog exported.');
+}
+
+// 5. Tower CRUD
+function renderMasterTowersTable() {
+  const tbody = document.getElementById('m-towers-tbody');
+  const badge = document.getElementById('m-tower-count-badge');
+  if (!tbody) return;
+  const list = getMasterTowers();
+  if (badge) badge.textContent = `${list.length} Monitored Stations`;
+  tbody.innerHTML = list.map((t, idx) => `
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+      <td class="py-2.5 font-mono font-bold text-slate-900 dark:text-white">${t.uid}</td>
+      <td class="py-2.5">
+        <span class="px-2 py-0.5 rounded font-bold text-[10px] ${t.operator.includes('Grameen') ? 'bg-sky-50 text-sky-700' : (t.operator.includes('Robi') ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-800')}">${t.operator}</span>
+      </td>
+      <td class="py-2.5 text-slate-700 dark:text-slate-300 font-bold">${t.area}</td>
+      <td class="py-2.5 font-mono font-bold text-slate-800 dark:text-slate-200">${t.kw} kW</td>
+      <td class="py-2.5 font-mono text-indigo-600 dark:text-indigo-400 font-bold">${t.genId}</td>
+      <td class="py-2.5 text-right">
+        <button type="button" onclick="deleteMasterTower(${idx})" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition cursor-pointer">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function saveMasterTowerFromSettings() {
+  const uid = document.getElementById('m-tower-uid')?.value.trim();
+  const operator = document.getElementById('m-tower-operator')?.value;
+  const area = document.getElementById('m-tower-area')?.value;
+  const kw = parseInt(document.getElementById('m-tower-kw')?.value || '60');
+  const genId = document.getElementById('m-tower-genid')?.value.trim();
+  if (!uid || !genId) return;
+
+  const list = getMasterTowers();
+  list.unshift({ uid, operator, area, kw, genId });
+  localStorage.setItem('genesis_master_towers', JSON.stringify(list));
+  renderMasterTowersTable();
+  logScadaAuditEvent(`Added BTS Power Station Node: ${uid} (${operator})`, 'SUCCESS');
+  showScadaToast('Tower Node Saved', `${uid} registered to SCADA operational grid.`);
+  if (document.getElementById('m-tower-uid')) document.getElementById('m-tower-uid').value = '';
+  if (document.getElementById('m-tower-genid')) document.getElementById('m-tower-genid').value = '';
+}
+
+function deleteMasterTower(idx) {
+  const list = getMasterTowers();
+  const item = list[idx];
+  if (!confirm(`Are you sure you want to remove Tower ${item ? item.uid : ''}?`)) return;
+  list.splice(idx, 1);
+  localStorage.setItem('genesis_master_towers', JSON.stringify(list));
+  renderMasterTowersTable();
+  logScadaAuditEvent(`Removed Tower Node: ${item ? item.uid : 'Unknown'}`, 'SUCCESS');
+  showScadaToast('Tower Node Removed', 'Station purged from active polling registry.');
+}
+
+function exportTowersMasterData() {
+  const list = getMasterTowers();
+  let csv = 'Tower_UID,Operator,Area,Grid_Rating_kW,Generator_Unit_ID\n';
+  list.forEach(t => {
+    csv += `"${t.uid}","${t.operator}","${t.area}",${t.kw},"${t.genId}"\n`;
+  });
+  downloadCsvBlob(csv, 'genesis_master_towers.csv');
+  showScadaToast('CSV Export Complete', 'BTS Communication towers catalog exported.');
+}
+
+// 6. Generator Model Catalog CRUD
+function renderMasterGenModelsTable() {
+  const tbody = document.getElementById('m-gens-tbody');
+  const badge = document.getElementById('m-gen-count-badge');
+  if (!tbody) return;
+  const list = getMasterGenModels();
+  if (badge) badge.textContent = `${list.length} Nominal Models`;
+  tbody.innerHTML = list.map((g, idx) => `
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+      <td class="py-2.5 font-black text-slate-900 dark:text-white">${g.brand}</td>
+      <td class="py-2.5 font-mono font-bold text-slate-700 dark:text-slate-300">${g.kva} kVA / ${g.kw} kW</td>
+      <td class="py-2.5 text-slate-600 dark:text-slate-400 font-medium">${g.rpm} RPM · ${g.cyl}</td>
+      <td class="py-2.5">
+        <span class="px-2 py-0.5 rounded font-mono font-bold text-[10px] bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">${g.controller}</span>
+      </td>
+      <td class="py-2.5 text-right">
+        <button type="button" onclick="deleteMasterGenModel(${idx})" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition cursor-pointer">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function saveMasterGenModelFromSettings() {
+  const brand = document.getElementById('m-gen-brand')?.value.trim();
+  const kva = parseInt(document.getElementById('m-gen-kva')?.value || '88');
+  const kw = parseInt(document.getElementById('m-gen-kw')?.value || '70');
+  const rpm = parseInt(document.getElementById('m-gen-rpm')?.value || '1500');
+  const cyl = document.getElementById('m-gen-cyl')?.value.trim() || '4 Cylinders';
+  const controller = document.getElementById('m-gen-controller')?.value || 'DSE-7320 MKII';
+  if (!brand) return;
+
+  const list = getMasterGenModels();
+  list.unshift({ brand, kva, kw, rpm, cyl, controller });
+  localStorage.setItem('genesis_master_gen_models', JSON.stringify(list));
+  renderMasterGenModelsTable();
+  logScadaAuditEvent(`Added Generator Model: ${brand} (${kva} kVA)`, 'SUCCESS');
+  showScadaToast('Model Registered', `${brand} added to SCADA equipment catalog.`);
+  if (document.getElementById('m-gen-brand')) document.getElementById('m-gen-brand').value = '';
+}
+
+function deleteMasterGenModel(idx) {
+  const list = getMasterGenModels();
+  const item = list[idx];
+  if (!confirm(`Are you sure you want to remove Model ${item ? item.brand : ''}?`)) return;
+  list.splice(idx, 1);
+  localStorage.setItem('genesis_master_gen_models', JSON.stringify(list));
+  renderMasterGenModelsTable();
+  logScadaAuditEvent(`Removed Generator Model: ${item ? item.brand : 'Unknown'}`, 'SUCCESS');
+  showScadaToast('Model Removed', 'Generator model removed from active registry.');
+}
+
+function exportGenModelsMasterData() {
+  const list = getMasterGenModels();
+  let csv = 'Brand_Model,Standby_kVA,Prime_kW,RPM,Cylinders,SCADA_Controller\n';
+  list.forEach(g => {
+    csv += `"${g.brand}",${g.kva},${g.kw},${g.rpm},"${g.cyl}","${g.controller}"\n`;
+  });
+  downloadCsvBlob(csv, 'genesis_master_generator_models.csv');
+  showScadaToast('CSV Export Complete', 'Generator model catalog exported.');
+}
+
+// 7. Personnel CRUD
+function renderMasterPersonnelTable() {
+  const tbody = document.getElementById('m-personnel-tbody');
+  const badge = document.getElementById('m-pers-count-badge');
+  if (!tbody) return;
+  const list = getMasterPersonnel();
+  if (badge) badge.textContent = `${list.length} Members`;
+  tbody.innerHTML = list.map((p, idx) => `
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+      <td class="py-2.5">
+        <strong class="text-slate-900 dark:text-white block">${p.name}</strong>
+        <span class="font-mono text-[10px] text-slate-400 font-bold">#${p.uid}</span>
+      </td>
+      <td class="py-2.5 text-slate-700 dark:text-slate-300 font-bold">${p.title}</td>
+      <td class="py-2.5">
+        <span class="px-2 py-0.5 rounded font-mono font-bold text-[10px] ${p.level >= 4 ? 'bg-purple-50 text-purple-700' : 'bg-emerald-50 text-emerald-700'}">Level ${p.level}</span>
+      </td>
+      <td class="py-2.5 font-mono text-slate-600 dark:text-slate-400">${p.email}</td>
+      <td class="py-2.5 text-right">
+        <button type="button" onclick="deleteMasterPersonnel(${idx})" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition cursor-pointer">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function saveMasterPersonnelFromSettings() {
+  const name = document.getElementById('m-pers-name')?.value.trim();
+  const title = document.getElementById('m-pers-title')?.value.trim();
+  const level = parseInt(document.getElementById('m-pers-level')?.value || '3');
+  const uid = document.getElementById('m-pers-uid')?.value.trim();
+  const email = document.getElementById('m-pers-email')?.value.trim();
+  const phone = document.getElementById('m-pers-phone')?.value.trim() || '+880 1711-002930';
+  if (!name || !title || !email) return;
+
+  const list = getMasterPersonnel();
+  list.unshift({ name, title, level, uid, email, phone });
+  localStorage.setItem('genesis_master_personnel', JSON.stringify(list));
+  renderMasterPersonnelTable();
+  logScadaAuditEvent(`Added Personnel: ${name} (Level ${level})`, 'SUCCESS');
+  showScadaToast('Personnel Registered', `${name} added to SCADA security roster.`);
+  if (document.getElementById('m-pers-name')) document.getElementById('m-pers-name').value = '';
+  if (document.getElementById('m-pers-title')) document.getElementById('m-pers-title').value = '';
+  if (document.getElementById('m-pers-email')) document.getElementById('m-pers-email').value = '';
+}
+
+function deleteMasterPersonnel(idx) {
+  const list = getMasterPersonnel();
+  const item = list[idx];
+  if (!confirm(`Are you sure you want to remove Personnel ${item ? item.name : ''}?`)) return;
+  list.splice(idx, 1);
+  localStorage.setItem('genesis_master_personnel', JSON.stringify(list));
+  renderMasterPersonnelTable();
+  logScadaAuditEvent(`Removed Personnel: ${item ? item.name : 'Unknown'}`, 'SUCCESS');
+  showScadaToast('Personnel Removed', 'Operator removed from clearance roster.');
+}
+
+function exportPersonnelMasterData() {
+  const list = getMasterPersonnel();
+  let csv = 'Full_Name,Designation,Clearance_Level,Security_UID,Email,Mobile\n';
+  list.forEach(p => {
+    csv += `"${p.name}","${p.title}",${p.level},"${p.uid}","${p.email}","${p.phone}"\n`;
+  });
+  downloadCsvBlob(csv, 'genesis_master_personnel.csv');
+  showScadaToast('CSV Export Complete', 'Personnel operational roster exported.');
+}
+
+// 8. Template Generator & Downloader
+function downloadMasterTemplate(type) {
+  let headers = '';
+  let sample = '';
+  let filename = '';
+  if (type === 'areas') {
+    filename = 'operational_areas_template.csv';
+    headers = 'Area_Code,Area_Name,Division,Regional_Director,Assigned_Clusters,SLA_Target\n';
+    sample = 'AREA-DHK-N,Dhaka North,Dhaka,Engr. Tariqul Islam,6,99.8%\nAREA-CTG-M,Chittagong Metro,Chittagong,Engr. Faisal Mahmud,4,99.6%\nAREA-SYL,Sylhet Zone,Sylhet,Engr. Kamrul Hasan,3,99.4%\n';
+  } else if (type === 'generators') {
+    filename = 'generator_models_template.csv';
+    headers = 'Brand_Model,Standby_kVA,Prime_kW,RPM,Cylinder_Count,SCADA_Controller\n';
+    sample = 'Perkins 1104A-44TG2,60,48,1500,4 Cylinders,DSE-7320 MKII\nCaterpillar C4.4 ACERT,88,70,1500,4 Cylinders,Cat EMCP 4.2\nCummins 6BT5.9-G2,110,88,1500,6 Cylinders,Cummins PCC 3300\n';
+  } else if (type === 'towers') {
+    filename = 'communication_towers_template.csv';
+    headers = 'Tower_UID,Operator,Area,Grid_kW,Generator_ID\n';
+    sample = 'BTS-GP-0492,Grameenphone,Dhaka North,60,GEN-PK-0104\nBTS-RB-3240,Robi Axiata,Dhaka North,48,GEN-PK-0002\n';
+  } else {
+    filename = 'personnel_roster_template.csv';
+    headers = 'Full_Name,Designation,Clearance_Level,Security_UID,Email,Mobile\n';
+    sample = 'Engr. Tariqul Islam,Regional Director (Dhaka North),4,AR-9401,tariqul.islam@arenaiot.com,+880 1711-002931\n';
+  }
+  downloadCsvBlob(headers + sample, filename);
+  showScadaToast('Template Downloaded', `${filename} ready for spreadsheet ingestion.`);
+}
+
+function downloadCsvBlob(csvContent, filename) {
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+// 9. Excel & CSV Batch Ingestion in Settings
+let settingsParsedRows = null;
+let settingsParsedHeaders = null;
+let settingsParsedFileName = '';
+
+function handleSettingsMasterFileUpload(input) {
+  if (!input.files || input.files.length === 0) return;
+  const file = input.files[0];
+  settingsParsedFileName = file.name;
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      let rows = [];
+      if (ext === 'xlsx' || ext === 'xls') {
+        if (typeof XLSX !== 'undefined') {
+          const data = new Uint8Array(e.target.result);
+          const wb = XLSX.read(data, { type: 'array' });
+          const firstSheet = wb.Sheets[wb.SheetNames[0]];
+          rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+        } else {
+          showScadaToast('Format Notice', 'XLSX parser initializing. For fastest local ingestion, save as CSV.', 'warn');
+          return;
+        }
+      } else {
+        const text = e.target.result;
+        rows = text.split(/\r?\n/).map(line => line.split(',').map(c => c.replace(/^["']|["']$/g, '').trim())).filter(r => r.length > 1 && r[0]);
+      }
+
+      if (!rows || rows.length < 2) {
+        showScadaToast('Empty File', 'Spreadsheet contains no data rows.', 'error');
+        return;
+      }
+
+      settingsParsedHeaders = rows[0];
+      settingsParsedRows = rows.slice(1);
+
+      // Render Preview
+      const previewBox = document.getElementById('settings-excel-preview-box');
+      const thead = document.getElementById('settings-excel-preview-thead');
+      const tbody = document.getElementById('settings-excel-preview-tbody');
+      const countEl = document.getElementById('settings-excel-rows-count');
+      const fileDisp = document.getElementById('settings-excel-filename-disp');
+
+      if (fileDisp) fileDisp.textContent = `Selected: ${settingsParsedFileName} (${settingsParsedRows.length} rows)`;
+      if (countEl) countEl.textContent = `${settingsParsedRows.length} Rows Ready`;
+      if (thead) thead.innerHTML = settingsParsedHeaders.map(h => `<th class="py-2 px-2.5">${h}</th>`).join('');
+      if (tbody) {
+        tbody.innerHTML = settingsParsedRows.slice(0, 10).map((r, i) => `
+          <tr class="hover:bg-slate-100 dark:hover:bg-slate-700/50">
+            ${r.map(c => `<td class="py-1.5 px-2.5 font-medium text-slate-800 dark:text-slate-200">${c}</td>`).join('')}
+          </tr>
+        `).join('');
+      }
+      if (previewBox) {
+        previewBox.classList.remove('hidden');
+        previewBox.style.display = 'flex';
+      }
+      showScadaToast('Spreadsheet Analyzed', `${settingsParsedRows.length} records ready for SCADA commit.`);
+    } catch (err) {
+      showScadaToast('Parse Error', err.message, 'error');
+    }
+  };
+
+  if (ext === 'xlsx' || ext === 'xls') {
+    reader.readAsArrayBuffer(file);
+  } else {
+    reader.readAsText(file);
+  }
+}
+
+function discardSettingsMasterFile() {
+  settingsParsedRows = null;
+  settingsParsedHeaders = null;
+  settingsParsedFileName = '';
+  const previewBox = document.getElementById('settings-excel-preview-box');
+  const fileDisp = document.getElementById('settings-excel-filename-disp');
+  const input = document.getElementById('settings-excel-file-input');
+  if (previewBox) { previewBox.classList.add('hidden'); previewBox.style.display = 'none'; }
+  if (fileDisp) fileDisp.textContent = 'Click or drag & drop Master Excel / CSV file here';
+  if (input) input.value = '';
+}
+
+function commitSettingsMasterIngestion() {
+  if (!settingsParsedRows || settingsParsedRows.length === 0) {
+    showScadaToast('No File', 'Please upload a spreadsheet first.', 'warn');
+    return;
+  }
+  const headerStr = settingsParsedHeaders.join(' ').toLowerCase();
+  let category = 'areas';
+  if (headerStr.includes('brand') || headerStr.includes('kva') || headerStr.includes('model')) {
+    category = 'generators';
+    const gens = getMasterGenModels();
+    settingsParsedRows.forEach(r => {
+      gens.unshift({
+        brand: r[0] || 'Generic Model',
+        kva: parseInt(r[1] || '88'),
+        kw: parseInt(r[2] || '70'),
+        rpm: parseInt(r[3] || '1500'),
+        cyl: r[4] || '4 Cylinders',
+        controller: r[5] || 'DSE-7320 MKII'
+      });
+    });
+    localStorage.setItem('genesis_master_gen_models', JSON.stringify(gens));
+    renderMasterGenModelsTable();
+  } else if (headerStr.includes('tower') || headerStr.includes('operator')) {
+    category = 'towers';
+    const towers = getMasterTowers();
+    settingsParsedRows.forEach(r => {
+      towers.unshift({
+        uid: r[0] || 'BTS-NODE-' + Math.floor(Math.random()*800+100),
+        operator: r[1] || 'Grameenphone',
+        area: r[2] || 'Dhaka North',
+        kw: parseInt(r[3] || '60'),
+        genId: r[4] || 'GEN-PK-0104'
+      });
+    });
+    localStorage.setItem('genesis_master_towers', JSON.stringify(towers));
+    renderMasterTowersTable();
+  } else if (headerStr.includes('personnel') || headerStr.includes('designation') || headerStr.includes('email')) {
+    category = 'personnel';
+    const pers = getMasterPersonnel();
+    settingsParsedRows.forEach(r => {
+      pers.unshift({
+        name: r[0] || 'Operator',
+        title: r[1] || 'Field Engineer',
+        level: parseInt(r[2] || '3'),
+        uid: r[3] || 'AR-9400',
+        email: r[4] || 'engineer@arenaiot.com',
+        phone: r[5] || '+880 1711-002930'
+      });
+    });
+    localStorage.setItem('genesis_master_personnel', JSON.stringify(pers));
+    renderMasterPersonnelTable();
+  } else {
+    category = 'areas';
+    const areas = getMasterAreas();
+    settingsParsedRows.forEach(r => {
+      areas.unshift({
+        code: r[0] || 'AREA-NEW',
+        name: r[1] || 'New Area',
+        division: r[2] || 'Dhaka',
+        director: r[3] || 'Engr. Tariqul Islam',
+        clusters: parseInt(r[4] || '4'),
+        sla: r[5] || '99.6%'
+      });
+    });
+    localStorage.setItem('genesis_master_areas', JSON.stringify(areas));
+    renderMasterAreasTable();
+  }
+
+  logScadaAuditEvent(`Batch ingested ${settingsParsedRows.length} ${category} records from ${settingsParsedFileName}`, 'SUCCESS');
+  showScadaToast('Master Data Ingested', `${settingsParsedRows.length} records integrated into SCADA database.`);
+  discardSettingsMasterFile();
+}
+
+// 10. SCADA Edge Gateway Diagnostics
+function pingGatewayDiagnostic() {
+  const logEl = document.getElementById('gateway-ping-log');
+  if (!logEl) return;
+  const gw = document.getElementById('cfg-ip-gateway')?.value || '192.168.10.1:502';
+  const mqtt = document.getElementById('cfg-mqtt-broker')?.value || 'mqtts://broker.arenaiot.com:8883';
+  const now = new Date().toLocaleTimeString();
+  
+  logEl.innerHTML = `[${now}] INITIATING SCADA PING: ${gw} & ${mqtt}...\n` + logEl.innerHTML;
+  
+  setTimeout(() => {
+    const t1 = new Date().toLocaleTimeString();
+    const rtt = Math.floor(Math.random() * 8 + 9);
+    logEl.innerHTML = `[${t1}] [MODBUS RTU] ACK from Slave #1 via ${gw} (RTT: ${rtt}ms, CRC16: 0x8F4E VALID)\n` +
+                      `[${t1}] [MQTT TLS] Cipher: TLS_AES_256_GCM_SHA384, PingResp OK (RTT: 24ms)\n` +
+                      `[${t1}] [SCADA BUS] 492 Power Units polling active. Zero bus frame collisions.\n` + logEl.innerHTML;
+    showScadaToast('SCADA Diagnostic Online', `Modbus gateway ${gw} & MQTT broker verified (${rtt}ms).`, 'success');
+  }, 480);
+}
+
+// 11. Acoustic Siren & Web Audio Tone Generator
+function playTestSiren() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.3);
+  } catch(e) {}
+  showScadaToast('Acoustic Siren Test', 'Simulated 85dB acoustic warning alarm pulse sounded.');
+}
+
+// 12. Save & Reset Configuration
 function saveScadaSettings() {
   const cfg = {
     pollFreq: document.getElementById('cfg-poll-freq')?.value || '3000',
     baudRate: document.getElementById('cfg-baud-rate')?.value || '9600',
     gateway: document.getElementById('cfg-ip-gateway')?.value || '192.168.10.1:502',
-    anim: document.getElementById('cfg-anim-toggle')?.checked ?? true,
-    audio: document.getElementById('cfg-audio-alarm')?.checked ?? true,
+    parity: document.getElementById('cfg-parity')?.value || 'none',
+    slaveId: document.getElementById('cfg-slave-id')?.value || '1',
+    mqttBroker: document.getElementById('cfg-mqtt-broker')?.value || 'mqtts://broker.arenaiot.com:8883',
+    mqttTopic: document.getElementById('cfg-mqtt-topic')?.value || 'arenaiot/rms/telemetry/{gen_id}',
     coolantLimit: document.getElementById('cfg-temp-slider')?.value || '98',
     oilLimit: document.getElementById('cfg-oil-slider')?.value || '1.20',
-    fuelLimit: document.getElementById('cfg-fuel-slider')?.value || '25'
+    fuelLimit: document.getElementById('cfg-fuel-slider')?.value || '25',
+    audio: document.getElementById('cfg-audio-alarm')?.checked ?? true,
+    sms: document.getElementById('cfg-ch-sms')?.checked ?? true,
+    email: document.getElementById('cfg-ch-email')?.checked ?? true,
+    webhook: document.getElementById('cfg-ch-webhook')?.checked ?? false,
+    webhookUrl: document.getElementById('cfg-webhook-url')?.value || '',
+    pmaHours: document.getElementById('cfg-pma-hours')?.value || '250',
+    pmbHours: document.getElementById('cfg-pmb-hours')?.value || '480',
+    pmcHours: document.getElementById('cfg-pmc-hours')?.value || '2000',
+    oilDecay: document.getElementById('cfg-oil-decay')?.value || '3.2',
+    loto: document.getElementById('cfg-loto-enforce')?.checked ?? true,
+    autoWo: document.getElementById('cfg-auto-wo')?.checked ?? true
   };
   localStorage.setItem('genesis_scada_settings', JSON.stringify(cfg));
-  showScadaToast('Settings Saved', 'SCADA parameters and Modbus timing persisted.');
+  logScadaAuditEvent('Saved SCADA gateway, safety thresholds, and preventive maintenance configuration', 'SUCCESS');
+  showScadaToast('Settings Saved', 'SCADA parameters, Modbus gateway, and tripping limits persisted.');
 }
 
 function resetScadaSettings() {
   localStorage.removeItem('genesis_scada_settings');
+  initSettingsModule();
+  logScadaAuditEvent('Restored SCADA settings to nominal engineering baselines', 'SUCCESS');
   showScadaToast('Factory Defaults Restored', 'Configuration reset to nominal SCADA baselines.');
 }
 
-function playTestSiren() {
-  showScadaToast('Acoustic Siren Test', 'Simulated 85dB acoustic warning alarm pulse sounded.');
+function resetSystemBaseline() {
+  resetScadaSettings();
+}
+
+// 13. System Snapshot Backup & Restore
+function exportSystemSnapshot() {
+  const snapshot = {
+    system: 'GENESIS RMS ENTERPRISE SCADA',
+    version: '2.4.0-PROD',
+    exportedAt: new Date().toISOString(),
+    operator: 'Lian Ahmed (#AR-9402)',
+    clearance: 'Level 3: Lead SCADA Engineer',
+    settings: JSON.parse(localStorage.getItem('genesis_scada_settings') || '{}'),
+    masterData: {
+      areas: getMasterAreas(),
+      towers: getMasterTowers(),
+      generators: getMasterGenModels(),
+      personnel: getMasterPersonnel()
+    },
+    auditLog: JSON.parse(localStorage.getItem('genesis_scada_audit_log') || '[]')
+  };
+  const jsonStr = JSON.stringify(snapshot, null, 2);
+  const blob = new Blob([jsonStr], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `genesis_rms_snapshot_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  logScadaAuditEvent('Exported full SCADA system configuration snapshot JSON', 'SUCCESS');
+  showScadaToast('Snapshot Exported', 'Full SCADA master snapshot JSON downloaded.');
+}
+
+function importSystemSnapshot(input) {
+  if (!input || !input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.masterData && !data.settings) {
+        throw new Error('Invalid snapshot structure. Required keys missing.');
+      }
+      if (data.settings) localStorage.setItem('genesis_scada_settings', JSON.stringify(data.settings));
+      if (data.masterData?.areas) localStorage.setItem('genesis_master_areas', JSON.stringify(data.masterData.areas));
+      if (data.masterData?.towers) localStorage.setItem('genesis_master_towers', JSON.stringify(data.masterData.towers));
+      if (data.masterData?.generators) localStorage.setItem('genesis_master_gen_models', JSON.stringify(data.masterData.generators));
+      if (data.masterData?.personnel) localStorage.setItem('genesis_master_personnel', JSON.stringify(data.masterData.personnel));
+      
+      initSettingsModule();
+      logScadaAuditEvent(`Restored system snapshot from file: ${file.name}`, 'SUCCESS');
+      showScadaToast('Snapshot Restored', 'All master tables, thresholds, and gateway parameters updated.');
+    } catch (err) {
+      showScadaToast('Snapshot Restore Failed', err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+// 14. Immutable SCADA Audit Trail
+function logScadaAuditEvent(action, status = 'SUCCESS') {
+  const logs = JSON.parse(localStorage.getItem('genesis_scada_audit_log') || '[]');
+  const now = new Date();
+  const timeStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString();
+  logs.unshift({
+    timestamp: timeStr,
+    operator: 'Lian Ahmed (#AR-9402)',
+    clearance: 'L3: Lead SCADA Engr',
+    action: action,
+    status: status
+  });
+  if (logs.length > 50) logs.pop();
+  localStorage.setItem('genesis_scada_audit_log', JSON.stringify(logs));
+  renderScadaAuditLog();
+}
+
+function renderScadaAuditLog() {
+  const tbody = document.getElementById('scada-audit-tbody');
+  if (!tbody) return;
+  let logs = JSON.parse(localStorage.getItem('genesis_scada_audit_log') || '[]');
+  if (logs.length === 0) {
+    logs = [
+      { timestamp: '2026-11-19 14:20:00', operator: 'Lian Ahmed (#AR-9402)', clearance: 'L3: Lead SCADA Engr', action: 'Applied Modbus RTU sweep cycle 3,000ms across 492 nodes', status: 'SUCCESS' },
+      { timestamp: '2026-11-19 13:45:12', operator: 'Engr. Tariqul Islam (#AR-9401)', clearance: 'L4: Regional Director', action: 'Approved PM-B 480h maintenance interval standard', status: 'SUCCESS' },
+      { timestamp: '2026-11-19 11:10:05', operator: 'Lian Ahmed (#AR-9402)', clearance: 'L3: Lead SCADA Engr', action: 'Calibrated acoustic siren emergency trip at 98 deg C', status: 'SUCCESS' }
+    ];
+    try { localStorage.setItem('genesis_scada_audit_log', JSON.stringify(logs)); } catch(e) {}
+  }
+  tbody.innerHTML = logs.map(l => `
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+      <td class="py-2.5 text-slate-400 font-bold">${l.timestamp}</td>
+      <td class="py-2.5 text-slate-900 dark:text-white font-black">${l.operator}</td>
+      <td class="py-2.5 text-indigo-600 dark:text-indigo-400 font-bold">${l.clearance}</td>
+      <td class="py-2.5 text-slate-700 dark:text-slate-300 font-medium">${l.action}</td>
+      <td class="py-2.5 text-right"><span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${l.status === 'SUCCESS' ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' : 'bg-rose-50 text-rose-700'}">${l.status}</span></td>
+    </tr>
+  `).join('');
+}
+
+function clearAuditLog() {
+  localStorage.setItem('genesis_scada_audit_log', JSON.stringify([]));
+  renderScadaAuditLog();
+  showScadaToast('Audit Trail Cleared', 'Recent volatile audit records pruned.');
+}
+
+// 15. Module Initialization
+function initSettingsModule() {
+  renderMasterAreasTable();
+  renderMasterTowersTable();
+  renderMasterGenModelsTable();
+  renderMasterPersonnelTable();
+  renderScadaAuditLog();
+  
+  // Hydrate form fields with stored settings
+  const raw = localStorage.getItem('genesis_scada_settings');
+  if (raw) {
+    try {
+      const cfg = JSON.parse(raw);
+      if (cfg.pollFreq && document.getElementById('cfg-poll-freq')) document.getElementById('cfg-poll-freq').value = cfg.pollFreq;
+      if (cfg.baudRate && document.getElementById('cfg-baud-rate')) document.getElementById('cfg-baud-rate').value = cfg.baudRate;
+      if (cfg.gateway && document.getElementById('cfg-ip-gateway')) document.getElementById('cfg-ip-gateway').value = cfg.gateway;
+      if (cfg.parity && document.getElementById('cfg-parity')) document.getElementById('cfg-parity').value = cfg.parity;
+      if (cfg.slaveId && document.getElementById('cfg-slave-id')) document.getElementById('cfg-slave-id').value = cfg.slaveId;
+      if (cfg.mqttBroker && document.getElementById('cfg-mqtt-broker')) document.getElementById('cfg-mqtt-broker').value = cfg.mqttBroker;
+      if (cfg.mqttTopic && document.getElementById('cfg-mqtt-topic')) document.getElementById('cfg-mqtt-topic').value = cfg.mqttTopic;
+      if (cfg.coolantLimit && document.getElementById('cfg-temp-slider')) {
+        document.getElementById('cfg-temp-slider').value = cfg.coolantLimit;
+        if (document.getElementById('cfg-temp-disp')) document.getElementById('cfg-temp-disp').textContent = cfg.coolantLimit + ' °C';
+      }
+      if (cfg.oilLimit && document.getElementById('cfg-oil-slider')) {
+        document.getElementById('cfg-oil-slider').value = cfg.oilLimit;
+        if (document.getElementById('cfg-oil-disp')) document.getElementById('cfg-oil-disp').textContent = parseFloat(cfg.oilLimit).toFixed(2) + ' bar';
+      }
+      if (cfg.fuelLimit && document.getElementById('cfg-fuel-slider')) {
+        document.getElementById('cfg-fuel-slider').value = cfg.fuelLimit;
+        if (document.getElementById('cfg-fuel-disp')) document.getElementById('cfg-fuel-disp').textContent = cfg.fuelLimit + ' %';
+      }
+      if (cfg.audio !== undefined && document.getElementById('cfg-audio-alarm')) document.getElementById('cfg-audio-alarm').checked = cfg.audio;
+      if (cfg.sms !== undefined && document.getElementById('cfg-ch-sms')) document.getElementById('cfg-ch-sms').checked = cfg.sms;
+      if (cfg.email !== undefined && document.getElementById('cfg-ch-email')) document.getElementById('cfg-ch-email').checked = cfg.email;
+      if (cfg.webhook !== undefined && document.getElementById('cfg-ch-webhook')) document.getElementById('cfg-ch-webhook').checked = cfg.webhook;
+      if (cfg.webhookUrl && document.getElementById('cfg-webhook-url')) document.getElementById('cfg-webhook-url').value = cfg.webhookUrl;
+      if (cfg.pmaHours && document.getElementById('cfg-pma-hours')) document.getElementById('cfg-pma-hours').value = cfg.pmaHours;
+      if (cfg.pmbHours && document.getElementById('cfg-pmb-hours')) document.getElementById('cfg-pmb-hours').value = cfg.pmbHours;
+      if (cfg.pmcHours && document.getElementById('cfg-pmc-hours')) document.getElementById('cfg-pmc-hours').value = cfg.pmcHours;
+      if (cfg.oilDecay && document.getElementById('cfg-oil-decay')) document.getElementById('cfg-oil-decay').value = cfg.oilDecay;
+      if (cfg.loto !== undefined && document.getElementById('cfg-loto-enforce')) document.getElementById('cfg-loto-enforce').checked = cfg.loto;
+      if (cfg.autoWo !== undefined && document.getElementById('cfg-auto-wo')) document.getElementById('cfg-auto-wo').checked = cfg.autoWo;
+    } catch(e) {}
+  }
+}
+
+// Auto-run on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSettingsModule);
+} else {
+  initSettingsModule();
 }
 
 // --- HEADER NOTIFICATIONS FLYOUT ENGINE ---
@@ -6045,7 +6851,7 @@ function downloadTechnicalDatasheet(title) {
 // =========================================================================
 // 1. USER PROFILE & 300x300 AVATAR UPLOAD / PERSISTENCE ENGINE
 // =========================================================================
-let tempUserAvatarBase64_300 = null;
+var tempUserAvatarBase64_300 = window.tempUserAvatarBase64_300 || null;
 
 function handleProfileAvatarUpload(input) {
   if (!input || !input.files || !input.files[0]) return;
@@ -7191,51 +7997,33 @@ function downloadMasterDataTemplate(category = 'areas') {
   const templates = {
     areas: {
       filename: 'GENESIS_Template_Operational_Areas.csv',
-      content: 'Area Code,Area Name,Division,Regional Director,Contact Email,Mobile,SLA Target %,Clusters Count
-' +
-               'AREA-DHK-N,Dhaka North,Dhaka,Engr. Tariqul Islam,tariqul.islam@arenaiot.com,+880 1711-948201,99.8,6
-' +
-               'AREA-DHK-S,Dhaka South,Dhaka,Engr. Shamim Hossain,shamim.hossain@arenaiot.com,+880 1711-948202,99.7,5
-' +
-               'AREA-CTG-M,Chittagong Metro,Chittagong,Engr. Faisal Mahmud,faisal.mahmud@arenaiot.com,+880 1711-948203,99.6,4
-' +
-               'AREA-SYL,Sylhet Zone,Sylhet,Engr. Kamrul Hasan,kamrul.hasan@arenaiot.com,+880 1711-948204,99.4,3
-'
+      content: 'Area Code,Area Name,Division,Regional Director,Contact Email,Mobile,SLA Target %,Clusters Count\n' +
+               'AREA-DHK-N,Dhaka North,Dhaka,Engr. Tariqul Islam,tariqul.islam@arenaiot.com,+880 1711-948201,99.8,6\n' +
+               'AREA-DHK-S,Dhaka South,Dhaka,Engr. Shamim Hossain,shamim.hossain@arenaiot.com,+880 1711-948202,99.7,5\n' +
+               'AREA-CTG-M,Chittagong Metro,Chittagong,Engr. Faisal Mahmud,faisal.mahmud@arenaiot.com,+880 1711-948203,99.6,4\n' +
+               'AREA-SYL,Sylhet Zone,Sylhet,Engr. Kamrul Hasan,kamrul.hasan@arenaiot.com,+880 1711-948204,99.4,3\n'
     },
     generators: {
       filename: 'GENESIS_Template_Generator_Grid.csv',
-      content: 'Generator ID,Tower ID,Model Name,Brand,Rating kVA,Prime kW,Serial Number,Controller,Sump Capacity L,Fuel Tank L,Runtime Hours
-' +
-               'GEN-PK-0104,BTS-GP-0492,Perkins 1104A-44TG2,Perkins,60,48,PK-849204-TG,DSE-7320 MKII,8.0,250,320.5
-' +
-               'GEN-CAT-0312,BTS-BL-1944,Caterpillar C4.4 ACERT,Caterpillar,88,70,CAT-338291-AC,DSE-7320 MKII,11.0,350,540.2
-' +
-               'GEN-CUM-0518,BTS-RB-6102,Cummins 6BT5.9-G2,Cummins,100,80,CUM-991204-BT,DSE-7320 MKII,16.4,450,1120.0
-' +
-               'GEN-KOH-0891,BTS-TT-0812,Kohler KD62,Kohler,150,120,KOH-554109-KD,DSE-7320 MKII,22.0,600,88.4
-'
+      content: 'Generator ID,Tower ID,Model Name,Brand,Rating kVA,Prime kW,Serial Number,Controller,Sump Capacity L,Fuel Tank L,Runtime Hours\n' +
+               'GEN-PK-0104,BTS-GP-0492,Perkins 1104A-44TG2,Perkins,60,48,PK-849204-TG,DSE-7320 MKII,8.0,250,320.5\n' +
+               'GEN-CAT-0312,BTS-BL-1944,Caterpillar C4.4 ACERT,Caterpillar,88,70,CAT-338291-AC,DSE-7320 MKII,11.0,350,540.2\n' +
+               'GEN-CUM-0518,BTS-RB-6102,Cummins 6BT5.9-G2,Cummins,100,80,CUM-991204-BT,DSE-7320 MKII,16.4,450,1120.0\n' +
+               'GEN-KOH-0891,BTS-TT-0812,Kohler KD62,Kohler,150,120,KOH-554109-KD,DSE-7320 MKII,22.0,600,88.4\n'
     },
     employees: {
       filename: 'GENESIS_Template_Employee_Directory.csv',
-      content: 'Employee ID,Full Name,Designation,Clearance Level,Email,Mobile,Command Station,VHF Radio Channel,Division Jurisdiction
-' +
-               'DIR-DHK-01,Engr. Tariqul Islam,Regional SCADA Operations Director,Level 4,tariqul.islam@arenaiot.com,+880 1711-948201,Dhaka North HQ,VHF-Ch-04 (156.200 MHz),Dhaka
-' +
-               'DIR-DHK-02,Engr. Shamim Hossain,Regional SCADA Operations Director,Level 4,shamim.hossain@arenaiot.com,+880 1711-948202,Dhaka South HQ,VHF-Ch-05 (156.250 MHz),Dhaka
-' +
-               'ENG-SCADA-01,Engr. Lian Ahmed,Lead SCADA Engineer,Level 3,lian.ahmed@arenaiot.com,+880 1710-000001,National NOC Command Hub,VHF-Ch-01 (156.050 MHz),National
-'
+      content: 'Employee ID,Full Name,Designation,Clearance Level,Email,Mobile,Command Station,VHF Radio Channel,Division Jurisdiction\n' +
+               'DIR-DHK-01,Engr. Tariqul Islam,Regional SCADA Operations Director,Level 4,tariqul.islam@arenaiot.com,+880 1711-948201,Dhaka North HQ,VHF-Ch-04 (156.200 MHz),Dhaka\n' +
+               'DIR-DHK-02,Engr. Shamim Hossain,Regional SCADA Operations Director,Level 4,shamim.hossain@arenaiot.com,+880 1711-948202,Dhaka South HQ,VHF-Ch-05 (156.250 MHz),Dhaka\n' +
+               'ENG-SCADA-01,Engr. Lian Ahmed,Lead SCADA Engineer,Level 3,lian.ahmed@arenaiot.com,+880 1710-000001,National NOC Command Hub,VHF-Ch-01 (156.050 MHz),National\n'
     },
     technicians: {
       filename: 'GENESIS_Template_Field_Technicians.csv',
-      content: 'Technician ID,Full Name,Contractor Company,Phone,Assigned Cluster,Specialization,Cert Expiration Date,Active LOTO Cert
-' +
-               'TECH-MIR-01,Md. Rafiqul Haque,Apex Power Engineering Ltd,+880 1712-409182,Mirpur Node,Mechanical Sump & Injection,2027-12-31,YES
-' +
-               'TECH-UTT-02,Kazi Nazrul Islam,Delta Generator Services,+880 1713-992104,Uttara North Node,Alternator & AVR Calibration,2028-06-30,YES
-' +
-               'TECH-GUL-03,Shafiqur Rahman,National Electro-Mechanical,+880 1714-883391,Gulshan Corporate Node,Lube Oil & Glycol Service,2027-09-15,YES
-'
+      content: 'Technician ID,Full Name,Contractor Company,Phone,Assigned Cluster,Specialization,Cert Expiration Date,Active LOTO Cert\n' +
+               'TECH-MIR-01,Md. Rafiqul Haque,Apex Power Engineering Ltd,+880 1712-409182,Mirpur Node,Mechanical Sump & Injection,2027-12-31,YES\n' +
+               'TECH-UTT-02,Kazi Nazrul Islam,Delta Generator Services,+880 1713-992104,Uttara North Node,Alternator & AVR Calibration,2028-06-30,YES\n' +
+               'TECH-GUL-03,Shafiqur Rahman,National Electro-Mechanical,+880 1714-883391,Gulshan Corporate Node,Lube Oil & Glycol Service,2027-09-15,YES\n'
     }
   };
 
@@ -7253,8 +8041,7 @@ function downloadMasterDataTemplate(category = 'areas') {
 
 // 3. Robust CSV Parser
 function parseCsvText(text) {
-  const lines = text.split(/?
-/).filter(line => line.trim().length > 0);
+  const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
   const result = [];
   for (let i = 0; i < lines.length; i++) {
     const row = [];

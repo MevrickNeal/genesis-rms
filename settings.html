@@ -1032,59 +1032,497 @@
     
     <main class="flex-1 min-w-0">
       <!-- ===================================================================== -->
-<!-- SCADA SYSTEM SETTINGS & TELEMETRY PREFERENCES MODULE                  -->
+<!-- SCADA SYSTEM SETTINGS & MASTER DATA INPUT MODULE                      -->
 <!-- ===================================================================== -->
 <div id="screen-settings" class="flex flex-col gap-6">
 
   <!-- Header Bar -->
-  <div class="bg-white/80 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+  <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800/80 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
     <div>
       <div class="flex items-center gap-2">
-        <h2 class="text-xl font-black text-slate-900">System Settings & SCADA Telemetry Preferences</h2>
-        <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-200">CONFIGURATION ENGINE</span>
+        <h2 class="text-xl font-black text-slate-900 dark:text-white">System Settings & Master Data Input Hub</h2>
+        <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold border border-indigo-200 dark:border-indigo-800">ENTERPRISE RMS ENGINE</span>
       </div>
-      <p class="text-xs text-slate-600 mt-1 font-medium">Configure network telemetry acquisition, Modbus RS-485 timings, acoustic alarm thresholds, and local display parameters</p>
+      <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">Configure master administrative data, Modbus RS-485 and MQTT gateway pipelines, tripping safety thresholds, and preventive maintenance rules</p>
     </div>
 
-    <!-- Action Buttons -->
+    <!-- Global Top Action Controls -->
     <div class="flex items-center gap-2.5">
-      <button onclick="resetScadaSettings()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+      <button type="button" onclick="resetScadaSettings()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition">
         Reset Defaults
       </button>
-      <button onclick="saveScadaSettings()" class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5">
-        <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        <span>Save Configuration</span>
+      <button type="button" onclick="saveScadaSettings()" class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-600 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+        <svg class="w-4 h-4 text-emerald-400 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Save All Settings</span>
       </button>
     </div>
   </div>
 
-  <!-- Settings Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-    
-    <!-- Left Column: Acquisition & Communication Timers -->
-    <div class="bg-white/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md flex flex-col gap-4">
-      <h3 class="text-sm font-black text-slate-900 border-b border-slate-100 pb-2">Acquisition & Modbus Parameters</h3>
-      
-      <!-- Polling Frequency -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
-        <div>
-          <label class="font-bold text-slate-900 block">Telemetry Sweep Frequency</label>
-          <span class="text-[11px] text-slate-600">Continuous Modbus RS-485 polling cycle</span>
+  <!-- Settings Horizontal Navigation Tab Strip -->
+  <div class="flex items-center gap-2 overflow-x-auto pb-1 select-none border-b border-slate-200/80 dark:border-slate-800/80">
+    <button type="button" onclick="switchSettingsTab('master')" id="set-tab-btn-master" class="set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-black transition flex items-center gap-2 bg-slate-900 text-white shadow-2xs">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span>Master Data Input</span>
+    </button>
+    <button type="button" onclick="switchSettingsTab('gateway')" id="set-tab-btn-gateway" class="set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-2">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
+      <span>SCADA & Edge Gateway</span>
+    </button>
+    <button type="button" onclick="switchSettingsTab('thresholds')" id="set-tab-btn-thresholds" class="set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-2">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>Alarm Thresholds & Siren</span>
+    </button>
+    <button type="button" onclick="switchSettingsTab('maint')" id="set-tab-btn-maint" class="set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-2">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+      <span>Maintenance Standards</span>
+    </button>
+    <button type="button" onclick="switchSettingsTab('backup')" id="set-tab-btn-backup" class="set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-2">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span>Snapshot & Audit Log</span>
+    </button>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- TAB 1: MASTER DATA INPUT (Areas, Towers, Generators, Personnel, Excel) -->
+  <!-- =================================================================== -->
+  <div id="set-panel-master" class="flex flex-col gap-6">
+
+    <!-- Sub Navigation Pill Bar for Master Entities -->
+    <div class="flex items-center gap-2 flex-wrap text-xs font-bold">
+      <span class="text-slate-400 text-[11px] uppercase tracking-wider font-semibold">Entity Section:</span>
+      <button type="button" onclick="switchMasterSubSection('area')" id="msub-btn-area" class="msub-btn px-3 py-1.5 rounded-xl bg-slate-900 text-white shadow-xs">Areas & Divisions</button>
+      <button type="button" onclick="switchMasterSubSection('tower')" id="msub-btn-tower" class="msub-btn px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200">BTS Communication Towers</button>
+      <button type="button" onclick="switchMasterSubSection('gen')" id="msub-btn-gen" class="msub-btn px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200">Generator Models</button>
+      <button type="button" onclick="switchMasterSubSection('personnel')" id="msub-btn-personnel" class="msub-btn px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200">Personnel & Directors</button>
+      <button type="button" onclick="switchMasterSubSection('excel')" id="msub-btn-excel" class="msub-btn px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100">Excel / CSV Batch Ingestion</button>
+    </div>
+
+    <!-- 1A. Area Master Input Form & Table -->
+    <div id="msub-panel-area" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Input Card -->
+      <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <h3 class="text-sm font-black text-slate-900 dark:text-white">Add Operational Area</h3>
+          <span class="text-[9px] font-mono bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-1.5 py-0.5 rounded font-bold">LEVEL 1 GEOGRAPHY</span>
         </div>
-        <select id="cfg-poll-freq" class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 font-bold text-slate-800 text-xs outline-none focus:border-slate-900">
+        <form onsubmit="event.preventDefault(); saveMasterAreaFromSettings();" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Area Name</label>
+            <input type="text" id="m-area-name" required placeholder="e.g. Gazipur Industrial Zone" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none focus:border-slate-900" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Administrative Division</label>
+            <select id="m-area-division" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none">
+              <option value="Dhaka">Dhaka Division</option>
+              <option value="Chittagong">Chittagong Division</option>
+              <option value="Sylhet">Sylhet Division</option>
+              <option value="Rajshahi">Rajshahi Division</option>
+              <option value="Khulna">Khulna Division</option>
+              <option value="Barisal">Barisal Division</option>
+              <option value="Rangpur">Rangpur Division</option>
+              <option value="Mymensingh">Mymensingh Division</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Regional Director</label>
+            <input type="text" id="m-area-director" required placeholder="e.g. Engr. Tariqul Islam" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none focus:border-slate-900" />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Assigned Clusters</label>
+              <input type="number" id="m-area-clusters" value="4" min="1" max="20" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">SLA Target (%)</label>
+              <input type="number" id="m-area-sla" value="99.8" step="0.1" min="95" max="100" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+          </div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-600 text-white font-bold transition shadow-xs mt-2 flex items-center justify-center gap-1.5 cursor-pointer">
+            <svg class="w-4 h-4 text-emerald-400 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Register Master Area</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Area Table View -->
+      <div class="lg:col-span-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-black text-slate-900 dark:text-white">Registered Operational Areas</h3>
+            <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400" id="m-area-count-badge">8 Divisions</span>
+          </div>
+          <button type="button" onclick="exportAreasMasterData()" class="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Export Areas</span>
+          </button>
+        </div>
+        <div class="overflow-x-auto max-h-[360px] overflow-y-auto">
+          <table class="w-full text-left text-xs" id="m-areas-table">
+            <thead>
+              <tr class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                <th class="pb-2.5">Area & Code</th>
+                <th class="pb-2.5">Division</th>
+                <th class="pb-2.5">Regional Director</th>
+                <th class="pb-2.5">Clusters</th>
+                <th class="pb-2.5">SLA</th>
+                <th class="pb-2.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="m-areas-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1B. BTS Communication Tower Master Input Form & Table -->
+    <div id="msub-panel-tower" class="grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
+      <!-- Input Card -->
+      <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <h3 class="text-sm font-black text-slate-900 dark:text-white">Register BTS Tower Node</h3>
+          <span class="text-[9px] font-mono bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded font-bold">POWER STATION</span>
+        </div>
+        <form onsubmit="event.preventDefault(); saveMasterTowerFromSettings();" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">BTS Tower UID Code</label>
+            <input type="text" id="m-tower-uid" required placeholder="e.g. BTS-GP-0493" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-900 dark:text-white outline-none focus:border-slate-900" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Host Telecom Operator</label>
+            <select id="m-tower-operator" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none">
+              <option value="Grameenphone">Grameenphone (GP)</option>
+              <option value="Robi Axiata">Robi Axiata (RB)</option>
+              <option value="Banglalink">Banglalink (BL)</option>
+              <option value="Teletalk">Teletalk (TT)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Assigned Operational Area</label>
+            <select id="m-tower-area" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none">
+              <option value="Dhaka North">Dhaka North</option>
+              <option value="Dhaka South">Dhaka South</option>
+              <option value="Chittagong Metro">Chittagong Metro</option>
+              <option value="Sylhet Zone">Sylhet Zone</option>
+              <option value="Rajshahi Central">Rajshahi Central</option>
+              <option value="Khulna Division">Khulna Division</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Grid Rating (kW)</label>
+              <input type="number" id="m-tower-kw" value="60" min="10" max="480" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Generator ID</label>
+              <input type="text" id="m-tower-genid" required placeholder="GEN-PK-0105" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+          </div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-600 text-white font-bold transition shadow-xs mt-2 flex items-center justify-center gap-1.5 cursor-pointer">
+            <svg class="w-4 h-4 text-emerald-400 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Save BTS Power Station</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Tower Table View -->
+      <div class="lg:col-span-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-black text-slate-900 dark:text-white">Active Communication Towers</h3>
+            <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400" id="m-tower-count-badge">492 Stations</span>
+          </div>
+          <button type="button" onclick="exportTowersMasterData()" class="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Export Stations</span>
+          </button>
+        </div>
+        <div class="overflow-x-auto max-h-[360px] overflow-y-auto">
+          <table class="w-full text-left text-xs" id="m-towers-table">
+            <thead>
+              <tr class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                <th class="pb-2.5">Tower Node</th>
+                <th class="pb-2.5">Telecom Operator</th>
+                <th class="pb-2.5">Assigned Area</th>
+                <th class="pb-2.5">Grid (kW)</th>
+                <th class="pb-2.5">Generator Unit</th>
+                <th class="pb-2.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="m-towers-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1C. Generator Model Catalog Input Form & Table -->
+    <div id="msub-panel-gen" class="grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
+      <!-- Input Card -->
+      <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <h3 class="text-sm font-black text-slate-900 dark:text-white">Add Generator Model</h3>
+          <span class="text-[9px] font-mono bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 px-1.5 py-0.5 rounded font-bold">EQUIPMENT CATALOG</span>
+        </div>
+        <form onsubmit="event.preventDefault(); saveMasterGenModelFromSettings();" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Manufacturer Brand & Series</label>
+            <input type="text" id="m-gen-brand" required placeholder="e.g. Caterpillar C4.4 ACERT" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none focus:border-slate-900" />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Standby (kVA)</label>
+              <input type="number" id="m-gen-kva" value="88" min="20" max="2500" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Prime (kW)</label>
+              <input type="number" id="m-gen-kw" value="70" min="15" max="2000" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Rated Speed (RPM)</label>
+              <select id="m-gen-rpm" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none">
+                <option value="1500" selected>1500 RPM (50 Hz)</option>
+                <option value="1800">1800 RPM (60 Hz)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Cylinder Count</label>
+              <input type="text" id="m-gen-cyl" value="4 Cylinders" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Integrated SCADA Controller</label>
+            <select id="m-gen-controller" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none">
+              <option value="DSE-7320 MKII" selected>Deep Sea Electronics DSE-7320 MKII (RS-485)</option>
+              <option value="DSE-8610 MKII">Deep Sea Electronics DSE-8610 MKII (Paralleling)</option>
+              <option value="Cat EMCP 4.2">Caterpillar EMCP 4.2 (Modbus RTU / CAN)</option>
+              <option value="Cummins PCC 3300">Cummins PowerCommand 3300 (Modbus TCP)</option>
+              <option value="ComAp InteliLite 4">ComAp InteliLite 4 (AirGate & RS-485)</option>
+            </select>
+          </div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-purple-600 dark:hover:bg-purple-600 text-white font-bold transition shadow-xs mt-2 flex items-center justify-center gap-1.5 cursor-pointer">
+            <svg class="w-4 h-4 text-emerald-400 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Save to Model Catalog</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Generator Table View -->
+      <div class="lg:col-span-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-black text-slate-900 dark:text-white">Generator Catalog Models</h3>
+            <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400" id="m-gen-count-badge">5 Nominal Models</span>
+          </div>
+          <button type="button" onclick="exportGenModelsMasterData()" class="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Export Catalog</span>
+          </button>
+        </div>
+        <div class="overflow-x-auto max-h-[360px] overflow-y-auto">
+          <table class="w-full text-left text-xs" id="m-gens-table">
+            <thead>
+              <tr class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                <th class="pb-2.5">Model & Brand</th>
+                <th class="pb-2.5">Rating (kVA / kW)</th>
+                <th class="pb-2.5">Speed / Cyl</th>
+                <th class="pb-2.5">Controller Engine</th>
+                <th class="pb-2.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="m-gens-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1D. Personnel Roster & RBAC Input Form & Table -->
+    <div id="msub-panel-personnel" class="grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
+      <!-- Input Card -->
+      <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <h3 class="text-sm font-black text-slate-900 dark:text-white">Add SCADA Personnel</h3>
+          <span class="text-[9px] font-mono bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded font-bold">OPERATOR IDENTITY</span>
+        </div>
+        <form onsubmit="event.preventDefault(); saveMasterPersonnelFromSettings();" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+            <input type="text" id="m-pers-name" required placeholder="e.g. Engr. Tanvir Ahmed" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none focus:border-slate-900" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Designation & Role</label>
+            <input type="text" id="m-pers-title" required placeholder="e.g. Senior SCADA Telemetry Specialist" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Clearance Level</label>
+              <select id="m-pers-level" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none">
+                <option value="5">Level 5: Chief Admin</option>
+                <option value="4">Level 4: Regional Director</option>
+                <option value="3" selected>Level 3: Lead Engineer</option>
+                <option value="2">Level 2: Field Technician</option>
+                <option value="1">Level 1: NOC Operator</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Security UID</label>
+              <input type="text" id="m-pers-uid" required placeholder="AR-9408" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-900 dark:text-white outline-none" />
+            </div>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Corporate Email</label>
+            <input type="email" id="m-pers-email" required placeholder="tanvir.ahmed@arenaiot.com" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Emergency Mobile</label>
+            <input type="tel" id="m-pers-phone" value="+880 1711-948209" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-900 dark:text-white outline-none" />
+          </div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-600 text-white font-bold transition shadow-xs mt-2 flex items-center justify-center gap-1.5 cursor-pointer">
+            <svg class="w-4 h-4 text-emerald-400 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Add Personnel to Roster</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Personnel Table View -->
+      <div class="lg:col-span-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-black text-slate-900 dark:text-white">Active Operational Roster</h3>
+            <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400" id="m-pers-count-badge">8 Members</span>
+          </div>
+          <button type="button" onclick="exportPersonnelMasterData()" class="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Export Roster</span>
+          </button>
+        </div>
+        <div class="overflow-x-auto max-h-[360px] overflow-y-auto">
+          <table class="w-full text-left text-xs" id="m-personnel-table">
+            <thead>
+              <tr class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                <th class="pb-2.5">Personnel Name & UID</th>
+                <th class="pb-2.5">Designation</th>
+                <th class="pb-2.5">Clearance Level</th>
+                <th class="pb-2.5">Corporate Email</th>
+                <th class="pb-2.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="m-personnel-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1E. Excel / CSV Spreadsheet Bulk Ingestion Box -->
+    <div id="msub-panel-excel" class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-7 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-6 hidden">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div>
+          <h3 class="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+            <span>Master Data Spreadsheet Ingestion Engine</span>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800">XLSX / CSV AUTO-PARSER</span>
+          </h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">Upload master Excel spreadsheets for bulk ingestion of Areas, Generators, BTS Tower Nodes, and Field Personnel</p>
+        </div>
+        <!-- Template Download Buttons -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <button type="button" onclick="downloadMasterTemplate('areas')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs">
+            <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Areas Template.csv</span>
+          </button>
+          <button type="button" onclick="downloadMasterTemplate('generators')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs">
+            <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Generators Template.csv</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Drag and Drop Box -->
+      <div id="settings-drag-drop-zone" class="border-2 border-dashed border-emerald-300 dark:border-emerald-700/80 rounded-2xl p-8 bg-emerald-50/40 dark:bg-emerald-950/20 text-center flex flex-col items-center justify-center gap-3 transition cursor-pointer hover:bg-emerald-50/70" onclick="document.getElementById('settings-excel-file-input').click()">
+        <div class="w-14 h-14 rounded-2xl bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-300 flex items-center justify-center shadow-xs">
+          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="12" y2="12"/><line x1="15" y1="15" x2="12" y2="12"/></svg>
+        </div>
+        <div>
+          <div class="text-sm font-bold text-slate-900 dark:text-white" id="settings-excel-filename-disp">Click or drag & drop Master Excel / CSV file here</div>
+          <div class="text-xs text-slate-600 dark:text-slate-400 mt-1">Supports standard .xlsx, .xls, and UTF-8 encoded .csv master inventories</div>
+        </div>
+        <div class="flex items-center gap-2 mt-1">
+          <button type="button" onclick="event.stopPropagation(); document.getElementById('settings-excel-file-input').click()" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-xs cursor-pointer">
+            Browse Spreadsheet
+          </button>
+          <input type="file" id="settings-excel-file-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleSettingsMasterFileUpload(this)" />
+        </div>
+      </div>
+
+      <!-- Live Parse Preview & Ingestion Console -->
+      <div id="settings-excel-preview-box" class="hidden flex-col gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+            <strong class="text-slate-900 dark:text-white font-black" id="settings-excel-summary-title">Spreadsheet Parsed Successfully</strong>
+          </div>
+          <span class="font-mono text-[11px] font-bold text-emerald-700 dark:text-emerald-400" id="settings-excel-rows-count">0 Rows Ready</span>
+        </div>
+        <div class="overflow-x-auto max-h-[220px] overflow-y-auto">
+          <table class="w-full text-left text-[11px]" id="settings-excel-preview-table">
+            <thead>
+              <tr class="text-[9px] font-mono text-slate-400 uppercase border-b border-slate-200 dark:border-slate-700" id="settings-excel-preview-thead"></tr>
+            </thead>
+            <tbody id="settings-excel-preview-tbody" class="divide-y divide-slate-200/60 dark:divide-slate-700/60"></tbody>
+          </table>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+          <button type="button" onclick="discardSettingsMasterFile()" class="px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-300">Discard</button>
+          <button type="button" onclick="commitSettingsMasterIngestion()" class="px-5 py-1.5 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white font-bold hover:bg-slate-800 flex items-center gap-1.5 shadow-xs cursor-pointer">
+            <svg class="w-3.5 h-3.5 text-emerald-400 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Commit to Master Database</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- TAB 2: SCADA & EDGE GATEWAY (Modbus RS-485, TCP, MQTT Broker, Ping) -->
+  <!-- =================================================================== -->
+  <div id="set-panel-gateway" class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs hidden">
+    <!-- Left: Modbus RS-485 & Gateway -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <h3 class="text-sm font-black text-slate-900 dark:text-white">Modbus RTU / RS-485 Concentrator</h3>
+        <span class="text-[9px] font-mono bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded font-bold">SERIAL LAYER</span>
+      </div>
+
+      <!-- Sweep Frequency -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">Telemetry Sweep Frequency</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Continuous Modbus RS-485 polling cycle</span>
+        </div>
+        <select id="cfg-poll-freq" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 font-bold text-slate-800 dark:text-slate-200 text-xs outline-none">
           <option value="1000">1,000 ms (Fast Polling)</option>
           <option value="3000" selected>3,000 ms (Standard)</option>
           <option value="5000">5,000 ms (Eco Network)</option>
+          <option value="10000">10,000 ms (Slow WAN)</option>
         </select>
       </div>
 
-      <!-- Modbus Baud Rate -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+      <!-- Baud Rate -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
         <div>
-          <label class="font-bold text-slate-900 block">Default Modbus Baud Rate</label>
-          <span class="text-[11px] text-slate-600">Serial communication baud on RS-485 bus</span>
+          <label class="font-bold text-slate-900 dark:text-white block">Serial Baud Rate</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">RS-485 physical bus transfer rate</span>
         </div>
-        <select id="cfg-baud-rate" class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 font-bold text-slate-800 text-xs outline-none focus:border-slate-900">
+        <select id="cfg-baud-rate" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 font-bold text-slate-800 dark:text-slate-200 text-xs outline-none">
           <option value="9600" selected>9600 bps (DSE Default)</option>
           <option value="19200">19200 bps (High Speed)</option>
           <option value="38400">38400 bps (Fiber RTU)</option>
@@ -1092,39 +1530,129 @@
       </div>
 
       <!-- Concentrator IP -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
         <div>
-          <label class="font-bold text-slate-900 block">Primary IP Gateway Concentrator</label>
-          <span class="text-[11px] text-slate-600">Modbus TCP/IP to RS-485 bridge</span>
+          <label class="font-bold text-slate-900 dark:text-white block">Modbus TCP/IP Gateway Host</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">IP-to-RS485 bridge endpoint</span>
         </div>
-        <input type="text" id="cfg-ip-gateway" value="192.168.10.1:502" class="w-40 px-3 py-1.5 rounded-xl bg-white border border-slate-200 font-mono font-bold text-slate-800 text-xs outline-none focus:border-slate-900" />
+        <input type="text" id="cfg-ip-gateway" value="192.168.10.1:502" class="w-44 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-800 dark:text-slate-200 text-xs outline-none" />
       </div>
 
-      <!-- Smooth UI Animations Toggle -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
-        <div>
-          <label class="font-bold text-slate-900 block">Smooth Gauge Animations</label>
-          <span class="text-[11px] text-slate-600">Hardware-accelerated CSS needle sweeps</span>
+      <!-- Parity & Stop Bits -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+          <label class="font-bold text-slate-900 dark:text-white block mb-1">Serial Parity</label>
+          <select id="cfg-parity" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 font-bold text-slate-800 dark:text-slate-200 text-xs outline-none">
+            <option value="none" selected>None (8N1)</option>
+            <option value="even">Even (8E1)</option>
+            <option value="odd">Odd (8O1)</option>
+          </select>
         </div>
-        <label class="relative inline-flex items-center cursor-pointer">
-          <input type="checkbox" id="cfg-anim-toggle" checked class="sr-only peer" />
-          <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
-        </label>
+        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+          <label class="font-bold text-slate-900 dark:text-white block mb-1">Modbus Slave ID</label>
+          <input type="number" id="cfg-slave-id" value="1" min="1" max="247" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 font-mono font-bold text-slate-800 dark:text-slate-200 text-xs outline-none" />
+        </div>
       </div>
     </div>
 
-    <!-- Right Column: Safety & Acoustic Thresholds -->
-    <div class="bg-white/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 shadow-md flex flex-col gap-4">
-      <h3 class="text-sm font-black text-slate-900 border-b border-slate-100 pb-2">Safety Limits & Acoustic Siren</h3>
+    <!-- Right: MQTT Broker & Diagnostic Ping -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <h3 class="text-sm font-black text-slate-900 dark:text-white">MQTT Cloud Ingestion Pipeline</h3>
+        <span class="text-[9px] font-mono bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-1.5 py-0.5 rounded font-bold">TLS BROKER</span>
+      </div>
+
+      <!-- Broker Host -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">Broker URI & TLS Port</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Enterprise HiveMQ / Mosquitto TLS</span>
+        </div>
+        <input type="text" id="cfg-mqtt-broker" value="mqtts://broker.arenaiot.com:8883" class="w-56 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-800 dark:text-slate-200 text-xs outline-none" />
+      </div>
+
+      <!-- Base Topic -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">Base Telemetry Topic</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">MQTT publish pattern</span>
+        </div>
+        <input type="text" id="cfg-mqtt-topic" value="arenaiot/rms/telemetry/{gen_id}" class="w-56 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-800 dark:text-slate-200 text-xs outline-none" />
+      </div>
+
+      <!-- Diagnostic Ping Action Card -->
+      <div class="p-4 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 flex flex-col gap-2.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-indigo-950 dark:text-indigo-200">Edge Gateway Ping Diagnostic</span>
+          <button type="button" onclick="pingGatewayDiagnostic()" id="btn-ping-gateway" class="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <span>Run Ping Test</span>
+          </button>
+        </div>
+        <div id="gateway-ping-log" class="font-mono text-[10px] p-2.5 rounded-xl bg-slate-900 text-emerald-400 max-h-24 overflow-y-auto leading-relaxed">
+          [SCADA GATEWAY OK] Listening on 192.168.10.1:502. 492 nodes reachable via Modbus RTU / RS-485.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- TAB 3: ALARM THRESHOLDS & ACOUSTIC SIREN                            -->
+  <!-- =================================================================== -->
+  <div id="set-panel-thresholds" class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs hidden">
+    <!-- Sliders Column -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <h3 class="text-sm font-black text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">Safety Limits & Automatic Shutdowns</h3>
+
+      <!-- High Coolant Temp Threshold -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <label class="font-bold text-slate-900 dark:text-white block">High Coolant Temperature Trip</label>
+            <span class="text-[11px] text-slate-600 dark:text-slate-400">Engine thermal overload shutdown limit</span>
+          </div>
+          <span class="font-mono font-bold text-xs text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950 px-2 py-0.5 rounded border border-rose-200 dark:border-rose-800" id="cfg-temp-disp">98 °C</span>
+        </div>
+        <input type="range" id="cfg-temp-slider" min="85" max="110" value="98" oninput="document.getElementById('cfg-temp-disp').textContent = this.value + ' °C'" class="w-full accent-rose-600 cursor-pointer" />
+      </div>
+
+      <!-- Low Oil Pressure Threshold -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <label class="font-bold text-slate-900 dark:text-white block">Low Lube Oil Pressure Trip</label>
+            <span class="text-[11px] text-slate-600 dark:text-slate-400">Hydro-dynamic mechanical protection threshold</span>
+          </div>
+          <span class="font-mono font-bold text-xs text-amber-800 dark:text-amber-400 bg-amber-50 dark:bg-amber-950 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800" id="cfg-oil-disp">1.20 bar</span>
+        </div>
+        <input type="range" id="cfg-oil-slider" min="0.8" max="2.0" step="0.05" value="1.20" oninput="document.getElementById('cfg-oil-disp').textContent = parseFloat(this.value).toFixed(2) + ' bar'" class="w-full accent-amber-600 cursor-pointer" />
+      </div>
+
+      <!-- Low Fuel Warning Threshold -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <label class="font-bold text-slate-900 dark:text-white block">Low Fuel Reserve Alarm</label>
+            <span class="text-[11px] text-slate-600 dark:text-slate-400">Refueling logistics notification trigger</span>
+          </div>
+          <span class="font-mono font-bold text-xs text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800" id="cfg-fuel-disp">25 %</span>
+        </div>
+        <input type="range" id="cfg-fuel-slider" min="10" max="50" value="25" oninput="document.getElementById('cfg-fuel-disp').textContent = this.value + ' %'" class="w-full accent-indigo-600 cursor-pointer" />
+      </div>
+    </div>
+
+    <!-- Siren & Notification Channels -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <h3 class="text-sm font-black text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">Acoustic Audio & Automated Notification Matrix</h3>
 
       <!-- Acoustic Siren Toggle -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
         <div>
-          <label class="font-bold text-slate-900 block">Acoustic Audio Alarm</label>
-          <span class="text-[11px] text-slate-600">Play acoustic warning signal upon Critical Outage trigger</span>
+          <label class="font-bold text-slate-900 dark:text-white block">Acoustic Audio Siren</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Audible pulse on Critical Trip or Emergency Stop</span>
         </div>
         <div class="flex items-center gap-2">
-          <button type="button" onclick="playTestSiren()" class="px-2.5 py-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-[10px] font-bold transition">Test Beep</button>
+          <button type="button" onclick="playTestSiren()" class="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-[10px] font-bold transition">Test Beep</button>
           <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" id="cfg-audio-alarm" checked class="sr-only peer" />
             <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
@@ -1132,48 +1660,173 @@
         </div>
       </div>
 
-      <!-- High Coolant Temp Threshold -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2">
-        <div class="flex items-center justify-between">
-          <div>
-            <label class="font-bold text-slate-900 block">High Coolant Temperature Trip</label>
-            <span class="text-[11px] text-slate-600">Engine thermal overload shutdown limit</span>
-          </div>
-          <span class="font-mono font-bold text-xs text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200" id="cfg-temp-disp">98 °C</span>
+      <!-- Incident Dispatch Channels -->
+      <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2.5">
+        <span class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Automated Dispatch Channels</span>
+        <label class="flex items-center justify-between cursor-pointer">
+          <span class="font-bold text-slate-800 dark:text-slate-200">SMS Direct to Lead Engineer (#AR-9402)</span>
+          <input type="checkbox" id="cfg-ch-sms" checked class="w-4 h-4 text-emerald-600 rounded" />
+        </label>
+        <label class="flex items-center justify-between cursor-pointer">
+          <span class="font-bold text-slate-800 dark:text-slate-200">Email Escalation to Regional Directors</span>
+          <input type="checkbox" id="cfg-ch-email" checked class="w-4 h-4 text-emerald-600 rounded" />
+        </label>
+        <label class="flex items-center justify-between cursor-pointer">
+          <span class="font-bold text-slate-800 dark:text-slate-200">SCADA Webhook Alert Relay</span>
+          <input type="checkbox" id="cfg-ch-webhook" class="w-4 h-4 text-emerald-600 rounded" />
+        </label>
+        <div class="pt-1">
+          <input type="url" id="cfg-webhook-url" value="https://api.arenaiot.com/v1/alerts/webhook" class="w-full px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[11px] text-slate-800 dark:text-slate-200 outline-none" placeholder="Webhook URL" />
         </div>
-        <input type="range" id="cfg-temp-slider" min="85" max="110" value="98" oninput="document.getElementById('cfg-temp-disp').textContent = this.value + ' °C'" class="w-full accent-rose-600 cursor-pointer" />
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- TAB 4: PREVENTIVE MAINTENANCE INTERVALS                            -->
+  <!-- =================================================================== -->
+  <div id="set-panel-maint" class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs hidden">
+    <!-- Routine Intervals -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <h3 class="text-sm font-black text-slate-900 dark:text-white">Standard Service Cycles</h3>
+        <span class="text-[9px] font-mono bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded font-bold">HOURS CADENCE</span>
       </div>
 
-      <!-- Low Oil Pressure Threshold -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2">
-        <div class="flex items-center justify-between">
-          <div>
-            <label class="font-bold text-slate-900 block">Low Lube Oil Pressure Trip</label>
-            <span class="text-[11px] text-slate-600">Engine hydro-dynamic protection threshold</span>
-          </div>
-          <span class="font-mono font-bold text-xs text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200" id="cfg-oil-disp">1.20 bar</span>
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">PM-A Minor Service</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Lube oil sump change and primary oil filter renewal</span>
         </div>
-        <input type="range" id="cfg-oil-slider" min="0.8" max="2.0" step="0.05" value="1.20" oninput="document.getElementById('cfg-oil-disp').textContent = parseFloat(this.value).toFixed(2) + ' bar'" class="w-full accent-amber-600 cursor-pointer" />
+        <div class="flex items-center gap-1 font-mono font-bold text-slate-800 dark:text-slate-200">
+          <input type="number" id="cfg-pma-hours" value="250" class="w-20 px-2 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center text-xs outline-none" />
+          <span>hrs</span>
+        </div>
       </div>
 
-      <!-- Low Fuel Warning Threshold -->
-      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2">
-        <div class="flex items-center justify-between">
-          <div>
-            <label class="font-bold text-slate-900 block">Low Fuel Reserve Alarm</label>
-            <span class="text-[11px] text-slate-600">Refueling dispatch notification trigger</span>
-          </div>
-          <span class="font-mono font-bold text-xs text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200" id="cfg-fuel-disp">25 %</span>
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">PM-B Intermediate Service</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Fuel filters, water separator, and air cleaner replacement</span>
         </div>
-        <input type="range" id="cfg-fuel-slider" min="10" max="50" value="25" oninput="document.getElementById('cfg-fuel-disp').textContent = this.value + ' %'" class="w-full accent-indigo-600 cursor-pointer" />
+        <div class="flex items-center gap-1 font-mono font-bold text-slate-800 dark:text-slate-200">
+          <input type="number" id="cfg-pmb-hours" value="480" class="w-20 px-2 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center text-xs outline-none" />
+          <span>hrs</span>
+        </div>
       </div>
 
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">PM-C Major Overhaul</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Injector calibration, valve lash, and coolant system renewal</span>
+        </div>
+        <div class="flex items-center gap-1 font-mono font-bold text-slate-800 dark:text-slate-200">
+          <input type="number" id="cfg-pmc-hours" value="2000" class="w-20 px-2 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center text-xs outline-none" />
+          <span>hrs</span>
+        </div>
+      </div>
     </div>
 
+    <!-- Sump Degradation & Safety Rules -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <h3 class="text-sm font-black text-slate-900 dark:text-white">Lube Oil Degradation & LOTO Compliance</h3>
+        <span class="text-[9px] font-mono bg-rose-50 dark:bg-rose-950 text-rose-700 dark:text-rose-300 px-1.5 py-0.5 rounded font-bold">SAFETY INTERLOCK</span>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">Sump Health Decay Coefficient</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Calculated oil oxidation rate per 50 operating hours</span>
+        </div>
+        <div class="flex items-center gap-1 font-mono font-bold text-slate-800 dark:text-slate-200">
+          <input type="number" id="cfg-oil-decay" value="3.2" step="0.1" class="w-16 px-2 py-1 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center text-xs outline-none" />
+          <span>%</span>
+        </div>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">Lockout Tag-Out (LOTO) Enforcement</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Prohibit remote start commands when technician is on site</span>
+        </div>
+        <input type="checkbox" id="cfg-loto-enforce" checked class="w-4 h-4 text-emerald-600 rounded" />
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+        <div>
+          <label class="font-bold text-slate-900 dark:text-white block">Automatic Work Order Creation</label>
+          <span class="text-[11px] text-slate-600 dark:text-slate-400">Generate ticket when service countdown &lt; 24h</span>
+        </div>
+        <input type="checkbox" id="cfg-auto-wo" checked class="w-4 h-4 text-emerald-600 rounded" />
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- TAB 5: SNAPSHOT BACKUP & AUDIT TRAIL LOG                            -->
+  <!-- =================================================================== -->
+  <div id="set-panel-backup" class="flex flex-col gap-6 hidden">
+    <!-- Backup & Restore Strip -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-white/90 dark:border-slate-800 shadow-sm flex flex-col gap-2">
+        <div class="font-black text-slate-900 dark:text-white text-xs">Export System Snapshot</div>
+        <p class="text-[11px] text-slate-600 dark:text-slate-400">Download complete master database, thresholds, and operational configuration as JSON.</p>
+        <button type="button" onclick="exportSystemSnapshot()" class="mt-auto px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-600 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Download Snapshot (.json)</span>
+        </button>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-white/90 dark:border-slate-800 shadow-sm flex flex-col gap-2">
+        <div class="font-black text-slate-900 dark:text-white text-xs">Restore System Snapshot</div>
+        <p class="text-[11px] text-slate-600 dark:text-slate-400">Restore master inventory and configuration from a previously exported JSON backup file.</p>
+        <button type="button" onclick="document.getElementById('snapshot-file-input').click()" class="mt-auto px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Select JSON File</span>
+        </button>
+        <input type="file" id="snapshot-file-input" accept=".json" class="hidden" onchange="importSystemSnapshot(this)" />
+      </div>
+
+      <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-white/90 dark:border-slate-800 shadow-sm flex flex-col gap-2">
+        <div class="font-black text-slate-900 dark:text-white text-xs">Factory Baseline Reset</div>
+        <p class="text-[11px] text-slate-600 dark:text-slate-400">Purge local overrides and restore nominal engineering baselines for all 492 nodes.</p>
+        <button type="button" onclick="resetScadaSettings()" class="mt-auto px-4 py-2 rounded-xl bg-rose-50 dark:bg-rose-950 hover:bg-rose-100 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          <span>Factory Reset System</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live SCADA Audit Trail Table -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <div class="flex items-center gap-2">
+          <h3 class="text-sm font-black text-slate-900 dark:text-white">SCADA System Configuration Audit Trail</h3>
+          <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400">IMMUTABLE LOG</span>
+        </div>
+        <button type="button" onclick="clearAuditLog()" class="text-xs font-bold text-slate-400 hover:text-slate-600 cursor-pointer">Clear Recent</button>
+      </div>
+      <div class="overflow-x-auto max-h-[300px] overflow-y-auto">
+        <table class="w-full text-left text-xs" id="scada-audit-table">
+          <thead>
+            <tr class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 dark:border-slate-800">
+              <th class="pb-2.5">Timestamp</th>
+              <th class="pb-2.5">Operator Identity</th>
+              <th class="pb-2.5">Clearance</th>
+              <th class="pb-2.5">Subsystem Action</th>
+              <th class="pb-2.5 text-right">Status</th>
+            </tr>
+          </thead>
+          <tbody id="scada-audit-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium font-mono text-[11px]">
+            <!-- Rendered via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
 </div>
-
     </main>
   </div>
 
@@ -1808,11 +2461,11 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         <div class="flex items-center gap-2 text-slate-700">
           <svg class="w-4 h-4 text-indigo-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          <a href="#" id="pers-modal-email" class="font-bold hover:text-indigo-600 truncate">tariqul.islam@arenaiot.com</a>
+          <a href="mailto:tariqul.islam@arenaiot.com" id="pers-modal-email" class="font-bold hover:text-indigo-600 truncate">tariqul.islam@arenaiot.com</a>
         </div>
         <div class="flex items-center gap-2 text-slate-700">
           <svg class="w-4 h-4 text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <a href="#" id="pers-modal-phone" class="font-mono font-bold hover:text-emerald-700">+880 1711-948201</a>
+          <a href="tel:+8801711948201" id="pers-modal-phone" class="font-mono font-bold hover:text-emerald-700">+880 1711-948201</a>
         </div>
         <div class="flex items-center gap-2 text-slate-700">
           <svg class="w-4 h-4 text-purple-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -2323,19 +2976,46 @@
   // SCREEN NAVIGATION
   const SCREENS = ['overview', 'live', 'map', 'alarms', 'control', 'comm', 'noc', 'settings', 'cms'];
 
+  const SCREEN_PAGE_MAP = {
+    'overview': 'overview.html',
+    'live': 'telemetry.html',
+    'telemetry': 'telemetry.html',
+    'map': 'map.html',
+    'alarms': 'alarms.html',
+    'control': 'control.html',
+    'comm': 'comm.html',
+    'noc': 'noc.html',
+    'settings': 'settings.html',
+    'cms': 'cms.html',
+    'subtotal': 'subtotal.html',
+    'history': 'history.html',
+    'maintenance': 'maintenance.html',
+    'franchise': 'franchise-management.html',
+    'generator': 'generator-management.html',
+    'generators': 'generator-management.html'
+  };
+
   function showScreen(screenId) {
-    if (screenId === 'map') {
-      showScreen('overview');
-      const mapBtn = document.getElementById('nav-btn-map');
-      if (mapBtn) {
-        document.querySelectorAll('.rail-btn').forEach(b => b.classList.remove('rail-btn-active'));
-        mapBtn.classList.add('rail-btn-active');
-      }
-      setTimeout(() => {
-        scrollToModule('map');
-        if (mapInstance) mapInstance.invalidateSize();
-      }, 100);
+    const targetPage = SCREEN_PAGE_MAP[screenId] || (screenId + '.html');
+    const targetEl = document.getElementById(`screen-${screenId}`);
+    const currentFile = window.location.pathname.split('/').pop() || 'overview.html';
+
+    // If target container is not present on this standalone page, navigate to its dedicated page!
+    if (!targetEl && currentFile !== targetPage) {
+      window.location.href = targetPage;
       return;
+    }
+
+    if (screenId === 'map') {
+      const mapWrapper = document.getElementById('wrapper-map');
+      if (mapWrapper) {
+        scrollToModule('map');
+        if (typeof mapInstance !== 'undefined' && mapInstance) mapInstance.invalidateSize();
+        return;
+      } else if (currentFile !== 'map.html') {
+        window.location.href = 'map.html';
+        return;
+      }
     }
 
     currentScreen = screenId;
@@ -4411,7 +5091,7 @@
   // -------------------------------------------------------------------------
   // A. USER PROFILE AVATAR (300x300 FORMAT)
   // -------------------------------------------------------------------------
-  let tempUserAvatarBase64_300 = null;
+  var tempUserAvatarBase64_300 = window.tempUserAvatarBase64_300 || null;
 
   function handleUserAvatarUpload(input) {
     if (input.files && input.files[0]) {
@@ -5277,29 +5957,808 @@ function exportHistoryCsv() {
   showScadaToast('Historical CSV Exported', '6-month daily rollup records downloaded.');
 }
 
-// --- SETTINGS ENGINE ---
+// --- SETTINGS ENGINE & MASTER DATA INPUT HUB ---
+
+// 1. Navigation Tab Switching
+function switchSettingsTab(tabKey) {
+  const tabs = ['master', 'gateway', 'thresholds', 'maint', 'backup'];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`set-tab-btn-${t}`);
+    const panel = document.getElementById(`set-panel-${t}`);
+    if (btn) {
+      if (t === tabKey) {
+        btn.className = 'set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-black transition flex items-center gap-2 bg-slate-900 text-white shadow-2xs cursor-pointer';
+      } else {
+        btn.className = 'set-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-2 cursor-pointer';
+      }
+    }
+    if (panel) {
+      if (t === tabKey) {
+        panel.classList.remove('hidden');
+        if (t === 'gateway' || t === 'thresholds' || t === 'maint') {
+          panel.style.display = 'grid';
+        } else {
+          panel.style.display = 'flex';
+        }
+      } else {
+        panel.classList.add('hidden');
+        panel.style.display = 'none';
+      }
+    }
+  });
+}
+
+// 2. Master Data Sub-Section Switching
+function switchMasterSubSection(subKey) {
+  const subs = ['area', 'tower', 'gen', 'personnel', 'excel'];
+  subs.forEach(s => {
+    const btn = document.getElementById(`msub-btn-${s}`);
+    const panel = document.getElementById(`msub-panel-${s}`);
+    if (btn) {
+      if (s === subKey) {
+        btn.className = s === 'excel'
+          ? 'msub-btn px-3 py-1.5 rounded-xl bg-emerald-700 text-white font-black shadow-xs cursor-pointer'
+          : 'msub-btn px-3 py-1.5 rounded-xl bg-slate-900 text-white shadow-xs font-black cursor-pointer';
+      } else {
+        btn.className = s === 'excel'
+          ? 'msub-btn px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 cursor-pointer'
+          : 'msub-btn px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 cursor-pointer';
+      }
+    }
+    if (panel) {
+      if (s === subKey) {
+        panel.classList.remove('hidden');
+        if (s === 'excel') {
+          panel.style.display = 'flex';
+        } else {
+          panel.style.display = 'grid';
+        }
+      } else {
+        panel.classList.add('hidden');
+        panel.style.display = 'none';
+      }
+    }
+  });
+}
+
+// 3. Default Master Datasets
+const DEFAULT_SETTINGS_AREAS = [
+  { code: 'AREA-DHK-N', name: 'Dhaka North', division: 'Dhaka', director: 'Engr. Tariqul Islam', clusters: 6, sla: '99.8%' },
+  { code: 'AREA-DHK-S', name: 'Dhaka South', division: 'Dhaka', director: 'Engr. Shamim Hossain', clusters: 5, sla: '99.7%' },
+  { code: 'AREA-CTG-M', name: 'Chittagong Metro', division: 'Chittagong', director: 'Engr. Faisal Mahmud', clusters: 4, sla: '99.6%' },
+  { code: 'AREA-CTG-N', name: 'Chittagong North & Port', division: 'Chittagong', director: 'Engr. Rafiqul Alam', clusters: 3, sla: '99.5%' },
+  { code: 'AREA-SYL', name: 'Sylhet Zone', division: 'Sylhet', director: 'Engr. Kamrul Hasan', clusters: 3, sla: '99.4%' },
+  { code: 'AREA-RAJ', name: 'Rajshahi Central', division: 'Rajshahi', director: 'Engr. Mofazzal Hossain', clusters: 2, sla: '99.6%' },
+  { code: 'AREA-KHU', name: 'Khulna Division', division: 'Khulna', director: 'Engr. Anisur Rahman', clusters: 2, sla: '99.3%' },
+  { code: 'AREA-BAR', name: 'Barisal Riverine Division', division: 'Barisal', director: 'Engr. Zahidul Haque', clusters: 2, sla: '99.2%' }
+];
+
+const DEFAULT_SETTINGS_TOWERS = [
+  { uid: 'BTS-GP-0492', operator: 'Grameenphone', area: 'Dhaka North', kw: 60, genId: 'GEN-PK-0104' },
+  { uid: 'BTS-RO-3240', operator: 'Robi Axiata', area: 'Dhaka North', kw: 48, genId: 'GEN-PK-0002' },
+  { uid: 'BTS-BA-9105', operator: 'Banglalink', area: 'Dhaka South', kw: 70, genId: 'GEN-PK-0003' },
+  { uid: 'BTS-TE-5249', operator: 'Teletalk', area: 'Dhaka South', kw: 36, genId: 'GEN-PK-0004' },
+  { uid: 'BTS-GP-3645', operator: 'Grameenphone', area: 'Chittagong Metro', kw: 60, genId: 'GEN-PK-0005' },
+  { uid: 'BTS-RO-2667', operator: 'Robi Axiata', area: 'Chittagong Metro', kw: 88, genId: 'GEN-PK-0006' },
+  { uid: 'BTS-BA-3918', operator: 'Banglalink', area: 'Sylhet Zone', kw: 70, genId: 'GEN-PK-0007' },
+  { uid: 'BTS-TE-5948', operator: 'Teletalk', area: 'Rajshahi Central', kw: 36, genId: 'GEN-PK-0008' }
+];
+
+const DEFAULT_SETTINGS_GENS = [
+  { brand: 'Perkins 1104A-44TG2', kva: 60, kw: 48, rpm: 1500, cyl: '4 Cylinders', controller: 'DSE-7320 MKII' },
+  { brand: 'Caterpillar C4.4 ACERT', kva: 88, kw: 70, rpm: 1500, cyl: '4 Cylinders', controller: 'Cat EMCP 4.2' },
+  { brand: 'Cummins 6BT5.9-G2', kva: 110, kw: 88, rpm: 1500, cyl: '6 Cylinders', controller: 'Cummins PCC 3300' },
+  { brand: 'Kohler KD-62V12', kva: 150, kw: 120, rpm: 1500, cyl: '6 Cylinders', controller: 'DSE-8610 MKII' },
+  { brand: 'Doosan DP086TA', kva: 200, kw: 160, rpm: 1500, cyl: '6 Cylinders', controller: 'ComAp InteliLite 4' }
+];
+
+const DEFAULT_SETTINGS_PERS = [
+  { name: 'Engr. Tariqul Islam', title: 'Regional Director (Dhaka North)', level: 4, uid: 'AR-9401', email: 'tariqul.islam@arenaiot.com', phone: '+880 1711-002931' },
+  { name: 'Engr. Shamim Hossain', title: 'Regional Director (Dhaka South)', level: 4, uid: 'AR-9403', email: 'shamim.hossain@arenaiot.com', phone: '+880 1711-002932' },
+  { name: 'Engr. Faisal Mahmud', title: 'Regional Director (Chittagong Metro)', level: 4, uid: 'AR-9404', email: 'faisal.mahmud@arenaiot.com', phone: '+880 1711-002933' },
+  { name: 'Engr. Kamrul Hasan', title: 'Regional Director (Sylhet Zone)', level: 4, uid: 'AR-9405', email: 'kamrul.hasan@arenaiot.com', phone: '+880 1711-002934' },
+  { name: 'Lian Ahmed', title: 'Lead SCADA Engineer (National NOC)', level: 3, uid: 'AR-9402', email: 'lian.ahmed@arenaiot.com', phone: '+880 1711-002930' },
+  { name: 'Engr. Hasan Chowdhury', title: 'Lead Field Engineer (Dhanmondi)', level: 3, uid: 'AR-9406', email: 'hasan.chowdhury@arenaiot.com', phone: '+880 1821-728093' },
+  { name: 'Engr. Tanvir Ahmed', title: 'Lead Field Engineer (Agrabad)', level: 3, uid: 'AR-9407', email: 'tanvir.ahmed@arenaiot.com', phone: '+880 1822-617984' },
+  { name: 'Engr. Babul Miah', title: 'Lead Field Engineer (Zindabazar)', level: 3, uid: 'AR-9408', email: 'babul.miah@arenaiot.com', phone: '+880 1823-556120' }
+];
+
+function getMasterAreas() {
+  const raw = localStorage.getItem('genesis_master_areas');
+  return raw ? JSON.parse(raw) : DEFAULT_SETTINGS_AREAS;
+}
+
+function getMasterTowers() {
+  const raw = localStorage.getItem('genesis_master_towers');
+  return raw ? JSON.parse(raw) : DEFAULT_SETTINGS_TOWERS;
+}
+
+function getMasterGenModels() {
+  const raw = localStorage.getItem('genesis_master_gen_models');
+  return raw ? JSON.parse(raw) : DEFAULT_SETTINGS_GENS;
+}
+
+function getMasterPersonnel() {
+  const raw = localStorage.getItem('genesis_master_personnel');
+  return raw ? JSON.parse(raw) : DEFAULT_SETTINGS_PERS;
+}
+
+// 4. Area CRUD
+function renderMasterAreasTable() {
+  const tbody = document.getElementById('m-areas-tbody');
+  const badge = document.getElementById('m-area-count-badge');
+  if (!tbody) return;
+  const list = getMasterAreas();
+  if (badge) badge.textContent = `${list.length} Divisions / Areas`;
+  tbody.innerHTML = list.map((a, idx) => `
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+      <td class="py-2.5">
+        <strong class="text-slate-900 dark:text-white block">${a.name}</strong>
+        <span class="font-mono text-[10px] text-slate-400 font-bold">${a.code || 'AREA-DHK-' + (idx+1)}</span>
+      </td>
+      <td class="py-2.5 text-slate-700 dark:text-slate-300 font-bold">${a.division || 'Dhaka'}</td>
+      <td class="py-2.5 text-slate-800 dark:text-slate-200">${a.director}</td>
+      <td class="py-2.5 font-bold text-slate-700 dark:text-slate-300">${a.clusters} Clusters</td>
+      <td class="py-2.5 font-mono text-emerald-600 dark:text-emerald-400 font-bold">${a.sla}</td>
+      <td class="py-2.5 text-right">
+        <button type="button" onclick="deleteMasterArea(${idx})" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition cursor-pointer">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function saveMasterAreaFromSettings() {
+  const name = document.getElementById('m-area-name')?.value.trim();
+  const division = document.getElementById('m-area-division')?.value;
+  const director = document.getElementById('m-area-director')?.value.trim();
+  const clusters = parseInt(document.getElementById('m-area-clusters')?.value || '4');
+  const sla = (document.getElementById('m-area-sla')?.value || '99.8') + '%';
+  if (!name || !director) return;
+  
+  const list = getMasterAreas();
+  const code = 'AREA-' + name.slice(0,3).toUpperCase() + '-' + Math.floor(Math.random() * 80 + 10);
+  list.unshift({ code, name, division, director, clusters, sla });
+  localStorage.setItem('genesis_master_areas', JSON.stringify(list));
+  renderMasterAreasTable();
+  logScadaAuditEvent(`Registered Master Operational Area: ${name} (${code})`, 'SUCCESS');
+  showScadaToast('Area Registered', `${name} added to SCADA geographical index.`);
+  if (document.getElementById('m-area-name')) document.getElementById('m-area-name').value = '';
+  if (document.getElementById('m-area-director')) document.getElementById('m-area-director').value = '';
+}
+
+function deleteMasterArea(idx) {
+  const list = getMasterAreas();
+  const item = list[idx];
+  if (!confirm(`Are you sure you want to delete Area ${item ? item.name : ''}?`)) return;
+  list.splice(idx, 1);
+  localStorage.setItem('genesis_master_areas', JSON.stringify(list));
+  renderMasterAreasTable();
+  logScadaAuditEvent(`Decommissioned Master Area: ${item ? item.name : 'Unknown'}`, 'SUCCESS');
+  showScadaToast('Area Deleted', 'Operational area removed from SCADA catalog.');
+}
+
+function exportAreasMasterData() {
+  const list = getMasterAreas();
+  let csv = 'Area_Code,Area_Name,Division,Regional_Director,Assigned_Clusters,SLA_Target\n';
+  list.forEach(a => {
+    csv += `"${a.code}","${a.name}","${a.division}","${a.director}",${a.clusters},"${a.sla}"\n`;
+  });
+  downloadCsvBlob(csv, 'genesis_master_areas.csv');
+  showScadaToast('CSV Export Complete', 'Operational areas catalog exported.');
+}
+
+// 5. Tower CRUD
+function renderMasterTowersTable() {
+  const tbody = document.getElementById('m-towers-tbody');
+  const badge = document.getElementById('m-tower-count-badge');
+  if (!tbody) return;
+  const list = getMasterTowers();
+  if (badge) badge.textContent = `${list.length} Monitored Stations`;
+  tbody.innerHTML = list.map((t, idx) => `
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+      <td class="py-2.5 font-mono font-bold text-slate-900 dark:text-white">${t.uid}</td>
+      <td class="py-2.5">
+        <span class="px-2 py-0.5 rounded font-bold text-[10px] ${t.operator.includes('Grameen') ? 'bg-sky-50 text-sky-700' : (t.operator.includes('Robi') ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-800')}">${t.operator}</span>
+      </td>
+      <td class="py-2.5 text-slate-700 dark:text-slate-300 font-bold">${t.area}</td>
+      <td class="py-2.5 font-mono font-bold text-slate-800 dark:text-slate-200">${t.kw} kW</td>
+      <td class="py-2.5 font-mono text-indigo-600 dark:text-indigo-400 font-bold">${t.genId}</td>
+      <td class="py-2.5 text-right">
+        <button type="button" onclick="deleteMasterTower(${idx})" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition cursor-pointer">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function saveMasterTowerFromSettings() {
+  const uid = document.getElementById('m-tower-uid')?.value.trim();
+  const operator = document.getElementById('m-tower-operator')?.value;
+  const area = document.getElementById('m-tower-area')?.value;
+  const kw = parseInt(document.getElementById('m-tower-kw')?.value || '60');
+  const genId = document.getElementById('m-tower-genid')?.value.trim();
+  if (!uid || !genId) return;
+
+  const list = getMasterTowers();
+  list.unshift({ uid, operator, area, kw, genId });
+  localStorage.setItem('genesis_master_towers', JSON.stringify(list));
+  renderMasterTowersTable();
+  logScadaAuditEvent(`Added BTS Power Station Node: ${uid} (${operator})`, 'SUCCESS');
+  showScadaToast('Tower Node Saved', `${uid} registered to SCADA operational grid.`);
+  if (document.getElementById('m-tower-uid')) document.getElementById('m-tower-uid').value = '';
+  if (document.getElementById('m-tower-genid')) document.getElementById('m-tower-genid').value = '';
+}
+
+function deleteMasterTower(idx) {
+  const list = getMasterTowers();
+  const item = list[idx];
+  if (!confirm(`Are you sure you want to remove Tower ${item ? item.uid : ''}?`)) return;
+  list.splice(idx, 1);
+  localStorage.setItem('genesis_master_towers', JSON.stringify(list));
+  renderMasterTowersTable();
+  logScadaAuditEvent(`Removed Tower Node: ${item ? item.uid : 'Unknown'}`, 'SUCCESS');
+  showScadaToast('Tower Node Removed', 'Station purged from active polling registry.');
+}
+
+function exportTowersMasterData() {
+  const list = getMasterTowers();
+  let csv = 'Tower_UID,Operator,Area,Grid_Rating_kW,Generator_Unit_ID\n';
+  list.forEach(t => {
+    csv += `"${t.uid}","${t.operator}","${t.area}",${t.kw},"${t.genId}"\n`;
+  });
+  downloadCsvBlob(csv, 'genesis_master_towers.csv');
+  showScadaToast('CSV Export Complete', 'BTS Communication towers catalog exported.');
+}
+
+// 6. Generator Model Catalog CRUD
+function renderMasterGenModelsTable() {
+  const tbody = document.getElementById('m-gens-tbody');
+  const badge = document.getElementById('m-gen-count-badge');
+  if (!tbody) return;
+  const list = getMasterGenModels();
+  if (badge) badge.textContent = `${list.length} Nominal Models`;
+  tbody.innerHTML = list.map((g, idx) => `
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+      <td class="py-2.5 font-black text-slate-900 dark:text-white">${g.brand}</td>
+      <td class="py-2.5 font-mono font-bold text-slate-700 dark:text-slate-300">${g.kva} kVA / ${g.kw} kW</td>
+      <td class="py-2.5 text-slate-600 dark:text-slate-400 font-medium">${g.rpm} RPM · ${g.cyl}</td>
+      <td class="py-2.5">
+        <span class="px-2 py-0.5 rounded font-mono font-bold text-[10px] bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">${g.controller}</span>
+      </td>
+      <td class="py-2.5 text-right">
+        <button type="button" onclick="deleteMasterGenModel(${idx})" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition cursor-pointer">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function saveMasterGenModelFromSettings() {
+  const brand = document.getElementById('m-gen-brand')?.value.trim();
+  const kva = parseInt(document.getElementById('m-gen-kva')?.value || '88');
+  const kw = parseInt(document.getElementById('m-gen-kw')?.value || '70');
+  const rpm = parseInt(document.getElementById('m-gen-rpm')?.value || '1500');
+  const cyl = document.getElementById('m-gen-cyl')?.value.trim() || '4 Cylinders';
+  const controller = document.getElementById('m-gen-controller')?.value || 'DSE-7320 MKII';
+  if (!brand) return;
+
+  const list = getMasterGenModels();
+  list.unshift({ brand, kva, kw, rpm, cyl, controller });
+  localStorage.setItem('genesis_master_gen_models', JSON.stringify(list));
+  renderMasterGenModelsTable();
+  logScadaAuditEvent(`Added Generator Model: ${brand} (${kva} kVA)`, 'SUCCESS');
+  showScadaToast('Model Registered', `${brand} added to SCADA equipment catalog.`);
+  if (document.getElementById('m-gen-brand')) document.getElementById('m-gen-brand').value = '';
+}
+
+function deleteMasterGenModel(idx) {
+  const list = getMasterGenModels();
+  const item = list[idx];
+  if (!confirm(`Are you sure you want to remove Model ${item ? item.brand : ''}?`)) return;
+  list.splice(idx, 1);
+  localStorage.setItem('genesis_master_gen_models', JSON.stringify(list));
+  renderMasterGenModelsTable();
+  logScadaAuditEvent(`Removed Generator Model: ${item ? item.brand : 'Unknown'}`, 'SUCCESS');
+  showScadaToast('Model Removed', 'Generator model removed from active registry.');
+}
+
+function exportGenModelsMasterData() {
+  const list = getMasterGenModels();
+  let csv = 'Brand_Model,Standby_kVA,Prime_kW,RPM,Cylinders,SCADA_Controller\n';
+  list.forEach(g => {
+    csv += `"${g.brand}",${g.kva},${g.kw},${g.rpm},"${g.cyl}","${g.controller}"\n`;
+  });
+  downloadCsvBlob(csv, 'genesis_master_generator_models.csv');
+  showScadaToast('CSV Export Complete', 'Generator model catalog exported.');
+}
+
+// 7. Personnel CRUD
+function renderMasterPersonnelTable() {
+  const tbody = document.getElementById('m-personnel-tbody');
+  const badge = document.getElementById('m-pers-count-badge');
+  if (!tbody) return;
+  const list = getMasterPersonnel();
+  if (badge) badge.textContent = `${list.length} Members`;
+  tbody.innerHTML = list.map((p, idx) => `
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+      <td class="py-2.5">
+        <strong class="text-slate-900 dark:text-white block">${p.name}</strong>
+        <span class="font-mono text-[10px] text-slate-400 font-bold">#${p.uid}</span>
+      </td>
+      <td class="py-2.5 text-slate-700 dark:text-slate-300 font-bold">${p.title}</td>
+      <td class="py-2.5">
+        <span class="px-2 py-0.5 rounded font-mono font-bold text-[10px] ${p.level >= 4 ? 'bg-purple-50 text-purple-700' : 'bg-emerald-50 text-emerald-700'}">Level ${p.level}</span>
+      </td>
+      <td class="py-2.5 font-mono text-slate-600 dark:text-slate-400">${p.email}</td>
+      <td class="py-2.5 text-right">
+        <button type="button" onclick="deleteMasterPersonnel(${idx})" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] transition cursor-pointer">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function saveMasterPersonnelFromSettings() {
+  const name = document.getElementById('m-pers-name')?.value.trim();
+  const title = document.getElementById('m-pers-title')?.value.trim();
+  const level = parseInt(document.getElementById('m-pers-level')?.value || '3');
+  const uid = document.getElementById('m-pers-uid')?.value.trim();
+  const email = document.getElementById('m-pers-email')?.value.trim();
+  const phone = document.getElementById('m-pers-phone')?.value.trim() || '+880 1711-002930';
+  if (!name || !title || !email) return;
+
+  const list = getMasterPersonnel();
+  list.unshift({ name, title, level, uid, email, phone });
+  localStorage.setItem('genesis_master_personnel', JSON.stringify(list));
+  renderMasterPersonnelTable();
+  logScadaAuditEvent(`Added Personnel: ${name} (Level ${level})`, 'SUCCESS');
+  showScadaToast('Personnel Registered', `${name} added to SCADA security roster.`);
+  if (document.getElementById('m-pers-name')) document.getElementById('m-pers-name').value = '';
+  if (document.getElementById('m-pers-title')) document.getElementById('m-pers-title').value = '';
+  if (document.getElementById('m-pers-email')) document.getElementById('m-pers-email').value = '';
+}
+
+function deleteMasterPersonnel(idx) {
+  const list = getMasterPersonnel();
+  const item = list[idx];
+  if (!confirm(`Are you sure you want to remove Personnel ${item ? item.name : ''}?`)) return;
+  list.splice(idx, 1);
+  localStorage.setItem('genesis_master_personnel', JSON.stringify(list));
+  renderMasterPersonnelTable();
+  logScadaAuditEvent(`Removed Personnel: ${item ? item.name : 'Unknown'}`, 'SUCCESS');
+  showScadaToast('Personnel Removed', 'Operator removed from clearance roster.');
+}
+
+function exportPersonnelMasterData() {
+  const list = getMasterPersonnel();
+  let csv = 'Full_Name,Designation,Clearance_Level,Security_UID,Email,Mobile\n';
+  list.forEach(p => {
+    csv += `"${p.name}","${p.title}",${p.level},"${p.uid}","${p.email}","${p.phone}"\n`;
+  });
+  downloadCsvBlob(csv, 'genesis_master_personnel.csv');
+  showScadaToast('CSV Export Complete', 'Personnel operational roster exported.');
+}
+
+// 8. Template Generator & Downloader
+function downloadMasterTemplate(type) {
+  let headers = '';
+  let sample = '';
+  let filename = '';
+  if (type === 'areas') {
+    filename = 'operational_areas_template.csv';
+    headers = 'Area_Code,Area_Name,Division,Regional_Director,Assigned_Clusters,SLA_Target\n';
+    sample = 'AREA-DHK-N,Dhaka North,Dhaka,Engr. Tariqul Islam,6,99.8%\nAREA-CTG-M,Chittagong Metro,Chittagong,Engr. Faisal Mahmud,4,99.6%\nAREA-SYL,Sylhet Zone,Sylhet,Engr. Kamrul Hasan,3,99.4%\n';
+  } else if (type === 'generators') {
+    filename = 'generator_models_template.csv';
+    headers = 'Brand_Model,Standby_kVA,Prime_kW,RPM,Cylinder_Count,SCADA_Controller\n';
+    sample = 'Perkins 1104A-44TG2,60,48,1500,4 Cylinders,DSE-7320 MKII\nCaterpillar C4.4 ACERT,88,70,1500,4 Cylinders,Cat EMCP 4.2\nCummins 6BT5.9-G2,110,88,1500,6 Cylinders,Cummins PCC 3300\n';
+  } else if (type === 'towers') {
+    filename = 'communication_towers_template.csv';
+    headers = 'Tower_UID,Operator,Area,Grid_kW,Generator_ID\n';
+    sample = 'BTS-GP-0492,Grameenphone,Dhaka North,60,GEN-PK-0104\nBTS-RB-3240,Robi Axiata,Dhaka North,48,GEN-PK-0002\n';
+  } else {
+    filename = 'personnel_roster_template.csv';
+    headers = 'Full_Name,Designation,Clearance_Level,Security_UID,Email,Mobile\n';
+    sample = 'Engr. Tariqul Islam,Regional Director (Dhaka North),4,AR-9401,tariqul.islam@arenaiot.com,+880 1711-002931\n';
+  }
+  downloadCsvBlob(headers + sample, filename);
+  showScadaToast('Template Downloaded', `${filename} ready for spreadsheet ingestion.`);
+}
+
+function downloadCsvBlob(csvContent, filename) {
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+// 9. Excel & CSV Batch Ingestion in Settings
+let settingsParsedRows = null;
+let settingsParsedHeaders = null;
+let settingsParsedFileName = '';
+
+function handleSettingsMasterFileUpload(input) {
+  if (!input.files || input.files.length === 0) return;
+  const file = input.files[0];
+  settingsParsedFileName = file.name;
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      let rows = [];
+      if (ext === 'xlsx' || ext === 'xls') {
+        if (typeof XLSX !== 'undefined') {
+          const data = new Uint8Array(e.target.result);
+          const wb = XLSX.read(data, { type: 'array' });
+          const firstSheet = wb.Sheets[wb.SheetNames[0]];
+          rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+        } else {
+          showScadaToast('Format Notice', 'XLSX parser initializing. For fastest local ingestion, save as CSV.', 'warn');
+          return;
+        }
+      } else {
+        const text = e.target.result;
+        rows = text.split(/\r?\n/).map(line => line.split(',').map(c => c.replace(/^["']|["']$/g, '').trim())).filter(r => r.length > 1 && r[0]);
+      }
+
+      if (!rows || rows.length < 2) {
+        showScadaToast('Empty File', 'Spreadsheet contains no data rows.', 'error');
+        return;
+      }
+
+      settingsParsedHeaders = rows[0];
+      settingsParsedRows = rows.slice(1);
+
+      // Render Preview
+      const previewBox = document.getElementById('settings-excel-preview-box');
+      const thead = document.getElementById('settings-excel-preview-thead');
+      const tbody = document.getElementById('settings-excel-preview-tbody');
+      const countEl = document.getElementById('settings-excel-rows-count');
+      const fileDisp = document.getElementById('settings-excel-filename-disp');
+
+      if (fileDisp) fileDisp.textContent = `Selected: ${settingsParsedFileName} (${settingsParsedRows.length} rows)`;
+      if (countEl) countEl.textContent = `${settingsParsedRows.length} Rows Ready`;
+      if (thead) thead.innerHTML = settingsParsedHeaders.map(h => `<th class="py-2 px-2.5">${h}</th>`).join('');
+      if (tbody) {
+        tbody.innerHTML = settingsParsedRows.slice(0, 10).map((r, i) => `
+          <tr class="hover:bg-slate-100 dark:hover:bg-slate-700/50">
+            ${r.map(c => `<td class="py-1.5 px-2.5 font-medium text-slate-800 dark:text-slate-200">${c}</td>`).join('')}
+          </tr>
+        `).join('');
+      }
+      if (previewBox) {
+        previewBox.classList.remove('hidden');
+        previewBox.style.display = 'flex';
+      }
+      showScadaToast('Spreadsheet Analyzed', `${settingsParsedRows.length} records ready for SCADA commit.`);
+    } catch (err) {
+      showScadaToast('Parse Error', err.message, 'error');
+    }
+  };
+
+  if (ext === 'xlsx' || ext === 'xls') {
+    reader.readAsArrayBuffer(file);
+  } else {
+    reader.readAsText(file);
+  }
+}
+
+function discardSettingsMasterFile() {
+  settingsParsedRows = null;
+  settingsParsedHeaders = null;
+  settingsParsedFileName = '';
+  const previewBox = document.getElementById('settings-excel-preview-box');
+  const fileDisp = document.getElementById('settings-excel-filename-disp');
+  const input = document.getElementById('settings-excel-file-input');
+  if (previewBox) { previewBox.classList.add('hidden'); previewBox.style.display = 'none'; }
+  if (fileDisp) fileDisp.textContent = 'Click or drag & drop Master Excel / CSV file here';
+  if (input) input.value = '';
+}
+
+function commitSettingsMasterIngestion() {
+  if (!settingsParsedRows || settingsParsedRows.length === 0) {
+    showScadaToast('No File', 'Please upload a spreadsheet first.', 'warn');
+    return;
+  }
+  const headerStr = settingsParsedHeaders.join(' ').toLowerCase();
+  let category = 'areas';
+  if (headerStr.includes('brand') || headerStr.includes('kva') || headerStr.includes('model')) {
+    category = 'generators';
+    const gens = getMasterGenModels();
+    settingsParsedRows.forEach(r => {
+      gens.unshift({
+        brand: r[0] || 'Generic Model',
+        kva: parseInt(r[1] || '88'),
+        kw: parseInt(r[2] || '70'),
+        rpm: parseInt(r[3] || '1500'),
+        cyl: r[4] || '4 Cylinders',
+        controller: r[5] || 'DSE-7320 MKII'
+      });
+    });
+    localStorage.setItem('genesis_master_gen_models', JSON.stringify(gens));
+    renderMasterGenModelsTable();
+  } else if (headerStr.includes('tower') || headerStr.includes('operator')) {
+    category = 'towers';
+    const towers = getMasterTowers();
+    settingsParsedRows.forEach(r => {
+      towers.unshift({
+        uid: r[0] || 'BTS-NODE-' + Math.floor(Math.random()*800+100),
+        operator: r[1] || 'Grameenphone',
+        area: r[2] || 'Dhaka North',
+        kw: parseInt(r[3] || '60'),
+        genId: r[4] || 'GEN-PK-0104'
+      });
+    });
+    localStorage.setItem('genesis_master_towers', JSON.stringify(towers));
+    renderMasterTowersTable();
+  } else if (headerStr.includes('personnel') || headerStr.includes('designation') || headerStr.includes('email')) {
+    category = 'personnel';
+    const pers = getMasterPersonnel();
+    settingsParsedRows.forEach(r => {
+      pers.unshift({
+        name: r[0] || 'Operator',
+        title: r[1] || 'Field Engineer',
+        level: parseInt(r[2] || '3'),
+        uid: r[3] || 'AR-9400',
+        email: r[4] || 'engineer@arenaiot.com',
+        phone: r[5] || '+880 1711-002930'
+      });
+    });
+    localStorage.setItem('genesis_master_personnel', JSON.stringify(pers));
+    renderMasterPersonnelTable();
+  } else {
+    category = 'areas';
+    const areas = getMasterAreas();
+    settingsParsedRows.forEach(r => {
+      areas.unshift({
+        code: r[0] || 'AREA-NEW',
+        name: r[1] || 'New Area',
+        division: r[2] || 'Dhaka',
+        director: r[3] || 'Engr. Tariqul Islam',
+        clusters: parseInt(r[4] || '4'),
+        sla: r[5] || '99.6%'
+      });
+    });
+    localStorage.setItem('genesis_master_areas', JSON.stringify(areas));
+    renderMasterAreasTable();
+  }
+
+  logScadaAuditEvent(`Batch ingested ${settingsParsedRows.length} ${category} records from ${settingsParsedFileName}`, 'SUCCESS');
+  showScadaToast('Master Data Ingested', `${settingsParsedRows.length} records integrated into SCADA database.`);
+  discardSettingsMasterFile();
+}
+
+// 10. SCADA Edge Gateway Diagnostics
+function pingGatewayDiagnostic() {
+  const logEl = document.getElementById('gateway-ping-log');
+  if (!logEl) return;
+  const gw = document.getElementById('cfg-ip-gateway')?.value || '192.168.10.1:502';
+  const mqtt = document.getElementById('cfg-mqtt-broker')?.value || 'mqtts://broker.arenaiot.com:8883';
+  const now = new Date().toLocaleTimeString();
+  
+  logEl.innerHTML = `[${now}] INITIATING SCADA PING: ${gw} & ${mqtt}...\n` + logEl.innerHTML;
+  
+  setTimeout(() => {
+    const t1 = new Date().toLocaleTimeString();
+    const rtt = Math.floor(Math.random() * 8 + 9);
+    logEl.innerHTML = `[${t1}] [MODBUS RTU] ACK from Slave #1 via ${gw} (RTT: ${rtt}ms, CRC16: 0x8F4E VALID)\n` +
+                      `[${t1}] [MQTT TLS] Cipher: TLS_AES_256_GCM_SHA384, PingResp OK (RTT: 24ms)\n` +
+                      `[${t1}] [SCADA BUS] 492 Power Units polling active. Zero bus frame collisions.\n` + logEl.innerHTML;
+    showScadaToast('SCADA Diagnostic Online', `Modbus gateway ${gw} & MQTT broker verified (${rtt}ms).`, 'success');
+  }, 480);
+}
+
+// 11. Acoustic Siren & Web Audio Tone Generator
+function playTestSiren() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.3);
+  } catch(e) {}
+  showScadaToast('Acoustic Siren Test', 'Simulated 85dB acoustic warning alarm pulse sounded.');
+}
+
+// 12. Save & Reset Configuration
 function saveScadaSettings() {
   const cfg = {
     pollFreq: document.getElementById('cfg-poll-freq')?.value || '3000',
     baudRate: document.getElementById('cfg-baud-rate')?.value || '9600',
     gateway: document.getElementById('cfg-ip-gateway')?.value || '192.168.10.1:502',
-    anim: document.getElementById('cfg-anim-toggle')?.checked ?? true,
-    audio: document.getElementById('cfg-audio-alarm')?.checked ?? true,
+    parity: document.getElementById('cfg-parity')?.value || 'none',
+    slaveId: document.getElementById('cfg-slave-id')?.value || '1',
+    mqttBroker: document.getElementById('cfg-mqtt-broker')?.value || 'mqtts://broker.arenaiot.com:8883',
+    mqttTopic: document.getElementById('cfg-mqtt-topic')?.value || 'arenaiot/rms/telemetry/{gen_id}',
     coolantLimit: document.getElementById('cfg-temp-slider')?.value || '98',
     oilLimit: document.getElementById('cfg-oil-slider')?.value || '1.20',
-    fuelLimit: document.getElementById('cfg-fuel-slider')?.value || '25'
+    fuelLimit: document.getElementById('cfg-fuel-slider')?.value || '25',
+    audio: document.getElementById('cfg-audio-alarm')?.checked ?? true,
+    sms: document.getElementById('cfg-ch-sms')?.checked ?? true,
+    email: document.getElementById('cfg-ch-email')?.checked ?? true,
+    webhook: document.getElementById('cfg-ch-webhook')?.checked ?? false,
+    webhookUrl: document.getElementById('cfg-webhook-url')?.value || '',
+    pmaHours: document.getElementById('cfg-pma-hours')?.value || '250',
+    pmbHours: document.getElementById('cfg-pmb-hours')?.value || '480',
+    pmcHours: document.getElementById('cfg-pmc-hours')?.value || '2000',
+    oilDecay: document.getElementById('cfg-oil-decay')?.value || '3.2',
+    loto: document.getElementById('cfg-loto-enforce')?.checked ?? true,
+    autoWo: document.getElementById('cfg-auto-wo')?.checked ?? true
   };
   localStorage.setItem('genesis_scada_settings', JSON.stringify(cfg));
-  showScadaToast('Settings Saved', 'SCADA parameters and Modbus timing persisted.');
+  logScadaAuditEvent('Saved SCADA gateway, safety thresholds, and preventive maintenance configuration', 'SUCCESS');
+  showScadaToast('Settings Saved', 'SCADA parameters, Modbus gateway, and tripping limits persisted.');
 }
 
 function resetScadaSettings() {
   localStorage.removeItem('genesis_scada_settings');
+  initSettingsModule();
+  logScadaAuditEvent('Restored SCADA settings to nominal engineering baselines', 'SUCCESS');
   showScadaToast('Factory Defaults Restored', 'Configuration reset to nominal SCADA baselines.');
 }
 
-function playTestSiren() {
-  showScadaToast('Acoustic Siren Test', 'Simulated 85dB acoustic warning alarm pulse sounded.');
+function resetSystemBaseline() {
+  resetScadaSettings();
+}
+
+// 13. System Snapshot Backup & Restore
+function exportSystemSnapshot() {
+  const snapshot = {
+    system: 'GENESIS RMS ENTERPRISE SCADA',
+    version: '2.4.0-PROD',
+    exportedAt: new Date().toISOString(),
+    operator: 'Lian Ahmed (#AR-9402)',
+    clearance: 'Level 3: Lead SCADA Engineer',
+    settings: JSON.parse(localStorage.getItem('genesis_scada_settings') || '{}'),
+    masterData: {
+      areas: getMasterAreas(),
+      towers: getMasterTowers(),
+      generators: getMasterGenModels(),
+      personnel: getMasterPersonnel()
+    },
+    auditLog: JSON.parse(localStorage.getItem('genesis_scada_audit_log') || '[]')
+  };
+  const jsonStr = JSON.stringify(snapshot, null, 2);
+  const blob = new Blob([jsonStr], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `genesis_rms_snapshot_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  logScadaAuditEvent('Exported full SCADA system configuration snapshot JSON', 'SUCCESS');
+  showScadaToast('Snapshot Exported', 'Full SCADA master snapshot JSON downloaded.');
+}
+
+function importSystemSnapshot(input) {
+  if (!input || !input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.masterData && !data.settings) {
+        throw new Error('Invalid snapshot structure. Required keys missing.');
+      }
+      if (data.settings) localStorage.setItem('genesis_scada_settings', JSON.stringify(data.settings));
+      if (data.masterData?.areas) localStorage.setItem('genesis_master_areas', JSON.stringify(data.masterData.areas));
+      if (data.masterData?.towers) localStorage.setItem('genesis_master_towers', JSON.stringify(data.masterData.towers));
+      if (data.masterData?.generators) localStorage.setItem('genesis_master_gen_models', JSON.stringify(data.masterData.generators));
+      if (data.masterData?.personnel) localStorage.setItem('genesis_master_personnel', JSON.stringify(data.masterData.personnel));
+      
+      initSettingsModule();
+      logScadaAuditEvent(`Restored system snapshot from file: ${file.name}`, 'SUCCESS');
+      showScadaToast('Snapshot Restored', 'All master tables, thresholds, and gateway parameters updated.');
+    } catch (err) {
+      showScadaToast('Snapshot Restore Failed', err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+// 14. Immutable SCADA Audit Trail
+function logScadaAuditEvent(action, status = 'SUCCESS') {
+  const logs = JSON.parse(localStorage.getItem('genesis_scada_audit_log') || '[]');
+  const now = new Date();
+  const timeStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString();
+  logs.unshift({
+    timestamp: timeStr,
+    operator: 'Lian Ahmed (#AR-9402)',
+    clearance: 'L3: Lead SCADA Engr',
+    action: action,
+    status: status
+  });
+  if (logs.length > 50) logs.pop();
+  localStorage.setItem('genesis_scada_audit_log', JSON.stringify(logs));
+  renderScadaAuditLog();
+}
+
+function renderScadaAuditLog() {
+  const tbody = document.getElementById('scada-audit-tbody');
+  if (!tbody) return;
+  let logs = JSON.parse(localStorage.getItem('genesis_scada_audit_log') || '[]');
+  if (logs.length === 0) {
+    logs = [
+      { timestamp: '2026-11-19 14:20:00', operator: 'Lian Ahmed (#AR-9402)', clearance: 'L3: Lead SCADA Engr', action: 'Applied Modbus RTU sweep cycle 3,000ms across 492 nodes', status: 'SUCCESS' },
+      { timestamp: '2026-11-19 13:45:12', operator: 'Engr. Tariqul Islam (#AR-9401)', clearance: 'L4: Regional Director', action: 'Approved PM-B 480h maintenance interval standard', status: 'SUCCESS' },
+      { timestamp: '2026-11-19 11:10:05', operator: 'Lian Ahmed (#AR-9402)', clearance: 'L3: Lead SCADA Engr', action: 'Calibrated acoustic siren emergency trip at 98 deg C', status: 'SUCCESS' }
+    ];
+    try { localStorage.setItem('genesis_scada_audit_log', JSON.stringify(logs)); } catch(e) {}
+  }
+  tbody.innerHTML = logs.map(l => `
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+      <td class="py-2.5 text-slate-400 font-bold">${l.timestamp}</td>
+      <td class="py-2.5 text-slate-900 dark:text-white font-black">${l.operator}</td>
+      <td class="py-2.5 text-indigo-600 dark:text-indigo-400 font-bold">${l.clearance}</td>
+      <td class="py-2.5 text-slate-700 dark:text-slate-300 font-medium">${l.action}</td>
+      <td class="py-2.5 text-right"><span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${l.status === 'SUCCESS' ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' : 'bg-rose-50 text-rose-700'}">${l.status}</span></td>
+    </tr>
+  `).join('');
+}
+
+function clearAuditLog() {
+  localStorage.setItem('genesis_scada_audit_log', JSON.stringify([]));
+  renderScadaAuditLog();
+  showScadaToast('Audit Trail Cleared', 'Recent volatile audit records pruned.');
+}
+
+// 15. Module Initialization
+function initSettingsModule() {
+  renderMasterAreasTable();
+  renderMasterTowersTable();
+  renderMasterGenModelsTable();
+  renderMasterPersonnelTable();
+  renderScadaAuditLog();
+  
+  // Hydrate form fields with stored settings
+  const raw = localStorage.getItem('genesis_scada_settings');
+  if (raw) {
+    try {
+      const cfg = JSON.parse(raw);
+      if (cfg.pollFreq && document.getElementById('cfg-poll-freq')) document.getElementById('cfg-poll-freq').value = cfg.pollFreq;
+      if (cfg.baudRate && document.getElementById('cfg-baud-rate')) document.getElementById('cfg-baud-rate').value = cfg.baudRate;
+      if (cfg.gateway && document.getElementById('cfg-ip-gateway')) document.getElementById('cfg-ip-gateway').value = cfg.gateway;
+      if (cfg.parity && document.getElementById('cfg-parity')) document.getElementById('cfg-parity').value = cfg.parity;
+      if (cfg.slaveId && document.getElementById('cfg-slave-id')) document.getElementById('cfg-slave-id').value = cfg.slaveId;
+      if (cfg.mqttBroker && document.getElementById('cfg-mqtt-broker')) document.getElementById('cfg-mqtt-broker').value = cfg.mqttBroker;
+      if (cfg.mqttTopic && document.getElementById('cfg-mqtt-topic')) document.getElementById('cfg-mqtt-topic').value = cfg.mqttTopic;
+      if (cfg.coolantLimit && document.getElementById('cfg-temp-slider')) {
+        document.getElementById('cfg-temp-slider').value = cfg.coolantLimit;
+        if (document.getElementById('cfg-temp-disp')) document.getElementById('cfg-temp-disp').textContent = cfg.coolantLimit + ' °C';
+      }
+      if (cfg.oilLimit && document.getElementById('cfg-oil-slider')) {
+        document.getElementById('cfg-oil-slider').value = cfg.oilLimit;
+        if (document.getElementById('cfg-oil-disp')) document.getElementById('cfg-oil-disp').textContent = parseFloat(cfg.oilLimit).toFixed(2) + ' bar';
+      }
+      if (cfg.fuelLimit && document.getElementById('cfg-fuel-slider')) {
+        document.getElementById('cfg-fuel-slider').value = cfg.fuelLimit;
+        if (document.getElementById('cfg-fuel-disp')) document.getElementById('cfg-fuel-disp').textContent = cfg.fuelLimit + ' %';
+      }
+      if (cfg.audio !== undefined && document.getElementById('cfg-audio-alarm')) document.getElementById('cfg-audio-alarm').checked = cfg.audio;
+      if (cfg.sms !== undefined && document.getElementById('cfg-ch-sms')) document.getElementById('cfg-ch-sms').checked = cfg.sms;
+      if (cfg.email !== undefined && document.getElementById('cfg-ch-email')) document.getElementById('cfg-ch-email').checked = cfg.email;
+      if (cfg.webhook !== undefined && document.getElementById('cfg-ch-webhook')) document.getElementById('cfg-ch-webhook').checked = cfg.webhook;
+      if (cfg.webhookUrl && document.getElementById('cfg-webhook-url')) document.getElementById('cfg-webhook-url').value = cfg.webhookUrl;
+      if (cfg.pmaHours && document.getElementById('cfg-pma-hours')) document.getElementById('cfg-pma-hours').value = cfg.pmaHours;
+      if (cfg.pmbHours && document.getElementById('cfg-pmb-hours')) document.getElementById('cfg-pmb-hours').value = cfg.pmbHours;
+      if (cfg.pmcHours && document.getElementById('cfg-pmc-hours')) document.getElementById('cfg-pmc-hours').value = cfg.pmcHours;
+      if (cfg.oilDecay && document.getElementById('cfg-oil-decay')) document.getElementById('cfg-oil-decay').value = cfg.oilDecay;
+      if (cfg.loto !== undefined && document.getElementById('cfg-loto-enforce')) document.getElementById('cfg-loto-enforce').checked = cfg.loto;
+      if (cfg.autoWo !== undefined && document.getElementById('cfg-auto-wo')) document.getElementById('cfg-auto-wo').checked = cfg.autoWo;
+    } catch(e) {}
+  }
+}
+
+// Auto-run on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSettingsModule);
+} else {
+  initSettingsModule();
 }
 
 // --- HEADER NOTIFICATIONS FLYOUT ENGINE ---
@@ -5387,7 +6846,7 @@ function downloadTechnicalDatasheet(title) {
 // =========================================================================
 // 1. USER PROFILE & 300x300 AVATAR UPLOAD / PERSISTENCE ENGINE
 // =========================================================================
-let tempUserAvatarBase64_300 = null;
+var tempUserAvatarBase64_300 = window.tempUserAvatarBase64_300 || null;
 
 function handleProfileAvatarUpload(input) {
   if (!input || !input.files || !input.files[0]) return;
@@ -6533,51 +7992,33 @@ function downloadMasterDataTemplate(category = 'areas') {
   const templates = {
     areas: {
       filename: 'GENESIS_Template_Operational_Areas.csv',
-      content: 'Area Code,Area Name,Division,Regional Director,Contact Email,Mobile,SLA Target %,Clusters Count
-' +
-               'AREA-DHK-N,Dhaka North,Dhaka,Engr. Tariqul Islam,tariqul.islam@arenaiot.com,+880 1711-948201,99.8,6
-' +
-               'AREA-DHK-S,Dhaka South,Dhaka,Engr. Shamim Hossain,shamim.hossain@arenaiot.com,+880 1711-948202,99.7,5
-' +
-               'AREA-CTG-M,Chittagong Metro,Chittagong,Engr. Faisal Mahmud,faisal.mahmud@arenaiot.com,+880 1711-948203,99.6,4
-' +
-               'AREA-SYL,Sylhet Zone,Sylhet,Engr. Kamrul Hasan,kamrul.hasan@arenaiot.com,+880 1711-948204,99.4,3
-'
+      content: 'Area Code,Area Name,Division,Regional Director,Contact Email,Mobile,SLA Target %,Clusters Count\n' +
+               'AREA-DHK-N,Dhaka North,Dhaka,Engr. Tariqul Islam,tariqul.islam@arenaiot.com,+880 1711-948201,99.8,6\n' +
+               'AREA-DHK-S,Dhaka South,Dhaka,Engr. Shamim Hossain,shamim.hossain@arenaiot.com,+880 1711-948202,99.7,5\n' +
+               'AREA-CTG-M,Chittagong Metro,Chittagong,Engr. Faisal Mahmud,faisal.mahmud@arenaiot.com,+880 1711-948203,99.6,4\n' +
+               'AREA-SYL,Sylhet Zone,Sylhet,Engr. Kamrul Hasan,kamrul.hasan@arenaiot.com,+880 1711-948204,99.4,3\n'
     },
     generators: {
       filename: 'GENESIS_Template_Generator_Grid.csv',
-      content: 'Generator ID,Tower ID,Model Name,Brand,Rating kVA,Prime kW,Serial Number,Controller,Sump Capacity L,Fuel Tank L,Runtime Hours
-' +
-               'GEN-PK-0104,BTS-GP-0492,Perkins 1104A-44TG2,Perkins,60,48,PK-849204-TG,DSE-7320 MKII,8.0,250,320.5
-' +
-               'GEN-CAT-0312,BTS-BL-1944,Caterpillar C4.4 ACERT,Caterpillar,88,70,CAT-338291-AC,DSE-7320 MKII,11.0,350,540.2
-' +
-               'GEN-CUM-0518,BTS-RB-6102,Cummins 6BT5.9-G2,Cummins,100,80,CUM-991204-BT,DSE-7320 MKII,16.4,450,1120.0
-' +
-               'GEN-KOH-0891,BTS-TT-0812,Kohler KD62,Kohler,150,120,KOH-554109-KD,DSE-7320 MKII,22.0,600,88.4
-'
+      content: 'Generator ID,Tower ID,Model Name,Brand,Rating kVA,Prime kW,Serial Number,Controller,Sump Capacity L,Fuel Tank L,Runtime Hours\n' +
+               'GEN-PK-0104,BTS-GP-0492,Perkins 1104A-44TG2,Perkins,60,48,PK-849204-TG,DSE-7320 MKII,8.0,250,320.5\n' +
+               'GEN-CAT-0312,BTS-BL-1944,Caterpillar C4.4 ACERT,Caterpillar,88,70,CAT-338291-AC,DSE-7320 MKII,11.0,350,540.2\n' +
+               'GEN-CUM-0518,BTS-RB-6102,Cummins 6BT5.9-G2,Cummins,100,80,CUM-991204-BT,DSE-7320 MKII,16.4,450,1120.0\n' +
+               'GEN-KOH-0891,BTS-TT-0812,Kohler KD62,Kohler,150,120,KOH-554109-KD,DSE-7320 MKII,22.0,600,88.4\n'
     },
     employees: {
       filename: 'GENESIS_Template_Employee_Directory.csv',
-      content: 'Employee ID,Full Name,Designation,Clearance Level,Email,Mobile,Command Station,VHF Radio Channel,Division Jurisdiction
-' +
-               'DIR-DHK-01,Engr. Tariqul Islam,Regional SCADA Operations Director,Level 4,tariqul.islam@arenaiot.com,+880 1711-948201,Dhaka North HQ,VHF-Ch-04 (156.200 MHz),Dhaka
-' +
-               'DIR-DHK-02,Engr. Shamim Hossain,Regional SCADA Operations Director,Level 4,shamim.hossain@arenaiot.com,+880 1711-948202,Dhaka South HQ,VHF-Ch-05 (156.250 MHz),Dhaka
-' +
-               'ENG-SCADA-01,Engr. Lian Ahmed,Lead SCADA Engineer,Level 3,lian.ahmed@arenaiot.com,+880 1710-000001,National NOC Command Hub,VHF-Ch-01 (156.050 MHz),National
-'
+      content: 'Employee ID,Full Name,Designation,Clearance Level,Email,Mobile,Command Station,VHF Radio Channel,Division Jurisdiction\n' +
+               'DIR-DHK-01,Engr. Tariqul Islam,Regional SCADA Operations Director,Level 4,tariqul.islam@arenaiot.com,+880 1711-948201,Dhaka North HQ,VHF-Ch-04 (156.200 MHz),Dhaka\n' +
+               'DIR-DHK-02,Engr. Shamim Hossain,Regional SCADA Operations Director,Level 4,shamim.hossain@arenaiot.com,+880 1711-948202,Dhaka South HQ,VHF-Ch-05 (156.250 MHz),Dhaka\n' +
+               'ENG-SCADA-01,Engr. Lian Ahmed,Lead SCADA Engineer,Level 3,lian.ahmed@arenaiot.com,+880 1710-000001,National NOC Command Hub,VHF-Ch-01 (156.050 MHz),National\n'
     },
     technicians: {
       filename: 'GENESIS_Template_Field_Technicians.csv',
-      content: 'Technician ID,Full Name,Contractor Company,Phone,Assigned Cluster,Specialization,Cert Expiration Date,Active LOTO Cert
-' +
-               'TECH-MIR-01,Md. Rafiqul Haque,Apex Power Engineering Ltd,+880 1712-409182,Mirpur Node,Mechanical Sump & Injection,2027-12-31,YES
-' +
-               'TECH-UTT-02,Kazi Nazrul Islam,Delta Generator Services,+880 1713-992104,Uttara North Node,Alternator & AVR Calibration,2028-06-30,YES
-' +
-               'TECH-GUL-03,Shafiqur Rahman,National Electro-Mechanical,+880 1714-883391,Gulshan Corporate Node,Lube Oil & Glycol Service,2027-09-15,YES
-'
+      content: 'Technician ID,Full Name,Contractor Company,Phone,Assigned Cluster,Specialization,Cert Expiration Date,Active LOTO Cert\n' +
+               'TECH-MIR-01,Md. Rafiqul Haque,Apex Power Engineering Ltd,+880 1712-409182,Mirpur Node,Mechanical Sump & Injection,2027-12-31,YES\n' +
+               'TECH-UTT-02,Kazi Nazrul Islam,Delta Generator Services,+880 1713-992104,Uttara North Node,Alternator & AVR Calibration,2028-06-30,YES\n' +
+               'TECH-GUL-03,Shafiqur Rahman,National Electro-Mechanical,+880 1714-883391,Gulshan Corporate Node,Lube Oil & Glycol Service,2027-09-15,YES\n'
     }
   };
 
@@ -6595,8 +8036,7 @@ function downloadMasterDataTemplate(category = 'areas') {
 
 // 3. Robust CSV Parser
 function parseCsvText(text) {
-  const lines = text.split(/?
-/).filter(line => line.trim().length > 0);
+  const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
   const result = [];
   for (let i = 0; i < lines.length; i++) {
     const row = [];

@@ -704,7 +704,7 @@
                 <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">Drag and drop .xlsx, .xls, or .csv file here, or click to browse</div>
               </div>
               <div class="flex items-center gap-2">
-                <button type="button" class="scada-btn-primary px-5 py-2">Select Spreadsheet File</button>
+                <button type="button" onclick="document.getElementById('master-data-file-input').click()" class="scada-btn-primary px-5 py-2">Select Spreadsheet File</button>
                 <span class="text-[11px] text-slate-400 font-mono">Max size: 15 MB</span>
               </div>
               <input type="file" id="master-data-file-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleMasterDataFileUpload(this)" />

@@ -214,19 +214,46 @@
   // SCREEN NAVIGATION
   const SCREENS = ['overview', 'live', 'map', 'alarms', 'control', 'comm', 'noc', 'settings', 'cms'];
 
+  const SCREEN_PAGE_MAP = {
+    'overview': 'overview.html',
+    'live': 'telemetry.html',
+    'telemetry': 'telemetry.html',
+    'map': 'map.html',
+    'alarms': 'alarms.html',
+    'control': 'control.html',
+    'comm': 'comm.html',
+    'noc': 'noc.html',
+    'settings': 'settings.html',
+    'cms': 'cms.html',
+    'subtotal': 'subtotal.html',
+    'history': 'history.html',
+    'maintenance': 'maintenance.html',
+    'franchise': 'franchise-management.html',
+    'generator': 'generator-management.html',
+    'generators': 'generator-management.html'
+  };
+
   function showScreen(screenId) {
-    if (screenId === 'map') {
-      showScreen('overview');
-      const mapBtn = document.getElementById('nav-btn-map');
-      if (mapBtn) {
-        document.querySelectorAll('.rail-btn').forEach(b => b.classList.remove('rail-btn-active'));
-        mapBtn.classList.add('rail-btn-active');
-      }
-      setTimeout(() => {
-        scrollToModule('map');
-        if (mapInstance) mapInstance.invalidateSize();
-      }, 100);
+    const targetPage = SCREEN_PAGE_MAP[screenId] || (screenId + '.html');
+    const targetEl = document.getElementById(`screen-${screenId}`);
+    const currentFile = window.location.pathname.split('/').pop() || 'overview.html';
+
+    // If target container is not present on this standalone page, navigate to its dedicated page!
+    if (!targetEl && currentFile !== targetPage) {
+      window.location.href = targetPage;
       return;
+    }
+
+    if (screenId === 'map') {
+      const mapWrapper = document.getElementById('wrapper-map');
+      if (mapWrapper) {
+        scrollToModule('map');
+        if (typeof mapInstance !== 'undefined' && mapInstance) mapInstance.invalidateSize();
+        return;
+      } else if (currentFile !== 'map.html') {
+        window.location.href = 'map.html';
+        return;
+      }
     }
 
     currentScreen = screenId;
@@ -2302,7 +2329,7 @@
   // -------------------------------------------------------------------------
   // A. USER PROFILE AVATAR (300x300 FORMAT)
   // -------------------------------------------------------------------------
-  let tempUserAvatarBase64_300 = null;
+  var tempUserAvatarBase64_300 = window.tempUserAvatarBase64_300 || null;
 
   function handleUserAvatarUpload(input) {
     if (input.files && input.files[0]) {
