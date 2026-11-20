@@ -40,6 +40,7 @@ control_raw = read_src("control_module.html")
 alarms_full_raw = read_src("alarms_full_module.html")
 comm_raw = read_src("comm_module.html")
 settings_raw = read_src("settings_module.html")
+user_mgmt_raw = read_src("user_mgmt_module.html")
 history_raw = read_src("history_module.html")
 login_raw = read_src("login.html")
 signup_raw = read_src("signup.html")
@@ -207,6 +208,10 @@ def get_left_rail(active_page):
       <div class="w-6 h-[1px] bg-slate-200/90 my-1 shrink-0"></div>
 
       <div class="flex flex-col items-center gap-1 w-full">
+        <!-- User Role & Clearance Management -->
+        <a href="user-management.html" id="nav-btn-users" class="rail-btn {act('users')}" title="User Role & Clearance Management">
+          <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </a>
         <!-- NOC Operator Console -->
         <a href="noc.html" id="nav-btn-noc" class="rail-btn {act('noc')}" title="NOC Operations & Engineering Profile">
           <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
@@ -2764,10 +2769,31 @@ function saveProfileChanges() {
   const nocRole = document.getElementById('noc-op-role');
   const nocUid = document.getElementById('noc-op-uid');
   const nocInitials = document.getElementById('noc-avatar-initials');
+  const nocEmail = document.getElementById('noc-op-email');
+  const nocDept = document.getElementById('noc-op-dept');
   if (nocName) nocName.textContent = name;
   if (nocRole) nocRole.textContent = role;
   if (nocUid) nocUid.textContent = uid;
   if (nocInitials) nocInitials.textContent = initials;
+  if (nocEmail) nocEmail.textContent = email;
+  if (nocDept) nocDept.textContent = dept;
+
+  // Sync with genesis_users_roster if Lian Ahmed (#AR-9402)
+  try {
+    const rawRoster = localStorage.getItem('genesis_users_roster');
+    if (rawRoster) {
+      const roster = JSON.parse(rawRoster);
+      const idx = roster.findIndex(u => u.uid === uid || u.uid === uid.replace('#', '') || u.name === name);
+      if (idx !== -1) {
+        roster[idx].name = name;
+        roster[idx].title = role;
+        roster[idx].email = email;
+        roster[idx].dept = dept;
+        if (tempUserAvatarBase64_300) roster[idx].avatar = tempUserAvatarBase64_300;
+        localStorage.setItem('genesis_users_roster', JSON.stringify(roster));
+      }
+    }
+  } catch(e) {}
 
   // Apply base64 avatar if newly chosen
   if (tempUserAvatarBase64_300) {
@@ -2820,6 +2846,8 @@ function initProfileAndAvatar() {
       if (document.getElementById('noc-op-role')) document.getElementById('noc-op-role').textContent = role;
       if (document.getElementById('noc-op-uid')) document.getElementById('noc-op-uid').textContent = uid;
       if (document.getElementById('noc-avatar-initials')) document.getElementById('noc-avatar-initials').textContent = initials;
+      if (p.email && document.getElementById('noc-op-email')) document.getElementById('noc-op-email').textContent = p.email;
+      if (p.dept && document.getElementById('noc-op-dept')) document.getElementById('noc-op-dept').textContent = p.dept;
     }
 
     const avatar = localStorage.getItem('genesis_user_avatar_300');
@@ -4228,8 +4256,851 @@ window.openPersonnelProfile = function(nameOrUid) {
   }
 };
 
+
+// =========================================================================
+// USER ROLE & ACCESS GOVERNANCE ENGINE (SCADA CLEARANCE LEVELS 1-5)
+// =========================================================================
+var tempUserFormAvatarBase64_300 = null;
+var activeUserRoleFilter = 'all';
+var userSearchQuery = '';
+var userViewMode = 'cards';
+
+const DEFAULT_USERS_ROSTER = [
+  {
+    name: 'Dr. Kabir Hossain',
+    uid: 'AR-9400',
+    level: 5,
+    title: 'Chief SCADA Director & System Administrator',
+    dept: 'Executive SCADA Command & System Architecture',
+    division: 'National Command',
+    station: 'NOC Command Center',
+    vhf: 'VHF Ch-01 (156.050 MHz)',
+    email: 'kabir.hossain@arenaiot.com',
+    phone: '+880 1711-002900',
+    status: 'ACTIVE',
+    avatar: null,
+    perms: ['telemetry', 'control', 'loto', 'master', 'users', 'audit'],
+    history: [
+      { action: 'Elevated Level 4 clearance for Dhaka North', time: 'Yesterday 17:40' },
+      { action: 'Authorized national firmware update DSE-7320', time: '3 days ago' }
+    ]
+  },
+  {
+    name: 'Engr. Tariqul Islam',
+    uid: 'AR-9401',
+    level: 4,
+    title: 'Regional Operations Director (Dhaka North)',
+    dept: 'Regional Grid Infrastructure & Power Management',
+    division: 'Dhaka North',
+    station: 'BTS-GP-0492 / Uttara Hub',
+    vhf: 'VHF Ch-02 (156.100 MHz)',
+    email: 'tariqul.islam@arenaiot.com',
+    phone: '+880 1711-002931',
+    status: 'ACTIVE',
+    avatar: null,
+    perms: ['telemetry', 'control', 'loto', 'master', 'audit'],
+    history: [
+      { action: 'Imported Master Tower registry for Mirpur', time: 'Yesterday 14:15' },
+      { action: 'Approved maintenance service for BTS-RO-3240', time: '2 days ago' }
+    ]
+  },
+  {
+    name: 'Engr. Shamim Hossain',
+    uid: 'AR-9403',
+    level: 4,
+    title: 'Regional Operations Director (Dhaka South)',
+    dept: 'Regional Grid Infrastructure & Power Management',
+    division: 'Dhaka South',
+    station: 'BTS-BA-9105 / Motijheel Node',
+    vhf: 'VHF Ch-02 (156.100 MHz)',
+    email: 'shamim.hossain@arenaiot.com',
+    phone: '+880 1711-002932',
+    status: 'ACTIVE',
+    avatar: null,
+    perms: ['telemetry', 'control', 'loto', 'master', 'audit'],
+    history: [
+      { action: 'Reviewed fuel consumption anomaly at Dhanmondi', time: 'Today 09:20' }
+    ]
+  },
+  {
+    name: 'Engr. Faisal Mahmud',
+    uid: 'AR-9404',
+    level: 4,
+    title: 'Regional Operations Director (Chittagong)',
+    dept: 'Maritime & Port Area Power Infrastructure',
+    division: 'Chittagong',
+    station: 'BTS-GP-3645 / Agrabad Hub',
+    vhf: 'VHF Ch-03 (156.150 MHz)',
+    email: 'faisal.mahmud@arenaiot.com',
+    phone: '+880 1711-002933',
+    status: 'ACTIVE',
+    avatar: null,
+    perms: ['telemetry', 'control', 'loto', 'master', 'audit'],
+    history: [
+      { action: 'Coordinated cyclone standby power readiness', time: '4 days ago' }
+    ]
+  },
+  {
+    name: 'Engr. Kamrul Hasan',
+    uid: 'AR-9405',
+    level: 4,
+    title: 'Regional Operations Director (Sylhet)',
+    dept: 'Tea Estate & Hills Grid Infrastructure',
+    division: 'Sylhet',
+    station: 'BTS-BA-3918 / Zindabazar Hub',
+    vhf: 'VHF Ch-04 (156.200 MHz)',
+    email: 'kamrul.hasan@arenaiot.com',
+    phone: '+880 1711-002934',
+    status: 'ACTIVE',
+    avatar: null,
+    perms: ['telemetry', 'control', 'loto', 'master', 'audit'],
+    history: [
+      { action: 'Calibrated Modbus RTU gateway for remote towers', time: 'Yesterday 11:30' }
+    ]
+  },
+  {
+    name: 'Lian Ahmed',
+    uid: 'AR-9402',
+    level: 3,
+    title: 'Lead SCADA Engineer (National NOC)',
+    dept: 'National SCADA Operations & Telemetry Grid Management',
+    division: 'National Command',
+    station: 'BTS-GP-0492 / National Hub',
+    vhf: 'VHF Ch-01 (156.050 MHz)',
+    email: 'lian.ahmed@arenaiot.com',
+    phone: '+880 1711-002930',
+    status: 'ACTIVE',
+    avatar: null,
+    perms: ['telemetry', 'control', 'loto', 'audit'],
+    history: [
+      { action: 'Cleared high-coolant warning on GEN-PK-0002', time: 'Today 09:14' },
+      { action: 'Calibrated telemetry sensor thresholds', time: 'Today 10:45' }
+    ]
+  },
+  {
+    name: 'Engr. Hasan Chowdhury',
+    uid: 'AR-9406',
+    level: 3,
+    title: 'Lead Field Engineer (Dhanmondi)',
+    dept: 'Field Engineering & Mechanical Diagnostics',
+    division: 'Dhaka South',
+    station: 'BTS-TE-5249 / Dhanmondi Node',
+    vhf: 'VHF Ch-02 (156.100 MHz)',
+    email: 'hasan.chowdhury@arenaiot.com',
+    phone: '+880 1821-728093',
+    status: 'ACTIVE',
+    avatar: null,
+    perms: ['telemetry', 'control', 'loto', 'audit'],
+    history: [
+      { action: 'Replaced alternator belts on Perkins 1104C', time: 'Yesterday 16:00' }
+    ]
+  },
+  {
+    name: 'Md. Rafiqul Haque',
+    uid: 'AR-9410',
+    level: 2,
+    title: 'Field Maintenance Technician (Mirpur)',
+    dept: 'Preventive Servicing & LOTO Mechanical Crew',
+    division: 'Dhaka North',
+    station: 'BTS-RO-3240 / Mirpur-10',
+    vhf: 'VHF Ch-05 (156.250 MHz)',
+    email: 'rafiqul.haque@arenaiot.com',
+    phone: '+880 1829-334188',
+    status: 'ACTIVE',
+    avatar: null,
+    perms: ['telemetry', 'loto'],
+    history: [
+      { action: 'Engaged LOTO safety switch for oil filter change', time: 'Today 08:15' }
+    ]
+  },
+  {
+    name: 'Kazi Nazrul Islam',
+    uid: 'AR-9411',
+    level: 1,
+    title: 'NOC Shift Operator (National Hub)',
+    dept: '24/7 Monitoring & Alarm Dispatch',
+    division: 'National Command',
+    station: 'Command Hub Screen 4',
+    vhf: 'VHF Ch-01 (156.050 MHz)',
+    email: 'nazrul.islam@arenaiot.com',
+    phone: '+880 1715-998877',
+    status: 'ACTIVE',
+    avatar: null,
+    perms: ['telemetry'],
+    history: [
+      { action: 'Logged grid failure alarm on Chittagong sector', time: 'Today 07:50' }
+    ]
+  }
+];
+
+function getUsersRoster() {
+  try {
+    const raw = localStorage.getItem('genesis_users_roster');
+    let roster = raw ? JSON.parse(raw) : DEFAULT_USERS_ROSTER;
+    
+    // Check if Lian Ahmed has active custom avatar or profile
+    const savedProf = localStorage.getItem('genesis_scada_profile');
+    const savedAvatar = localStorage.getItem('genesis_user_avatar_300');
+    if (savedProf || savedAvatar) {
+      const p = savedProf ? JSON.parse(savedProf) : {};
+      const lian = roster.find(u => u.uid === 'AR-9402' || u.name === 'Lian Ahmed');
+      if (lian) {
+        if (p.name) lian.name = p.name;
+        if (p.role) lian.title = p.role;
+        if (p.email) lian.email = p.email;
+        if (p.dept) lian.dept = p.dept;
+        if (savedAvatar) lian.avatar = savedAvatar;
+      }
+    }
+    return roster;
+  } catch(e) {
+    return DEFAULT_USERS_ROSTER;
+  }
+}
+
+function saveUsersRoster(roster) {
+  try {
+    localStorage.setItem('genesis_users_roster', JSON.stringify(roster));
+    
+    // Also sync to genesis_master_personnel for Settings Master Input
+    const pers = roster.map(u => ({
+      name: u.name,
+      title: u.title,
+      level: u.level,
+      uid: u.uid.replace('#', ''),
+      email: u.email,
+      phone: u.phone
+    }));
+    localStorage.setItem('genesis_master_personnel', JSON.stringify(pers));
+  } catch(e) {}
+}
+
+function getRoleBadgeData(level) {
+  const lvl = parseInt(level, 10);
+  switch (lvl) {
+    case 5:
+      return { label: 'LEVEL 5 · ADMIN', bg: 'bg-purple-100 text-purple-800 dark:bg-purple-950/80 dark:text-purple-300 border-purple-200 dark:border-purple-800', dot: 'bg-purple-500' };
+    case 4:
+      return { label: 'LEVEL 4 · REGIONAL', bg: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950/80 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800', dot: 'bg-indigo-500' };
+    case 3:
+      return { label: 'LEVEL 3 · LEAD ENGR', bg: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800', dot: 'bg-emerald-500' };
+    case 2:
+      return { label: 'LEVEL 2 · FIELD TECH', bg: 'bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border-amber-200 dark:border-amber-800', dot: 'bg-amber-500' };
+    case 1:
+    default:
+      return { label: 'LEVEL 1 · NOC SHIFT', bg: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700', dot: 'bg-slate-500' };
+  }
+}
+
+function renderUsersRoster() {
+  const cardsContainer = document.getElementById('users-cards-container');
+  const tableBody = document.getElementById('users-table-body');
+  if (!cardsContainer && !tableBody) return;
+
+  const roster = getUsersRoster();
+
+  // Update Summary Counts
+  const countL5 = roster.filter(u => u.level === 5).length;
+  const countL4 = roster.filter(u => u.level === 4).length;
+  const countL3 = roster.filter(u => u.level === 3).length;
+  const countL2 = roster.filter(u => u.level === 2).length;
+  const countL1 = roster.filter(u => u.level === 1).length;
+
+  if (document.getElementById('count-role-l5')) document.getElementById('count-role-l5').textContent = countL5;
+  if (document.getElementById('count-role-l4')) document.getElementById('count-role-l4').textContent = countL4;
+  if (document.getElementById('count-role-l3')) document.getElementById('count-role-l3').textContent = countL3;
+  if (document.getElementById('count-role-l2')) document.getElementById('count-role-l2').textContent = countL2;
+  if (document.getElementById('count-role-l1')) document.getElementById('count-role-l1').textContent = countL1;
+  if (document.getElementById('user-total-badge')) document.getElementById('user-total-badge').textContent = roster.length;
+
+  // Filter roster
+  const filtered = roster.filter(u => {
+    let matchRole = true;
+    if (activeUserRoleFilter !== 'all') {
+      matchRole = u.level === parseInt(activeUserRoleFilter, 10);
+    }
+    let matchSearch = true;
+    if (userSearchQuery) {
+      const q = userSearchQuery.toLowerCase();
+      matchSearch = u.name.toLowerCase().includes(q) ||
+                    u.uid.toLowerCase().includes(q) ||
+                    u.title.toLowerCase().includes(q) ||
+                    u.division.toLowerCase().includes(q) ||
+                    u.email.toLowerCase().includes(q) ||
+                    u.phone.toLowerCase().includes(q);
+    }
+    return matchRole && matchSearch;
+  });
+
+  // Render Cards Grid
+  if (cardsContainer) {
+    if (filtered.length === 0) {
+      cardsContainer.innerHTML = `
+        <div class="col-span-full py-12 text-center text-slate-400">
+          <svg class="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <div class="font-bold text-sm text-slate-600 dark:text-slate-300">No personnel match your search or filter</div>
+          <div class="text-xs text-slate-400 mt-1">Try selecting 'All Personnel' or refining your search term</div>
+        </div>
+      `;
+    } else {
+      cardsContainer.innerHTML = filtered.map(u => {
+        const badge = getRoleBadgeData(u.level);
+        const initials = u.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'OP';
+        const cleanUid = u.uid.startsWith('#') ? u.uid : '#' + u.uid;
+        const avatarHtml = u.avatar
+          ? `<img src="${u.avatar}" alt="${u.name}" class="w-12 h-12 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 shadow-xs shrink-0" />`
+          : `<div class="w-12 h-12 rounded-2xl bg-slate-900 dark:bg-slate-800 text-white font-black text-sm flex items-center justify-center shrink-0 border border-white/20 shadow-xs">${initials}</div>`;
+
+        return `
+          <article class="glz-card" onclick="viewUserDetails('${u.uid}')">
+            <!-- Top Clearance Badge & Quick Icons -->
+            <div class="flex items-center justify-between gap-2">
+              <span class="glz-chip ${badge.bg} border font-bold text-[10px] tracking-wider truncate max-w-[210px]">${badge.label}</span>
+              <div class="flex items-center gap-1 shrink-0" onclick="event.stopPropagation();">
+                <button type="button" onclick="viewUserDetails('${u.uid}')" class="w-7 h-7 rounded-full flex items-center justify-center hover:opacity-80 transition cursor-pointer" style="background:var(--glz-fill);border:1px solid var(--glz-line);" title="View Personnel Dossier">
+                  <svg class="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <button type="button" onclick="openEditUserModal('${u.uid}')" class="w-7 h-7 rounded-full flex items-center justify-center hover:opacity-80 transition cursor-pointer" style="background:var(--glz-fill);border:1px solid var(--glz-line);" title="Edit Profile & Avatar">
+                  <svg class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </button>
+                <button type="button" onclick="confirmDeleteUser('${u.uid}')" class="w-7 h-7 rounded-full flex items-center justify-center hover:opacity-80 transition cursor-pointer" style="background:var(--glz-fill);border:1px solid var(--glz-line);" title="Revoke & Delete">
+                  <svg class="w-3.5 h-3.5 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- User Header & Avatar -->
+            <div class="flex items-center gap-3.5 mt-4">
+              ${avatarHtml}
+              <div class="min-w-0">
+                <div class="text-[10px] font-mono tracking-wider font-bold" style="color:var(--glz-sub);">${cleanUid}</div>
+                <h3 class="text-base font-black leading-tight truncate" style="color:var(--glz-ink);">${u.name}</h3>
+                <div class="text-[11px] font-semibold truncate mt-0.5" style="color:var(--glz-sub);">${u.title}</div>
+              </div>
+            </div>
+
+            <!-- Details Rows -->
+            <div class="mt-3">
+              <div class="glz-row">
+                <span>Jurisdiction</span>
+                <b>${u.division}</b>
+              </div>
+              <div class="glz-row">
+                <span>Assigned Station</span>
+                <b class="truncate max-w-[150px]">${u.station || 'National Hub'}</b>
+              </div>
+              <div class="glz-row">
+                <span>Contact Email</span>
+                <span class="truncate max-w-[170px] text-[11px] font-medium" style="color:var(--glz-ink);">${u.email}</span>
+              </div>
+              <div class="glz-row">
+                <span>Direct Phone</span>
+                <span class="text-[11px] font-medium font-mono" style="color:var(--glz-ink);">${u.phone}</span>
+              </div>
+              <div class="glz-row">
+                <span>Duty Status</span>
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-bold ${u.status === 'ACTIVE' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}">
+                  <span class="w-1.5 h-1.5 rounded-full ${u.status === 'ACTIVE' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}"></span>
+                  ${u.status === 'ACTIVE' ? 'Active On-Duty' : 'Standby / Off-Shift'}
+                </span>
+              </div>
+            </div>
+
+            <!-- Action Controls Strip -->
+            <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800/60" onclick="event.stopPropagation();">
+              <button type="button" onclick="viewUserDetails('${u.uid}')" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <span>Dossier</span>
+              </button>
+              <button type="button" onclick="openEditUserModal('${u.uid}')" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition text-center shadow-xs flex items-center justify-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                <span>Edit</span>
+              </button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+  }
+
+  // Render Table View
+  if (tableBody) {
+    if (filtered.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">No personnel match search criteria</td></tr>`;
+    } else {
+      tableBody.innerHTML = filtered.map(u => {
+        const badge = getRoleBadgeData(u.level);
+        const initials = u.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'OP';
+        const cleanUid = u.uid.startsWith('#') ? u.uid : '#' + u.uid;
+        const avatarHtml = u.avatar
+          ? `<img src="${u.avatar}" alt="${u.name}" class="w-8 h-8 rounded-full object-cover border border-slate-200 dark:border-slate-700 shadow-2xs shrink-0" />`
+          : `<div class="w-8 h-8 rounded-full bg-slate-900 dark:bg-slate-800 text-white font-black text-xs flex items-center justify-center shrink-0 border border-white/20">${initials}</div>`;
+
+        return `
+          <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition cursor-pointer" onclick="viewUserDetails('${u.uid}')">
+            <td class="py-3 px-4">
+              <div class="flex items-center gap-2.5">
+                ${avatarHtml}
+                <div>
+                  <div class="font-bold text-slate-900 dark:text-white">${u.name}</div>
+                  <div class="text-[10px] text-slate-400 truncate max-w-[160px]">${u.title}</div>
+                </div>
+              </div>
+            </td>
+            <td class="py-3 px-4 font-mono font-bold text-slate-700 dark:text-slate-300">${cleanUid}</td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${badge.bg} border">${badge.label}</span>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-semibold text-slate-800 dark:text-slate-200">${u.division}</div>
+              <div class="text-[10px] text-slate-400 truncate max-w-[140px]">${u.station || 'National Hub'}</div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="text-slate-700 dark:text-slate-300 font-medium">${u.email}</div>
+              <div class="text-[10px] font-mono text-slate-400">${u.phone}</div>
+            </td>
+            <td class="py-3 px-4">
+              <span class="inline-flex items-center gap-1.5 text-[11px] font-bold ${u.status === 'ACTIVE' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}">
+                <span class="w-1.5 h-1.5 rounded-full ${u.status === 'ACTIVE' ? 'bg-emerald-500' : 'bg-slate-400'}"></span>
+                ${u.status === 'ACTIVE' ? 'On-Duty' : 'Standby'}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right" onclick="event.stopPropagation();">
+              <div class="flex items-center justify-end gap-1.5">
+                <button type="button" onclick="viewUserDetails('${u.uid}')" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition" title="View Dossier">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <button type="button" onclick="openEditUserModal('${u.uid}')" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-indigo-600 dark:text-indigo-400 transition" title="Edit Profile">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </button>
+                <button type="button" onclick="confirmDeleteUser('${u.uid}')" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-rose-500 transition" title="Revoke & Delete">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+  }
+}
+
+function filterUsersByRole(level) {
+  activeUserRoleFilter = level;
+  const pills = document.querySelectorAll('.user-role-pill');
+  pills.forEach(p => {
+    p.className = 'user-role-pill px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition';
+  });
+
+  const activeId = level === 'all' ? 'role-pill-all' : `role-pill-${level}`;
+  const activeEl = document.getElementById(activeId);
+  if (activeEl) {
+    activeEl.className = 'user-role-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-2xs transition';
+  }
+
+  renderUsersRoster();
+}
+
+function searchUsersRoster(query) {
+  userSearchQuery = query.toLowerCase().trim();
+  renderUsersRoster();
+}
+
+function setUserViewMode(mode) {
+  userViewMode = mode;
+  const cards = document.getElementById('users-cards-container');
+  const table = document.getElementById('users-table-container');
+  const btnC = document.getElementById('u-view-cards-btn');
+  const btnT = document.getElementById('u-view-table-btn');
+
+  if (mode === 'cards') {
+    if (cards) cards.classList.remove('hidden');
+    if (table) table.classList.add('hidden');
+    if (btnC) btnC.className = 'p-1.5 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs transition';
+    if (btnT) btnT.className = 'p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
+  } else {
+    if (cards) cards.classList.add('hidden');
+    if (table) table.classList.remove('hidden');
+    if (btnT) btnT.className = 'p-1.5 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs transition';
+    if (btnC) btnC.className = 'p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition';
+  }
+}
+
+function openCreateUserModal() {
+  const modal = document.getElementById('user-crud-modal');
+  if (!modal) return;
+
+  document.getElementById('u-modal-title').textContent = 'Register New SCADA User';
+  document.getElementById('u-modal-save-btn-text').textContent = 'Register User Profile';
+  document.getElementById('u-modal-edit-uid').value = '';
+
+  // Generate new UID
+  const nextNum = Math.floor(12 + Math.random() * 80);
+  document.getElementById('u-modal-uid').value = `AR-94${nextNum}`;
+  document.getElementById('u-modal-name').value = '';
+  document.getElementById('u-modal-level').value = '3';
+  document.getElementById('u-modal-title-input').value = '';
+  document.getElementById('u-modal-division').value = 'Dhaka North';
+  document.getElementById('u-modal-email').value = '';
+  document.getElementById('u-modal-phone').value = '';
+  document.getElementById('u-modal-station').value = '';
+  document.getElementById('u-modal-vhf').value = 'VHF Ch-01 (156.050 MHz)';
+
+  clearUserFormAvatar();
+
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+}
+
+function openEditUserModal(uid) {
+  const modal = document.getElementById('user-crud-modal');
+  if (!modal) return;
+
+  const roster = getUsersRoster();
+  const cleanUid = uid.replace('#', '');
+  const user = roster.find(u => u.uid === uid || u.uid === cleanUid);
+  if (!user) {
+    showScadaToast('User Not Found', `Unable to find record for ${uid}`, 'error');
+    return;
+  }
+
+  document.getElementById('u-modal-title').textContent = `Edit Personnel Profile: ${user.name}`;
+  document.getElementById('u-modal-save-btn-text').textContent = 'Update User Profile';
+  document.getElementById('u-modal-edit-uid').value = user.uid;
+
+  document.getElementById('u-modal-uid').value = user.uid.replace('#', '');
+  document.getElementById('u-modal-name').value = user.name;
+  document.getElementById('u-modal-level').value = user.level.toString();
+  document.getElementById('u-modal-title-input').value = user.title;
+  document.getElementById('u-modal-division').value = user.division;
+  document.getElementById('u-modal-email').value = user.email;
+  document.getElementById('u-modal-phone').value = user.phone;
+  document.getElementById('u-modal-station').value = user.station || '';
+  document.getElementById('u-modal-vhf').value = user.vhf || 'VHF Ch-01 (156.050 MHz)';
+
+  // Handle avatar preview
+  tempUserFormAvatarBase64_300 = user.avatar || null;
+  const pImg = document.getElementById('u-modal-avatar-img');
+  const pInit = document.getElementById('u-modal-avatar-initials');
+  if (user.avatar && pImg && pInit) {
+    pImg.src = user.avatar;
+    pImg.classList.remove('hidden');
+    pImg.style.display = 'block';
+    pInit.classList.add('hidden');
+    pInit.style.display = 'none';
+  } else if (pImg && pInit) {
+    pImg.classList.add('hidden');
+    pImg.style.display = 'none';
+    pImg.src = '';
+    pInit.classList.remove('hidden');
+    pInit.style.display = 'flex';
+    pInit.textContent = user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'OP';
+  }
+
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+}
+
+function closeUserCrudModal() {
+  const modal = document.getElementById('user-crud-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+}
+
+function handleUserFormAvatarUpload(input) {
+  if (!input || !input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      // 300x300 high resolution canvas crop
+      const canvas = document.createElement('canvas');
+      canvas.width = 300;
+      canvas.height = 300;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      const scale = Math.max(300 / img.width, 300 / img.height);
+      const sw = img.width * scale;
+      const sh = img.height * scale;
+      const ox = (300 - sw) / 2;
+      const oy = (300 - sh) / 2;
+      ctx.clearRect(0, 0, 300, 300);
+      ctx.drawImage(img, ox, oy, sw, sh);
+      const base64 = canvas.toDataURL('image/png', 0.95);
+      tempUserFormAvatarBase64_300 = base64;
+
+      const pImg = document.getElementById('u-modal-avatar-img');
+      const pInit = document.getElementById('u-modal-avatar-initials');
+      if (pImg) {
+        pImg.src = base64;
+        pImg.classList.remove('hidden');
+        pImg.style.display = 'block';
+      }
+      if (pInit) {
+        pInit.classList.add('hidden');
+        pInit.style.display = 'none';
+      }
+      showScadaToast('Portrait Calibrated', '300x300 square crop generated for user profile.');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearUserFormAvatar() {
+  tempUserFormAvatarBase64_300 = null;
+  const pImg = document.getElementById('u-modal-avatar-img');
+  const pInit = document.getElementById('u-modal-avatar-initials');
+  if (pImg) {
+    pImg.src = '';
+    pImg.classList.add('hidden');
+    pImg.style.display = 'none';
+  }
+  if (pInit) {
+    pInit.classList.remove('hidden');
+    pInit.style.display = 'flex';
+    pInit.textContent = 'NU';
+  }
+  const input = document.getElementById('u-modal-avatar-input');
+  if (input) input.value = '';
+}
+
+function saveUserRecord() {
+  const name = document.getElementById('u-modal-name')?.value.trim();
+  const rawUid = document.getElementById('u-modal-uid')?.value.trim();
+  const level = parseInt(document.getElementById('u-modal-level')?.value || '3', 10);
+  const title = document.getElementById('u-modal-title-input')?.value.trim() || 'SCADA Operations Specialist';
+  const division = document.getElementById('u-modal-division')?.value || 'Dhaka North';
+  const email = document.getElementById('u-modal-email')?.value.trim() || `${rawUid.toLowerCase()}@arenaiot.com`;
+  const phone = document.getElementById('u-modal-phone')?.value.trim() || '+880 1711-000000';
+  const station = document.getElementById('u-modal-station')?.value.trim() || 'National Hub';
+  const vhf = document.getElementById('u-modal-vhf')?.value.trim() || 'VHF Ch-01 (156.050 MHz)';
+
+  if (!name || !rawUid) {
+    showScadaToast('Missing Fields', 'Please specify full name and personnel UID.', 'error');
+    return;
+  }
+
+  const uid = rawUid.startsWith('#') ? rawUid : '#' + rawUid;
+  const cleanUid = uid.replace('#', '');
+  const editUid = document.getElementById('u-modal-edit-uid')?.value;
+
+  let roster = getUsersRoster();
+
+  if (editUid) {
+    // Editing existing record
+    const idx = roster.findIndex(u => u.uid === editUid || u.uid === editUid.replace('#', ''));
+    if (idx !== -1) {
+      roster[idx].name = name;
+      roster[idx].level = level;
+      roster[idx].title = title;
+      roster[idx].division = division;
+      roster[idx].email = email;
+      roster[idx].phone = phone;
+      roster[idx].station = station;
+      roster[idx].vhf = vhf;
+      if (tempUserFormAvatarBase64_300) {
+        roster[idx].avatar = tempUserFormAvatarBase64_300;
+      }
+      showScadaToast('Profile Updated', `Updated credentials for ${name} (${cleanUid}).`);
+    }
+  } else {
+    // New User
+    const newUser = {
+      name,
+      uid: cleanUid,
+      level,
+      title,
+      dept: 'National SCADA Operations & Telemetry Grid Management',
+      division,
+      station,
+      vhf,
+      email,
+      phone,
+      status: 'ACTIVE',
+      avatar: tempUserFormAvatarBase64_300 || null,
+      perms: level >= 4 ? ['telemetry', 'control', 'loto', 'master', 'audit'] : ['telemetry', 'control', 'loto', 'audit'],
+      history: [
+        { action: 'Provisioned SCADA account & security clearance', time: 'Just now' }
+      ]
+    };
+    roster.unshift(newUser);
+    showScadaToast('User Registered', `Issued Level ${level} SCADA clearance to ${name}.`);
+  }
+
+  // If this record is Lian Ahmed (#AR-9402), sync to localStorage profile and header
+  if (cleanUid === 'AR-9402' || name === 'Lian Ahmed') {
+    const prof = { name, role: title, email, uid, dept: 'National SCADA Operations & Telemetry Grid Management', updated: new Date().toISOString() };
+    localStorage.setItem('genesis_scada_profile', JSON.stringify(prof));
+    if (tempUserFormAvatarBase64_300) {
+      localStorage.setItem('genesis_user_avatar_300', tempUserFormAvatarBase64_300);
+    }
+    if (typeof initProfileAndAvatar === 'function') initProfileAndAvatar();
+  }
+
+  saveUsersRoster(roster);
+  closeUserCrudModal();
+  renderUsersRoster();
+}
+
+function viewUserDetails(uid) {
+  const modal = document.getElementById('user-view-modal');
+  if (!modal) return;
+
+  const roster = getUsersRoster();
+  const cleanUid = uid.replace('#', '');
+  const user = roster.find(u => u.uid === uid || u.uid === cleanUid);
+  if (!user) return;
+
+  const badge = getRoleBadgeData(user.level);
+  const initials = user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'OP';
+
+  document.getElementById('uv-name').textContent = user.name;
+  document.getElementById('uv-uid').textContent = '#' + cleanUid;
+  document.getElementById('uv-title').textContent = user.title;
+  document.getElementById('uv-dept').textContent = user.dept || 'National SCADA Operations';
+  document.getElementById('uv-division').textContent = user.division;
+  document.getElementById('uv-station').textContent = user.station || 'National Hub';
+  document.getElementById('uv-email').textContent = user.email;
+  document.getElementById('uv-phone').textContent = user.phone;
+  document.getElementById('uv-vhf').textContent = user.vhf || 'VHF Ch-01 (156.050 MHz)';
+
+  const roleBadge = document.getElementById('uv-role-badge');
+  if (roleBadge) {
+    roleBadge.className = `px-2.5 py-0.5 rounded-full text-[10px] font-bold ${badge.bg} border`;
+    roleBadge.textContent = badge.label;
+  }
+
+  const statusEl = document.getElementById('uv-status');
+  if (statusEl) {
+    statusEl.innerHTML = `<span class="w-2 h-2 rounded-full ${user.status === 'ACTIVE' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}"></span> ${user.status === 'ACTIVE' ? 'Active On-Duty' : 'Standby'}`;
+  }
+
+  const pImg = document.getElementById('uv-avatar-img');
+  const pInit = document.getElementById('uv-avatar-initials');
+  if (user.avatar && pImg && pInit) {
+    pImg.src = user.avatar;
+    pImg.classList.remove('hidden');
+    pImg.style.display = 'block';
+    pInit.classList.add('hidden');
+    pInit.style.display = 'none';
+  } else if (pImg && pInit) {
+    pImg.classList.add('hidden');
+    pImg.style.display = 'none';
+    pImg.src = '';
+    pInit.classList.remove('hidden');
+    pInit.style.display = 'flex';
+    pInit.textContent = initials;
+  }
+
+  const editBtn = document.getElementById('uv-edit-btn');
+  if (editBtn) {
+    editBtn.onclick = function() {
+      closeUserViewModal();
+      openEditUserModal(user.uid);
+    };
+  }
+
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+}
+
+function closeUserViewModal() {
+  const modal = document.getElementById('user-view-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+}
+
+function confirmDeleteUser(uid) {
+  const modal = document.getElementById('user-delete-modal');
+  if (!modal) return;
+
+  const roster = getUsersRoster();
+  const cleanUid = uid.replace('#', '');
+  const user = roster.find(u => u.uid === uid || u.uid === cleanUid);
+  if (!user) return;
+
+  document.getElementById('u-delete-uid').value = user.uid;
+  document.getElementById('u-delete-msg').textContent = `Are you sure you want to revoke credentials and permanently delete ${user.name} (#${cleanUid}) from the SCADA governance registry?`;
+
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+}
+
+function closeUserDeleteModal() {
+  const modal = document.getElementById('user-delete-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+  }
+}
+
+function executeDeleteUser() {
+  const uid = document.getElementById('u-delete-uid')?.value;
+  if (!uid) return;
+
+  const cleanUid = uid.replace('#', '');
+  let roster = getUsersRoster();
+  const user = roster.find(u => u.uid === uid || u.uid === cleanUid);
+  const name = user ? user.name : cleanUid;
+
+  roster = roster.filter(u => u.uid !== uid && u.uid !== cleanUid);
+  saveUsersRoster(roster);
+
+  closeUserDeleteModal();
+  renderUsersRoster();
+  showScadaToast('Personnel Revoked', `Security clearance and record for ${name} deleted successfully.`, 'warn');
+}
+
+function exportUsersRosterExcel() {
+  const roster = getUsersRoster();
+  let csv = 'Name,UID,Security_Level,Job_Title,Division,Assigned_Station,Official_Email,Direct_Phone,Status\\n';
+  roster.forEach(u => {
+    csv += `"${u.name}","${u.uid}",${u.level},"${u.title}","${u.division}","${u.station || ''}","${u.email}","${u.phone}","${u.status}"\\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `genesis_personnel_roster_${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showScadaToast('Roster Exported', `Downloaded personnel registry for ${roster.length} SCADA operators.`);
+}
+
+function exportNocDutyLogExcel() {
+  let csv = 'Timestamp,Sub_System,Event_Description,Severity,Operator\\n';
+  csv += '"10:45:20","Telemetry Bus","Calibrated 18-Component Modbus registers across 492 units","INFO","Lian Ahmed (#AR-9402)"\\n';
+  csv += '"09:14:02","Alarms Triage","Acknowledged High Coolant Temp Alarm on GEN-PK-0002 (106 C)","CRITICAL","Lian Ahmed (#AR-9402)"\\n';
+  csv += '"08:30:15","Console Auth","Signed in with Level 3 Lead SCADA Engineer clearance","SECURITY","Lian Ahmed (#AR-9402)"\\n';
+  csv += '"08:00:00","Duty Shift","Handover of Alpha Shift command from Shift Operator Kazi Nazrul","HANDOVER","Lian Ahmed (#AR-9402)"\\n';
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `noc_duty_activity_log_${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showScadaToast('Duty Log Exported', 'Downloaded National NOC Operator activity audit log.');
+}
+
+function initUserManagement() {
+  if (document.getElementById('users-cards-container') || document.getElementById('users-table-container')) {
+    renderUsersRoster();
+  }
+}
+
 // 12. Support URL Tab Parameter (?tab=import)
 window.addEventListener('DOMContentLoaded', () => {
+  if (typeof initUserManagement === 'function') initUserManagement();
   const urlParams = new URLSearchParams(window.location.search);
   const tabParam = urlParams.get('tab');
   if (tabParam === 'import' && typeof switchFranchiseTier === 'function') {
@@ -4392,29 +5263,186 @@ noc_html = assemble_page(
     active_page="noc",
     main_content_html=f"""
     <div id="screen-noc" class="flex flex-col gap-6">
-      <div class="bg-white/80 backdrop-blur-xl rounded-[28px] p-6 sm:p-8 border border-white/90 shadow-md">
-        <h2 class="text-xl font-black text-slate-900 mb-2">National NOC Operations Console</h2>
-        <p class="text-xs text-slate-600 mb-6 font-medium">Real-time supervision across all 492 BTS towers and regional power grids</p>
-        <div class="p-6 rounded-2xl bg-slate-900 text-white flex flex-col md:flex-row items-center justify-between gap-6">
-          <div class="flex items-center gap-4">
-            <div class="w-16 h-16 rounded-2xl bg-slate-800 text-white font-black text-2xl flex items-center justify-center">
-              LN
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h3 class="text-lg font-black text-white">Lian Ahmed</h3>
-                <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">#AR-9402</span>
-              </div>
-              <p class="text-xs text-slate-400 mt-0.5">Lead SCADA Engineer · National Operations Center</p>
+      <!-- Header Bar -->
+      <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[28px] p-5 sm:p-6 border border-white/90 dark:border-slate-800/80 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-xl font-black text-slate-900 dark:text-white">National NOC Operations Console</h2>
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800">24/7 COMMAND DESK</span>
+          </div>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">Real-time operator command console, duty station jurisdiction, and telemetry supervision across all 492 national BTS towers</p>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <a href="user-management.html" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1.5" title="Open User Role & Access Governance">
+            <svg class="w-3.5 h-3.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>User Management Hub</span>
+          </a>
+          <button type="button" onclick="openProfileModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+            <svg class="w-4 h-4 text-emerald-400 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            <span>Upload Avatar / Edit Profile</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Operator Profile Hero Banner -->
+      <div class="p-6 sm:p-7 rounded-[28px] bg-slate-900 text-white flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-xl border border-slate-800">
+        <div class="flex items-center gap-5">
+          <!-- 300x300 Avatar with fallback Initials -->
+          <div id="noc-avatar-box" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-800 text-white font-black text-2xl sm:text-3xl flex items-center justify-center overflow-hidden shrink-0 shadow-lg border-2 border-white/20 relative group">
+            <span id="noc-avatar-initials">LN</span>
+            <img id="noc-avatar-img" class="w-full h-full object-cover hidden" alt="Operator Portrait" />
+            <div onclick="openProfileModal()" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition cursor-pointer text-[10px] font-bold text-white text-center p-1">
+              Change Photo
             </div>
           </div>
-          <button onclick="openProfileModal()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-xs">
-            Edit Profile & Permissions
+          <div>
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight" id="noc-op-name">Lian Ahmed</h3>
+              <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800" id="noc-op-uid">#AR-9402</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold uppercase border border-emerald-500/40">LEVEL 3 CLEARANCE</span>
+            </div>
+            <p class="text-sm text-slate-300 font-bold mt-1" id="noc-op-role">Lead SCADA Engineer</p>
+            <p class="text-xs text-slate-400 mt-0.5" id="noc-op-dept">National SCADA Operations & Telemetry Grid Management</p>
+            <div class="flex items-center gap-3 mt-3 text-xs text-slate-300 flex-wrap">
+              <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span id="noc-op-email">lian.ahmed@arenaiot.com</span></span>
+              <span class="text-slate-600">•</span>
+              <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>+880 1711-002930</span></span>
+              <span class="text-slate-600">•</span>
+              <span class="flex items-center gap-1.5 font-mono text-[11px] text-amber-300"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49"/></svg><span>VHF Ch-01 (156.050 MHz)</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2.5 shrink-0 w-full lg:w-auto justify-end">
+          <button type="button" onclick="openProfileModal()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-md flex items-center gap-2 cursor-pointer">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            <span>Edit Profile & Avatar</span>
           </button>
+        </div>
+      </div>
+
+      <!-- Operational Jurisdiction Ribbon -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-white/90 dark:border-slate-800 shadow-xs">
+          <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Supervised Power Nodes</div>
+          <div class="text-2xl font-black text-slate-900 dark:text-white mt-1">492 Units</div>
+          <div class="text-[11px] text-emerald-600 font-semibold mt-0.5">8 National Divisions</div>
+        </div>
+        <div class="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-white/90 dark:border-slate-800 shadow-xs">
+          <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Operational Shift</div>
+          <div class="text-2xl font-black text-slate-900 dark:text-white mt-1">Alpha Shift</div>
+          <div class="text-[11px] text-slate-500 font-semibold mt-0.5">08:00 - 16:00 BST</div>
+        </div>
+        <div class="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-white/90 dark:border-slate-800 shadow-xs">
+          <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">SCADA Clearance</div>
+          <div class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">Level 3</div>
+          <div class="text-[11px] text-slate-500 font-semibold mt-0.5">Remote Control Enabled</div>
+        </div>
+        <div class="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-white/90 dark:border-slate-800 shadow-xs">
+          <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Console Session</div>
+          <div class="text-2xl font-black text-slate-900 dark:text-white mt-1">Active</div>
+          <div class="text-[11px] text-emerald-600 font-semibold mt-0.5 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Encrypted TLS 1.3</div>
+        </div>
+      </div>
+
+      <!-- Operational Privilege Capabilities & Duty Activity Log -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="p-5 sm:p-6 rounded-[28px] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">Security Privileges</h3>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">AUTHORIZED</span>
+          </div>
+          <div class="flex flex-col gap-2.5 text-xs">
+            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+              <span class="font-bold text-slate-800 dark:text-slate-200">18-Component Telemetry</span>
+              <span class="text-[10px] font-mono text-emerald-600 font-bold">FULL ACCESS</span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+              <span class="font-bold text-slate-800 dark:text-slate-200">Remote Engine Start / Stop</span>
+              <span class="text-[10px] font-mono text-emerald-600 font-bold">AUTHORIZED</span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+              <span class="font-bold text-slate-800 dark:text-slate-200">DSE-7320 Controller Modes</span>
+              <span class="text-[10px] font-mono text-emerald-600 font-bold">AUTHORIZED</span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+              <span class="font-bold text-slate-800 dark:text-slate-200">Alarms Tripping & Mute</span>
+              <span class="text-[10px] font-mono text-emerald-600 font-bold">AUTHORIZED</span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+              <span class="font-bold text-slate-800 dark:text-slate-200">User Creation (Level 5)</span>
+              <span class="text-[10px] font-mono text-slate-400 font-bold">REQUIRES ADMIN</span>
+            </div>
+          </div>
+          <a href="user-management.html" class="mt-2 w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs text-center transition block">
+            Open Personnel Governance Hub
+          </a>
+        </div>
+
+        <div class="lg:col-span-2 p-5 sm:p-6 rounded-[28px] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/90 dark:border-slate-800 shadow-md flex flex-col gap-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">Live Duty Activity Log</h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Tamper-evident SCADA operator actions and telemetry events</p>
+            </div>
+            <button type="button" onclick="exportNocDutyLogExcel()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-bold transition flex items-center gap-1.5">
+              <svg class="w-3 h-3 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Export Log</span>
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 dark:bg-slate-800/80 text-[10px] text-slate-500 uppercase tracking-wider font-bold">
+                <tr>
+                  <th class="py-2.5 px-3">Timestamp</th>
+                  <th class="py-2.5 px-3">Sub-System</th>
+                  <th class="py-2.5 px-3">Event Description</th>
+                  <th class="py-2.5 px-3">Severity</th>
+                  <th class="py-2.5 px-3">Operator</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300" id="noc-duty-log-body">
+                <tr>
+                  <td class="py-2.5 px-3 font-mono text-[11px]">10:45:20</td>
+                  <td class="py-2.5 px-3 font-bold">Telemetry Bus</td>
+                  <td class="py-2.5 px-3">Calibrated 18-Component Modbus registers across 492 units</td>
+                  <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">INFO</span></td>
+                  <td class="py-2.5 px-3 font-bold">Lian Ahmed (#AR-9402)</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3 font-mono text-[11px]">09:14:02</td>
+                  <td class="py-2.5 px-3 font-bold">Alarms Triage</td>
+                  <td class="py-2.5 px-3">Acknowledged High Coolant Temp Alarm on GEN-PK-0002 (106 C)</td>
+                  <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[9px] font-bold bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300">CRITICAL</span></td>
+                  <td class="py-2.5 px-3 font-bold">Lian Ahmed (#AR-9402)</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3 font-mono text-[11px]">08:30:15</td>
+                  <td class="py-2.5 px-3 font-bold">Console Auth</td>
+                  <td class="py-2.5 px-3">Signed in with Level 3 Lead SCADA Engineer clearance</td>
+                  <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[9px] font-bold bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300">SECURITY</span></td>
+                  <td class="py-2.5 px-3 font-bold">Lian Ahmed (#AR-9402)</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3 font-mono text-[11px]">08:00:00</td>
+                  <td class="py-2.5 px-3 font-bold">Duty Shift</td>
+                  <td class="py-2.5 px-3">Handover of Alpha Shift command from Shift Operator Kazi Nazrul</td>
+                  <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[9px] font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300">HANDOVER</span></td>
+                  <td class="py-2.5 px-3 font-bold">Lian Ahmed (#AR-9402)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
     """
+)
+
+# 14b. User Management (user-management.html & users.html)
+user_management_html = assemble_page(
+    title="User Role & SCADA Access Governance",
+    active_page="users",
+    main_content_html=user_mgmt_raw
 )
 
 # 15. Settings (settings.html) - Enhanced with persistent configuration
@@ -4430,6 +5458,8 @@ login_sanitized = universal_sanitize(login_raw)
 
 # 7. Write all pages to both SRC_DIR and ARTIFACT_DIR
 pages = {
+    "user-management.html": user_management_html,
+    "users.html": user_management_html,
     "overview.html": overview_html,
     "index.html": overview_html,
     "telemetry.html": telemetry_html,
